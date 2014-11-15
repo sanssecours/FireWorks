@@ -3,3 +3,6 @@ workspace.xml
 tasks.xml
 /.idea/dictionaries
 /.idea/libraries
+
+# Target file for binaries
+/target/*
