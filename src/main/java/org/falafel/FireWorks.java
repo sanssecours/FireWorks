@@ -1,3 +1,5 @@
+package org.falafel;
+
 /* -- Imports -------------------------------------------------------------- */
 
 import org.mozartspaces.core.Capi;
@@ -26,7 +28,7 @@ public final class FireWorks {
      */
     private static final Logger LOGGER = getLogger(FireWorks.class);
 
-    /** Create the FireWorks singleton. */
+    /** Create the org.falafel.FireWorks singleton. */
     private FireWorks() { }
 
 

@@ -41,7 +41,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>FireWorks</mainClass>
+                            <mainClass>org.falafel.FireWorks</mainClass>
                             <classpathScope>runtime</classpathScope>
                         </configuration>
                     </execution>
