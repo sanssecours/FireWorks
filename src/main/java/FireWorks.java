@@ -1,3 +1,5 @@
+/* -- Imports -------------------------------------------------------------- */
+
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -10,12 +12,33 @@ import java.util.ArrayList;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class FireWorks {
+/* -- Class ---------------------------------------------------------------- */
 
-    private static final Logger slf4jLogger = getLogger(FireWorks.class);
+/**
+ * Main class for the project. This class provides an interface to start
+ * suppliers and keep an eye on the progress of the production in the firework
+ * factory.
+ */
+public final class FireWorks {
 
-    public static void main(String arguments[]) {
-        ContainerReference wood = null;
+    /**
+     * Get the Logger for the current class.
+     */
+    private static final Logger LOGGER = getLogger(FireWorks.class);
+
+    /** Create the FireWorks singleton. */
+    private FireWorks() { }
+
+
+    /**
+     * Start the firework factory.
+     *
+     * @param arguments
+     *          A list containing the command line arguments.
+     *
+     */
+    public static void main(final String[] arguments) {
+        ContainerReference wood;
         MzsCore mozartSpace = DefaultMzsCore.newInstance();
         Capi capi = new Capi(mozartSpace);
         ArrayList<String> result;
@@ -24,9 +47,9 @@ public class FireWorks {
             wood = capi.createContainer();
             capi.write(wood, new Entry("Test"));
             result = capi.read(wood);
-            System.err.println("Read: " + result.toString());
+            LOGGER.debug("Read: " + result.toString());
             capi.destroyContainer(wood, null);
-        } catch(MzsCoreException e) {
+        } catch (MzsCoreException e) {
             e.printStackTrace();
         }
         mozartSpace.shutdown(true);
