@@ -2,12 +2,7 @@ package org.falafel;
 
 /* -- Imports -------------------------------------------------------------- */
 
-import org.mozartspaces.core.Capi;
-import org.mozartspaces.core.ContainerReference;
-import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.Entry;
-import org.mozartspaces.core.MzsCore;
-import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.*;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -40,17 +35,29 @@ public final class FireWorks {
      *
      */
     public static void main(final String[] arguments) {
-        ContainerReference wood;
+        ContainerReference woodContainer;
         MzsCore mozartSpace = DefaultMzsCore.newInstance();
         Capi capi = new Capi(mozartSpace);
-        ArrayList<String> result;
+
+        ArrayList<Wood> result;
+        Wood wood = new Wood(1);
+        Supplier supplier;
+        for(int i =0; i < 10; i++){
+            supplier = new Supplier(i);
+            supplier.start();
+        }
+
 
         try {
-            wood = capi.createContainer();
-            capi.write(wood, new Entry("Test"));
-            result = capi.read(wood);
+            woodContainer = capi.createContainer("Wood",
+                    mozartSpace.getConfig().getSpaceUri(),
+                    MzsConstants.Container.UNBOUNDED,
+                    null,
+                    null);
+            capi.write(woodContainer, new Entry(wood));
+            result = capi.read(woodContainer);
             LOGGER.debug("Read: " + result.toString());
-            capi.destroyContainer(wood, null);
+            capi.destroyContainer(woodContainer, null);
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
