@@ -3,21 +3,40 @@ package org.falafel;
 import java.io.Serializable;
 
 /**
- * Created by Johannes on 18.11.2014.
+ * This class stores information about a material such as wood or propellant.
  */
 public class Material implements Serializable {
 
-    private final int ID;
+    /** Save an identifier for the material. */
+    private final int id;
 
-    public Material(int id){
-        ID = id;
+    /**
+     * Create a new material with the given identifier.
+     *
+     * @param identifier
+     *          A integer value that (uniquely) identifies this material.
+     *
+     */
+    public Material(final int identifier) {
+        id = identifier;
     }
 
-    public int getID(){
-        return ID;
+    /**
+     * Get the identifier of the material.
+     *
+     * @return The (unique) identifier of the material
+     *
+     */
+    public final int getID() {
+        return id;
     }
 
-    public String toString(){
-        return Integer.toString(ID);
+    /**
+     * Represent the material as a string.
+     *
+     * @return A string representing the properties of the material
+     */
+    public final String toString() {
+        return Integer.toString(getID());
     }
 }

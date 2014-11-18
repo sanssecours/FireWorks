@@ -1,25 +1,40 @@
 package org.falafel;
 
-import org.mozartspaces.core.*;
+import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.MzsCore;
 
 /**
- * Created by Johannes on 18.11.2014.
+ * This class represents a supplier. Suppliers deliver certain
+ * {@code Materials} to the firework factory.
+ *
  */
 public class Supplier extends Thread {
-    private final int ID;
 
-    public Supplier (int id){
+    /**
+     * Save the (unique) identifier for this supplier.
+     */
+    private final int id;
+
+
+    /**
+     * Create a new Supplier with a given id.
+     *
+     * @param identifier
+     *          The (unique) identifier for this supplier
+     */
+    public Supplier(final int identifier) {
         super();
-        ID = id;
+        id = identifier;
     }
 
-    public void run(){
-        System.out.println("Supplier "+ ID + " active!");
+    /**
+     * Start the supplier.
+     */
+    public final void run() {
+        System.out.println("Supplier " + id + " active!");
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
-        Capi capi = new Capi(core);
-
-       // ContainerReference cref = capi.lookupContainer("");
-
+        //Capi capi = new Capi(core);
+        // ContainerReference cref = capi.lookupContainer("");
 
         core.shutdown(true);
     }

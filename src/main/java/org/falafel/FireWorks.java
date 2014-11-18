@@ -2,12 +2,18 @@ package org.falafel;
 
 /* -- Imports -------------------------------------------------------------- */
 
-import org.mozartspaces.core.*;
+import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.ContainerReference;
+import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.Entry;
+import org.mozartspaces.core.MzsCore;
+import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.mozartspaces.core.MzsConstants.Container;
 
 /* -- Class ---------------------------------------------------------------- */
 
@@ -42,17 +48,19 @@ public final class FireWorks {
         ArrayList<Wood> result;
         Wood wood = new Wood(1);
         Supplier supplier;
-        for(int i =0; i < 10; i++){
-            supplier = new Supplier(i);
+        final int numberOfSuppliers = 10;
+
+        for (int supplierId = 0;
+             supplierId < numberOfSuppliers;
+             supplierId++) {
+            supplier = new Supplier(supplierId);
             supplier.start();
         }
-
 
         try {
             woodContainer = capi.createContainer("Wood",
                     mozartSpace.getConfig().getSpaceUri(),
-                    MzsConstants.Container.UNBOUNDED,
-                    null,
+                    Container.UNBOUNDED,
                     null);
             capi.write(woodContainer, new Entry(wood));
             result = capi.read(woodContainer);
