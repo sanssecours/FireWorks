@@ -1,7 +1,15 @@
 package org.falafel;
 
-import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.MzsCore;
+import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.core.*;
+import org.mozartspaces.core.MzsConstants.RequestTimeout;
+import org.slf4j.Logger;
+
+import java.net.URI;
+import java.util.ArrayList;
+
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * This class represents a supplier. Suppliers deliver certain
@@ -10,11 +18,11 @@ import org.mozartspaces.core.MzsCore;
  */
 public class Supplier extends Thread {
 
-    /**
-     * Save the (unique) identifier for this supplier.
-     */
+    /** Save the (unique) identifier for this supplier. */
     private final int id;
-
+    /** Get the Logger for the current class. */
+    private static final Logger LOGGER = getLogger(FireWorks.class);
+    private final URI spaceUri;
 
     /**
      * Create a new Supplier with a given id.
@@ -22,19 +30,38 @@ public class Supplier extends Thread {
      * @param identifier
      *          The (unique) identifier for this supplier
      */
-    public Supplier(final int identifier) {
+    public Supplier(final int identifier, URI space) {
         super();
         id = identifier;
+        spaceUri = space;
     }
 
     /**
      * Start the supplier.
      */
     public final void run() {
-        System.out.println("Supplier " + id + " active!");
+        ContainerReference woodContainer;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
-        //Capi capi = new Capi(core);
-        // ContainerReference cref = capi.lookupContainer("");
+        Capi capi = new Capi(core);
+        ArrayList<Wood> result;
+
+
+        System.out.println("Supplier " + id + " active!");
+
+        try {
+            woodContainer = capi.lookupContainer("Wood", spaceUri,
+                    RequestTimeout.TRY_ONCE, null);
+            result = capi.read(woodContainer);
+            LOGGER.debug("Read: " + result.toString());
+            capi.write(woodContainer, new Entry(new Wood(id)));
+            LOGGER.debug("Wrote entry to container.");
+            result = capi.read(woodContainer,
+                    AnyCoordinator.newSelector(COUNT_ALL),
+                    RequestTimeout.TRY_ONCE, null);
+            LOGGER.debug("Read: " + result.toString());
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
 
         core.shutdown(true);
     }

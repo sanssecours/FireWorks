@@ -7,13 +7,13 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsCore;
-import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.mozartspaces.core.MzsConstants.Container;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /* -- Class ---------------------------------------------------------------- */
 
@@ -46,16 +46,9 @@ public final class FireWorks {
         Capi capi = new Capi(mozartSpace);
 
         ArrayList<Wood> result;
-        Wood wood = new Wood(1);
+        Wood wood = new Wood(1337);
         Supplier supplier;
-        final int numberOfSuppliers = 10;
-
-        for (int supplierId = 0;
-             supplierId < numberOfSuppliers;
-             supplierId++) {
-            supplier = new Supplier(supplierId);
-            supplier.start();
-        }
+        final int numberOfSuppliers = 1;
 
         try {
             woodContainer = capi.createContainer("Wood",
@@ -63,10 +56,21 @@ public final class FireWorks {
                     Container.UNBOUNDED,
                     null);
             capi.write(woodContainer, new Entry(wood));
+
+            for (int supplierId = 1;
+                 supplierId <= numberOfSuppliers;
+                 supplierId++) {
+                supplier = new Supplier(supplierId,
+                        mozartSpace.getConfig().getSpaceUri());
+                supplier.start();
+            }
+
+            TimeUnit.SECONDS.sleep(2);
             result = capi.read(woodContainer);
             LOGGER.debug("Read: " + result.toString());
+
             capi.destroyContainer(woodContainer, null);
-        } catch (MzsCoreException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         mozartSpace.shutdown(true);
