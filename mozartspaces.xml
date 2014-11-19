@@ -1,18 +1,16 @@
 
 <mozartspacesCoreConfig>
-<!-- ThiDetermines whether the core has an embedded space or is just a client -->
     <embeddedSpace>true</embeddedSpace>
     <coreProcessor>
         <threads>10</threads>
     </coreProcessor>
-Serializer configuration, multiple serializers are supported -->
     <serializers>
         <serializer>javabuiltin</serializer>
     </serializers>
 
     <remoting>
         <defaultScheme>xvsm</defaultScheme>
-        <bindHost>0.0.0.0</bindHost>
+        <bindHost>localhost</bindHost>
         <transports>
             <tcpsocket scheme="xvsm">
                 <threads>1000</threads>
