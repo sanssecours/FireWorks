@@ -13,13 +13,9 @@ import javafx.stage.WindowEvent;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import static org.mozartspaces.core.MzsConstants.Container;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -33,52 +29,50 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class FireWorks extends Application {
 
-    /**
-     * Get the Logger for the current class.
-     */
+    /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
+    /** The space where we want to store our Material. */
     private static MzsCore mozartSpace;
+    /** Reference to the API for the space. */
     private static Capi capi;
+    /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
 
-    /** Create the org.falafel.FireWorks singleton. */
-//    private FireWorks() { }
-
+    /**
+     * Create the space and the core API.
+     */
     private static void initSpace() {
 
         mozartSpace = DefaultMzsCore.newInstance();
         capi = new Capi(mozartSpace);
-
-        ArrayList<Wood> result;
-        Wood wood = new Wood(1337);
 
         try {
             woodContainer = capi.createContainer("Wood",
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            capi.write(woodContainer, new Entry(wood));
-
-            TimeUnit.SECONDS.sleep(2);
-            result = capi.read(woodContainer);
-            LOGGER.debug("Read: " + result.toString());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * Close the containers and the space.
+     */
     private static void closeSpace() {
         try {
             capi.destroyContainer(woodContainer, null);
-        } catch(MzsCoreException e) {
+        } catch (MzsCoreException e) {
             e.printStackTrace();
         }
         mozartSpace.shutdown(true);
         LOGGER.info("Closed space");
     }
 
+    /**
+     * Start suppliers to fill the containers with Material.
+     */
     private static void startSuppliers() {
         Supplier supplier;
         final int numberOfSuppliers = 1;
@@ -105,27 +99,31 @@ public final class FireWorks extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(final Stage primaryStage) {
+        final int windowWidth = 500;
+        final int windowHeight = 250;
+
+
         primaryStage.setTitle("Fireworks Factory");
         Button btn = new Button();
         btn.setText("Start Supplier");
         btn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void handle(ActionEvent event) {
+            public void handle(final ActionEvent event) {
                 startSuppliers();
             }
         });
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
-            public void handle(WindowEvent event) {
+            public void handle(final WindowEvent event) {
                 closeSpace();
             }
         });
 
         StackPane root = new StackPane();
         root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.setScene(new Scene(root, windowWidth, windowHeight));
         primaryStage.show();
     }
 }

@@ -1,8 +1,13 @@
 package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
-import org.mozartspaces.core.*;
+import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.ContainerReference;
+import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
+import org.mozartspaces.core.MzsCore;
+import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
 import java.net.URI;
@@ -22,6 +27,7 @@ public class Supplier extends Thread {
     private final int id;
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
+    /** The resource identifier for the space. */
     private final URI spaceUri;
 
     /**
@@ -29,8 +35,10 @@ public class Supplier extends Thread {
      *
      * @param identifier
      *          The (unique) identifier for this supplier
+     * @param space
+     *          The resource identifier used to locate the space
      */
-    public Supplier(final int identifier, URI space) {
+    public Supplier(final int identifier, final URI space) {
         super();
         id = identifier;
         spaceUri = space;
@@ -51,8 +59,6 @@ public class Supplier extends Thread {
         try {
             woodContainer = capi.lookupContainer("Wood", spaceUri,
                     RequestTimeout.TRY_ONCE, null);
-            result = capi.read(woodContainer);
-            LOGGER.debug("Read: " + result.toString());
             capi.write(woodContainer, new Entry(new Wood(id)));
             LOGGER.debug("Wrote entry to container.");
             result = capi.read(woodContainer,
