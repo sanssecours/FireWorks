@@ -15,7 +15,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="606.0">
                            <children>
-                              <TableView layoutX="58.0" layoutY="-3.0" prefHeight="332.0" prefWidth="539.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0">
+                              <TableView editable="true" layoutX="58.0" layoutY="-3.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0">
                                 <columns>
                                   <TableColumn prefWidth="193.0" text="Supplier" />
                                   <TableColumn prefWidth="210.0" text="Type" />
@@ -23,47 +23,66 @@
                                     <TableColumn prefWidth="59.0" text="Quality" />
                                 </columns>
                               </TableView>
-                              <Button layoutX="463.0" layoutY="392.0" mnemonicParsing="false" onAction="#startSuppliers" text="Start Suppliers" />
+                              <Button layoutX="487.0" layoutY="399.0" mnemonicParsing="false" onAction="#startSuppliers" text="Start Suppliers" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="507.0">
                            <children>
-                              <Label layoutX="340.0" layoutY="263.0" text="Casings" />
-                              <Label layoutX="363.0" layoutY="300.0" text="Effect" />
-                              <Label layoutX="347.0" layoutY="342.0" text="Propellent" />
-                              <Label layoutX="306.0" layoutY="376.0" text="Opend Propellent" />
-                              <Label alignment="CENTER_RIGHT" layoutX="488.0" layoutY="263.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                              <Label alignment="CENTER_RIGHT" layoutX="469.0" layoutY="300.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                              <Label alignment="CENTER_RIGHT" layoutX="469.0" layoutY="342.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                              <Label alignment="CENTER_RIGHT" layoutX="469.0" layoutY="376.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                              <HBox layoutX="75.0" layoutY="30.0" spacing="10.0">
+                              <VBox layoutX="374.0" layoutY="14.0" spacing="2.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
                                  <children>
-                                    <Label layoutX="75.0" layoutY="30.0" text="Wood" />
-                                    <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                                    <Label layoutX="297.0" layoutY="30.0" text="Pieces" />
+                                    <HBox alignment="CENTER_RIGHT" layoutX="75.0" layoutY="30.0" spacing="10.0">
+                                       <children>
+                                          <Label layoutX="75.0" layoutY="30.0" text="Wood" />
+                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Pieces" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" layoutX="75.0" layoutY="58.0" spacing="10.0">
+                                       <children>
+                                          <Label layoutX="75.0" layoutY="30.0" text="Casings" />
+                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Pieces" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" layoutX="70.0" layoutY="97.0" spacing="10.0">
+                                       <children>
+                                          <Label layoutX="75.0" layoutY="30.0" text="Effect" />
+                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label layoutX="297.0" layoutY="30.0" prefHeight="17.0" prefWidth="50.0" text="Pieces" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" layoutX="70.0" layoutY="157.0" spacing="10.0">
+                                       <children>
+                                          <Label layoutX="75.0" layoutY="30.0" text="Propellent" />
+                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Packages" />
+                                       </children>
+                                    </HBox>
+                                    <VBox alignment="CENTER_RIGHT" layoutX="45.0" layoutY="193.0" spacing="2.0">
+                                       <children>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <Label alignment="CENTER_RIGHT" text="Opend Propellent:" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_RIGHT" layoutX="45.0" layoutY="193.0" spacing="10.0">
+                                             <children>
+                                                <Label layoutX="171.0" layoutY="195.0" text="Number" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="233.0" layoutY="193.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                                <Label layoutX="327.0" layoutY="196.0" prefWidth="50.0" text="Packages" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_RIGHT" layoutX="170.0" layoutY="226.0" spacing="10.0">
+                                             <children>
+                                                <Label layoutX="170.0" layoutY="228.0" text="Quantity" />
+                                                <Label alignment="CENTER_RIGHT" layoutX="235.0" layoutY="226.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                                <Label layoutX="327.0" layoutY="228.0" prefHeight="17.0" prefWidth="50.0" text="g" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
                                  </children>
-                              </HBox>
-                              <HBox layoutX="75.0" layoutY="58.0" spacing="10.0">
-                                 <children>
-                                    <Label layoutX="75.0" layoutY="30.0" text="Casings" />
-                                    <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                                    <Label layoutX="297.0" layoutY="30.0" text="Pieces" />
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="70.0" layoutY="97.0" spacing="10.0">
-                                 <children>
-                                    <Label layoutX="75.0" layoutY="30.0" text="Effect" />
-                                    <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                                    <Label layoutX="297.0" layoutY="30.0" text="Pieces" />
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="70.0" layoutY="157.0" spacing="10.0">
-                                 <children>
-                                    <Label layoutX="75.0" layoutY="30.0" text="Propellent" />
-                                    <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
-                                    <Label layoutX="297.0" layoutY="30.0" text="Pieces" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children></AnchorPane>
                     </items>
                   </SplitPane>
