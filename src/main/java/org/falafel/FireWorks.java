@@ -5,9 +5,10 @@ package org.falafel;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.mozartspaces.core.Capi;
@@ -72,8 +73,14 @@ public final class FireWorks extends Application {
 
     /**
      * Start suppliers to fill the containers with Material.
+     *
+     * @param event
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     *
      */
-    private static void startSuppliers() {
+    @FXML
+    private void startSuppliers(final ActionEvent event) {
         Supplier supplier;
         final int numberOfSuppliers = 1;
 
@@ -99,30 +106,20 @@ public final class FireWorks extends Application {
     }
 
     @Override
-    public void start(final Stage primaryStage) {
-        final int windowWidth = 500;
-        final int windowHeight = 250;
+    public void start(final Stage primaryStage) throws Exception {
+        final int windowWidth = 200;
+        final int windowHeight = 100;
 
+        Parent root = FXMLLoader.load(
+                getClass().getResource("/FireWorks.fxml"));
 
         primaryStage.setTitle("Fireworks Factory");
-        Button btn = new Button();
-        btn.setText("Start Supplier");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(final ActionEvent event) {
-                startSuppliers();
-            }
-        });
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(final WindowEvent event) {
                 closeSpace();
             }
         });
-
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
         primaryStage.setScene(new Scene(root, windowWidth, windowHeight));
         primaryStage.show();
     }
