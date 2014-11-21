@@ -56,12 +56,24 @@ public class Supplier extends Thread {
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
 
+        Material newEntry = null;
+
         System.out.println("Supplier " + id + " active!");
 
+        if(order.getType().compareTo(FireWorks.CASING) == 0){
+            newEntry = new Wood(id, order.getSupplierName(), id);
+        }else if (order.getType().compareTo(FireWorks.EFFECT) == 0){
+            newEntry = new Wood(id, order.getSupplierName(), id);
+        }else if (order.getType().compareTo(FireWorks.EFFECT) == 0){
+            newEntry = new Wood(id, order.getSupplierName(), id);
+        }else {
+            newEntry = new Wood(id, order.getSupplierName(), id);
+        }
+        
         try {
-            woodContainer = capi.lookupContainer(order.getType(), spaceUri,
+            woodContainer = capi.lookupContainer("Wood", spaceUri,
                     RequestTimeout.TRY_ONCE, null);
-            capi.write(woodContainer, new Entry(new Wood(id)));
+            capi.write(woodContainer, new Entry(newEntry));
             LOGGER.debug("Supplier " + id + " Wrote entry to container.");
             result = capi.read(woodContainer,
                     AnyCoordinator.newSelector(COUNT_ALL),
