@@ -31,7 +31,7 @@ public class Supplier extends Thread {
     private final URI spaceUri;
     /** The order which the supplier shipped. */
     private final SupplyOrder order;
-    /** Save the (unique) starting identifier for the materials in this order. */
+    /** Save the (unique) identifier for the materials in this order. */
     private int materialId;
 
     /**
@@ -74,7 +74,7 @@ public class Supplier extends Thread {
             newEntry = new Effect(id, order.getSupplierName(), id, true);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Propellant.toString())) {
-            newEntry = new Propellant(id, order.getSupplierName(), id, 50);
+            newEntry = new Propellant(id, order.getSupplierName(), id);
         } else {
             newEntry = new Wood(id, order.getSupplierName(), id);
         }

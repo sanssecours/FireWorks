@@ -6,6 +6,11 @@ package org.falafel;
 public class Propellant extends Material {
 
     /**
+     * Save how much gram a full package of the propellant charge has.
+     */
+    private static final int FULL = 500;
+
+    /**
      * Save how much of the material is still left.
      */
     private int quantity;
@@ -19,13 +24,11 @@ public class Propellant extends Material {
      *          The name of the supplier
      * @param supplierId
      *          A integer value that (uniquely) identifies the supplier.
-     * @param quantity
-     *          The quantity of propellent in the propellent package.
      */
     public Propellant(final int identifier, final String supplierName,
-                      final int supplierId, final int quantity) {
+                      final int supplierId) {
         super(identifier, supplierName, supplierId);
-        this.quantity = quantity;
+        this.quantity = FULL;
     }
 
     /**
