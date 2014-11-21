@@ -54,7 +54,7 @@ public class Supplier extends Thread {
      * Start the supplier.
      */
     public final void run() {
-        ContainerReference woodContainer;
+        ContainerReference container;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
@@ -65,23 +65,23 @@ public class Supplier extends Thread {
 
         if (order.getType().equals(
                 FireWorks.MaterialType.Casing.toString())) {
-            newEntry = new Wood(id, order.getSupplierName(), id);
+            newEntry = new Casing(id, order.getSupplierName(), id);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Effect.toString())) {
-            newEntry = new Wood(id, order.getSupplierName(), id);
+            newEntry = new Effect(id, order.getSupplierName(), id, true);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Propellant.toString())) {
-            newEntry = new Wood(id, order.getSupplierName(), id);
+            newEntry = new Propellant(id, order.getSupplierName(), id, 50);
         } else {
             newEntry = new Wood(id, order.getSupplierName(), id);
         }
 
         try {
-            woodContainer = capi.lookupContainer("Wood", spaceUri,
+            container = capi.lookupContainer(order.getType(), spaceUri,
                     RequestTimeout.TRY_ONCE, null);
-            capi.write(woodContainer, new Entry(newEntry));
-            LOGGER.debug("Supplier " + id + " Wrote entry to container.");
-            result = capi.read(woodContainer,
+            capi.write(container, new Entry(newEntry));
+            LOGGER.debug("Supplier " + id + " Wrote entry to container " + order.getType());
+            result = capi.read(container,
                     AnyCoordinator.newSelector(COUNT_ALL),
                     RequestTimeout.TRY_ONCE, null);
             LOGGER.debug("Supplier " + id + " Read: " + result.toString());
