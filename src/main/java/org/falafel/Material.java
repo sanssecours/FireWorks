@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Material implements Serializable {
 
     /** Save an identifier for the material. */
-    private final int id;
+    private int id;
     /** Save the name of the supplier. */
     private final String supplierName;
     /** Save the id of the supplier. */
@@ -18,14 +18,14 @@ public class Material implements Serializable {
      * Create a new material with the given attributes.
      *
      * @param identifier
-     *          A integer value that (uniquely) identifies this material.
+     *          A integer value that identifies this material.
      * @param supplierName
      *          The name of the supplier
      * @param supplierId
      *          A integer value that (uniquely) identifies the supplier.
      *
      */
-    public Material(final int identifier, final String supplierName,
+    public Material(int identifier, final String supplierName,
                     final int supplierId) {
         id = identifier;
         this.supplierName = supplierName;
@@ -38,9 +38,17 @@ public class Material implements Serializable {
      * @return The (unique) identifier of the material
      *
      */
-    public final int getID() {
+    public int getID() {
         return id;
     }
+
+    /**
+     * Get the identifier of the material.
+     *
+     * @param newId
+     *          The (unique) identifier of the material
+     */
+    public void setID(int newId) { id = newId; }
 
     /**
      * Get the identifier of the material.

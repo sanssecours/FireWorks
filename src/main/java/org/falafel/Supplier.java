@@ -32,7 +32,7 @@ public class Supplier extends Thread {
     /** The order which the supplier shipped. */
     private final SupplyOrder order;
     /** Save the (unique) identifier for the materials in this order. */
-    private int materialId;
+    private final int materialId;
 
     /**
      * Create a new Supplier with a given id.
@@ -61,36 +61,38 @@ public class Supplier extends Thread {
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
-
         Material newEntry;
-
         System.out.println("Supplier " + id + " active!");
 
         if (order.getType().equals(
                 FireWorks.MaterialType.Casing.toString())) {
-            newEntry = new Casing(id, order.getSupplierName(), id);
+            newEntry = new Casing(materialId, order.getSupplierName(), id);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Effect.toString())) {
-            newEntry = new Effect(id, order.getSupplierName(), id, true);
+            newEntry = new Effect(materialId, order.getSupplierName(), id, false);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Propellant.toString())) {
-            newEntry = new Propellant(id, order.getSupplierName(), id);
+            newEntry = new Propellant(materialId, order.getSupplierName(), id);
         } else {
-            newEntry = new Wood(id, order.getSupplierName(), id);
+            newEntry = new Wood(materialId, order.getSupplierName(), id);
         }
 
-        try {
-            container = capi.lookupContainer(order.getType(), spaceUri,
-                    RequestTimeout.TRY_ONCE, null);
-            capi.write(container, new Entry(newEntry));
-            LOGGER.debug("Supplier " + id + " Wrote entry to container " + order.getType());
-            result = capi.read(container,
-                    AnyCoordinator.newSelector(COUNT_ALL),
-                    RequestTimeout.TRY_ONCE, null);
-            LOGGER.debug("Supplier " + id + " Read: " + result.toString());
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
+        for (int index = 0; index < order.getQuantity(); index++) {
+            try {
+                newEntry.setID(materialId + index);
+                container = capi.lookupContainer(order.getType(), spaceUri,
+                        RequestTimeout.TRY_ONCE, null);
+                capi.write(container, new Entry(newEntry));
+                LOGGER.debug("Supplier " + id + " Wrote entry to container " + order.getType());
+                result = capi.read(container,
+                        AnyCoordinator.newSelector(COUNT_ALL),
+                        RequestTimeout.TRY_ONCE, null);
+                LOGGER.debug("Supplier " + id + " Read: " + result.toString());
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
+            }
         }
+
 
         core.shutdown(true);
     }
