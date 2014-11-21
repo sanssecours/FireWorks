@@ -46,11 +46,11 @@ public class FireWorks extends Application {
     private static MzsCore mozartSpace;
     /** Reference to the API for the space. */
     private static Capi capi;
-    /** The container for storing the wood supplies. */
+    /** The container for storing the casings. */
     private static ContainerReference casingContainer;
-    /** The container for storing the wood supplies. */
+    /** The container for storing the effect charge supplies. */
     private static ContainerReference effectContainer;
-    /** The container for storing the wood supplies. */
+    /** The container for storing the propellant charge supplies. */
     private static ContainerReference propellantContainer;
     /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
