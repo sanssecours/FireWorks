@@ -44,6 +44,8 @@ public class FireWorks extends Application {
     private static Capi capi;
     /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
+    /** The running id for the suppliers. */
+    private static int supplierId = 1;
 
     /**  The data as an observable list for SupplyOrder */
     private ObservableList<SupplyOrder> Order = FXCollections.observableArrayList();
@@ -108,21 +110,25 @@ public class FireWorks extends Application {
     private void startSuppliers(final ActionEvent event) {
         SupplyOrder nextOrder;
         Supplier supplier;
-        final int numberOfSuppliers = 1;
-        if(!Order.isEmpty()) {
+        while(!Order.isEmpty()) {
             nextOrder = Order.remove(0);
             LOGGER.debug(nextOrder.toString());
-        } else
-            System.out.println("No new order!");
+            supplier = new Supplier(supplierId,
+                    mozartSpace.getConfig().getSpaceUri(), nextOrder);
+            supplier.start();
+            supplierId ++;
+        }
+
+        System.out.println("No new order!");
 
 
-//        for (int supplierId = 1;
-//             supplierId <= numberOfSuppliers;
-//             supplierId++) {
-//            supplier = new Supplier(supplierId,
-//                    mozartSpace.getConfig().getSpaceUri());
-//            supplier.start();
-//        }
+        /*for (int supplierId = 1;
+             supplierId <= numberOfSuppliers;
+             supplierId++) {
+            supplier = new Supplier(supplierId,
+                    mozartSpace.getConfig().getSpaceUri());
+            supplier.start();
+        }*/
     }
 
     public void setSupplierName(TableColumn.CellEditEvent<SupplyOrder, String> stCellEditEvent) {

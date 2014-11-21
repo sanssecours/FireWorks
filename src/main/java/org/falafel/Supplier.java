@@ -29,6 +29,8 @@ public class Supplier extends Thread {
     private static final Logger LOGGER = getLogger(FireWorks.class);
     /** The resource identifier for the space. */
     private final URI spaceUri;
+    /** The order which the supplier shipped. */
+    private final SupplyOrder order;
 
     /**
      * Create a new Supplier with a given id.
@@ -38,10 +40,11 @@ public class Supplier extends Thread {
      * @param space
      *          The resource identifier used to locate the space
      */
-    public Supplier(final int identifier, final URI space) {
+    public Supplier(final int identifier, final URI space, SupplyOrder order) {
         super();
         id = identifier;
         spaceUri = space;
+        this.order = order;
     }
 
     /**
@@ -60,11 +63,11 @@ public class Supplier extends Thread {
             woodContainer = capi.lookupContainer("Wood", spaceUri,
                     RequestTimeout.TRY_ONCE, null);
             capi.write(woodContainer, new Entry(new Wood(id)));
-            LOGGER.debug("Wrote entry to container.");
+            LOGGER.debug("Supplier " + id + " Wrote entry to container.");
             result = capi.read(woodContainer,
                     AnyCoordinator.newSelector(COUNT_ALL),
                     RequestTimeout.TRY_ONCE, null);
-            LOGGER.debug("Read: " + result.toString());
+            LOGGER.debug("Supplier " + id + " Read: " + result.toString());
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
