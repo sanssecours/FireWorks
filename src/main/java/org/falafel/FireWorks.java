@@ -3,12 +3,16 @@ package org.falafel;
 /* -- Imports -------------------------------------------------------------- */
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.mozartspaces.core.Capi;
@@ -28,7 +32,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * suppliers and keep an eye on the progress of the production in the firework
  * factory.
  */
-public final class FireWorks extends Application {
+public class FireWorks extends Application {
 
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
@@ -38,6 +42,8 @@ public final class FireWorks extends Application {
     private static Capi capi;
     /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
+
+
 
     /**
      * Create the space and the core API.
@@ -71,29 +77,9 @@ public final class FireWorks extends Application {
         LOGGER.info("Closed space");
     }
 
-    /**
-     * Start suppliers to fill the containers with Material.
-     *
-     * @param event
-     *          The action event sent by JavaFx when the user interface
-     *          element for this method is invoked.
-     *
-     */
-    @FXML
-    private void startSuppliers(final ActionEvent event) {
-        Supplier supplier;
-        final int numberOfSuppliers = 1;
 
-        for (int supplierId = 1;
-             supplierId <= numberOfSuppliers;
-             supplierId++) {
-            supplier = new Supplier(supplierId,
-                    mozartSpace.getConfig().getSpaceUri());
-            supplier.start();
-        }
-    }
 
-    /**
+     /**
      * Start the firework factory.
      *
      * @param arguments
@@ -107,8 +93,6 @@ public final class FireWorks extends Application {
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
-        final int windowWidth = 200;
-        final int windowHeight = 100;
 
         Parent root = FXMLLoader.load(
                 getClass().getResource("/FireWorks.fxml"));
@@ -120,7 +104,7 @@ public final class FireWorks extends Application {
                 closeSpace();
             }
         });
-        primaryStage.setScene(new Scene(root, windowWidth, windowHeight));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 }
