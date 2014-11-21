@@ -21,6 +21,12 @@ public class SupplyOrder {
         this.quantity = new SimpleStringProperty(Integer.toString(quantity));
         this.quality = new SimpleStringProperty(Integer.toString(quality));
     }
+    public SupplyOrder() {
+        supplierName = new SimpleStringProperty("Name");
+        this.type = new SimpleStringProperty("Type");
+        this.quantity = new SimpleStringProperty(Integer.toString(0));
+        this.quality = new SimpleStringProperty(Integer.toString(0));
+    }
 
     public String getSupplierName() {
         return supplierName.get();
@@ -56,6 +62,7 @@ public class SupplyOrder {
 
     @Override
     public String toString() {
-        return supplierName.get();
+        return "Order: Supplier: " +  supplierName.get() + " -- Type: " + type.get() + " -- Quantity: " + quantity.get()
+                + " -- Quality: " + quality.get();
     }
 }
