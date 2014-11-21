@@ -6,3 +6,4 @@ tasks.xml
 
 # Target file for binaries
 /target/*
+.idea/copyright/profiles_settings.xml
