@@ -23,7 +23,7 @@ public class SupplyOrder {
     }
     public SupplyOrder() {
         supplierName = new SimpleStringProperty("Name");
-        this.type = new SimpleStringProperty("Type");
+        this.type = new SimpleStringProperty(FireWorks.WOOD);
         this.quantity = new SimpleStringProperty(Integer.toString(0));
         this.quality = new SimpleStringProperty(Integer.toString(0));
     }
