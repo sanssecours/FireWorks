@@ -58,6 +58,8 @@ public class FireWorks extends Application {
     private static ContainerReference woodContainer;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
+    /** The running id for the materials. */
+    private static int materialId = 1;
 
     /**  The data as an observable list for SupplyOrder. */
     private ObservableList<SupplyOrder> order =
@@ -139,9 +141,10 @@ public class FireWorks extends Application {
             nextOrder = order.remove(0);
             LOGGER.debug(nextOrder.toString());
             supplier = new Supplier(supplierId,
-                    mozartSpace.getConfig().getSpaceUri(), nextOrder);
+                    mozartSpace.getConfig().getSpaceUri(), nextOrder, materialId);
             supplier.start();
             supplierId++;
+            materialId = materialId + nextOrder.getQuantity();
         }
 
         System.out.println("No new order!");

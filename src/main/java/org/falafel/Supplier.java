@@ -31,6 +31,8 @@ public class Supplier extends Thread {
     private final URI spaceUri;
     /** The order which the supplier shipped. */
     private final SupplyOrder order;
+    /** Save the (unique) starting identifier for the materials in this order. */
+    private int materialId;
 
     /**
      * Create a new Supplier with a given id.
@@ -43,11 +45,12 @@ public class Supplier extends Thread {
      *          The order the supplier should provide
      */
     public Supplier(final int identifier, final URI space,
-                    final SupplyOrder order) {
+                    final SupplyOrder order, final int startId) {
         super();
         id = identifier;
         spaceUri = space;
         this.order = order;
+        materialId = startId;
     }
 
     /**
