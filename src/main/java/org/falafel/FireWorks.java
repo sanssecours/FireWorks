@@ -20,7 +20,12 @@ import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.aspects.ContainerAspect;
+import org.mozartspaces.core.aspects.ContainerIPoint;
 import org.slf4j.Logger;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.mozartspaces.core.MzsConstants.Container;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -221,27 +226,37 @@ public class FireWorks extends Application {
         mozartSpace = DefaultMzsCore.newInstance();
         capi = new Capi(mozartSpace);
 
+        ContainerAspect materailContainerAspect = new MaterialAspects();
+        Set<ContainerIPoint> ipoints = new HashSet<ContainerIPoint>();
+        ipoints.add(ContainerIPoint.POST_WRITE);
+        ipoints.add(ContainerIPoint.POST_TAKE);
+
+
         try {
             casingContainer = capi.createContainer(
                     MaterialType.Casing.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(materailContainerAspect, casingContainer, ipoints, null);
             effectContainer = capi.createContainer(
                     MaterialType.Effect.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(materailContainerAspect, effectContainer, ipoints, null);
             propellantContainer = capi.createContainer(
                     MaterialType.Propellant.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(materailContainerAspect, propellantContainer, ipoints, null);
             woodContainer = capi.createContainer(
                     MaterialType.Wood.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(materailContainerAspect, woodContainer, ipoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
