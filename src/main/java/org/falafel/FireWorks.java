@@ -36,6 +36,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class FireWorks extends Application {
 
+    public static final String CASING = "Casing";
+    public static final String EFFECT = "Effect";
+    public static final String PROPELLANT = "Propellant";
+    public static final String WOOD = "Wood";
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
     /** The space where we want to store our Material. */
@@ -50,11 +54,11 @@ public class FireWorks extends Application {
     /**  The data as an observable list for SupplyOrder */
     private ObservableList<SupplyOrder> Order = FXCollections.observableArrayList();
 
-    private ObservableList<String> typesChoiceList = FXCollections.observableArrayList (
-            new String("Casing"),
-            new String("Effect"),
-            new String("Propellant"),
-            new String("Wood")
+    private static ObservableList<String> typesChoiceList = FXCollections.observableArrayList (
+            new String(CASING),
+            new String(EFFECT),
+            new String(PROPELLANT),
+            new String(WOOD)
     );
 
     @FXML
@@ -110,6 +114,7 @@ public class FireWorks extends Application {
     private void startSuppliers(final ActionEvent event) {
         SupplyOrder nextOrder;
         Supplier supplier;
+
         while(!Order.isEmpty()) {
             nextOrder = Order.remove(0);
             LOGGER.debug(nextOrder.toString());
@@ -165,7 +170,7 @@ public class FireWorks extends Application {
         capi = new Capi(mozartSpace);
 
         try {
-            woodContainer = capi.createContainer("Wood",
+            woodContainer = capi.createContainer(WOOD,
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);

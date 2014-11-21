@@ -56,11 +56,10 @@ public class Supplier extends Thread {
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
 
-
         System.out.println("Supplier " + id + " active!");
 
         try {
-            woodContainer = capi.lookupContainer("Wood", spaceUri,
+            woodContainer = capi.lookupContainer(order.getType(), spaceUri,
                     RequestTimeout.TRY_ONCE, null);
             capi.write(woodContainer, new Entry(new Wood(id)));
             LOGGER.debug("Supplier " + id + " Wrote entry to container.");
