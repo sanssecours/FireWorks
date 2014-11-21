@@ -7,15 +7,20 @@ import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
 
+import java.util.Iterator;
+
 /**
- * Created by Johannes on 21.11.2014.
+ *  .
  */
 public class MaterialAspects extends AbstractContainerAspect {
 
     public AspectResult postWrite(WriteEntriesRequest request,
                                   Transaction tx, SubTransaction stx, Capi3AspectPort capi3,
                                   int executionCount) {
-        System.out.println("Wrote entries " + request.getEntries());
+
+        System.out.println("container ID: " + request.getContainer().getId());
+        FireWorks.changeCounterLabels(request.getContainer().getId(), request.getEntries().size());
+
         return AspectResult.OK;
     }
 }

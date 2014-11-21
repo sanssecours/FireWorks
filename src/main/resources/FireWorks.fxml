@@ -34,28 +34,28 @@
                                     <HBox alignment="CENTER_RIGHT" layoutX="75.0" layoutY="30.0" spacing="10.0">
                                        <children>
                                           <Label layoutX="75.0" layoutY="30.0" text="Wood" />
-                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label fx:id="woodCounterLabel" alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
                                           <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Pieces" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" layoutX="75.0" layoutY="58.0" spacing="10.0">
                                        <children>
                                           <Label layoutX="75.0" layoutY="30.0" text="Casings" />
-                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label fx:id="casingsCounterLabel" alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
                                           <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Pieces" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" layoutX="70.0" layoutY="97.0" spacing="10.0">
                                        <children>
                                           <Label layoutX="75.0" layoutY="30.0" text="Effect" />
-                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label fx:id="effectCounterLabel" alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
                                           <Label layoutX="297.0" layoutY="30.0" prefHeight="17.0" prefWidth="50.0" text="Pieces" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_RIGHT" layoutX="70.0" layoutY="157.0" spacing="10.0">
                                        <children>
                                           <Label layoutX="75.0" layoutY="30.0" text="Propellent" />
-                                          <Label alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
+                                          <Label fx:id="propellantCounterLabel" alignment="CENTER_RIGHT" layoutX="197.0" layoutY="30.0" prefHeight="21.0" prefWidth="81.0" text="0" />
                                           <Label layoutX="297.0" layoutY="30.0" prefWidth="50.0" text="Packages" />
                                        </children>
                                     </HBox>
