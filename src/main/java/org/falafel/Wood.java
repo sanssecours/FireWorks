@@ -6,17 +6,19 @@ package org.falafel;
 public class Wood extends Material {
 
     /**
-     * Create a new piece of wood.
+     * Create a new material with the given attributes.
      *
-     * @param id
-     *         The identifier for the rocket
+     * @param identifier
+     *          A integer value that (uniquely) identifies this material.
+     * @param supplierName
+     *          The name of the supplier
+     * @param supplierId
+     *          A integer value that (uniquely) identifies the supplier.
+     *
      */
-    public Wood(final int id, String supplierName, int supplierId) {
-        super(id, supplierName, supplierId, false, 1);
+    public Wood(final int identifier, final String supplierName,
+                final int supplierId) {
+        super(identifier, supplierName, supplierId);
     }
 
-    public String toString() {
-        return "Resource ID: " + Integer.toString(super.getID()) + " -- Supplier Name: " + super.getSupplierName() +
-                " -- Supplier ID: " + super.getSupplierId();
-    }
 }

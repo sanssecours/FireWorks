@@ -39,8 +39,11 @@ public class Supplier extends Thread {
      *          The (unique) identifier for this supplier
      * @param space
      *          The resource identifier used to locate the space
+     * @param order
+     *          The order the supplier should provide
      */
-    public Supplier(final int identifier, final URI space, SupplyOrder order) {
+    public Supplier(final int identifier, final URI space,
+                    final SupplyOrder order) {
         super();
         id = identifier;
         spaceUri = space;
@@ -56,20 +59,23 @@ public class Supplier extends Thread {
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
 
-        Material newEntry = null;
+        Material newEntry;
 
         System.out.println("Supplier " + id + " active!");
 
-        if(order.getType().compareTo(FireWorks.CASING) == 0){
+        if (order.getType().equals(
+                FireWorks.MaterialType.Casing.toString())) {
             newEntry = new Wood(id, order.getSupplierName(), id);
-        }else if (order.getType().compareTo(FireWorks.EFFECT) == 0){
+        } else if (order.getType().equals(
+                FireWorks.MaterialType.Effect.toString())) {
             newEntry = new Wood(id, order.getSupplierName(), id);
-        }else if (order.getType().compareTo(FireWorks.EFFECT) == 0){
+        } else if (order.getType().equals(
+                FireWorks.MaterialType.Propellant.toString())) {
             newEntry = new Wood(id, order.getSupplierName(), id);
-        }else {
+        } else {
             newEntry = new Wood(id, order.getSupplierName(), id);
         }
-        
+
         try {
             woodContainer = capi.lookupContainer("Wood", spaceUri,
                     RequestTimeout.TRY_ONCE, null);

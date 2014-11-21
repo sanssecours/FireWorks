@@ -13,24 +13,23 @@ public class Material implements Serializable {
     private final String supplierName;
     /** Save the id of the supplier. */
     private final int supplierId;
-    /** Save if the material is defect. */
-    private final boolean defect;
-    /** Save how much of the material is still left. */
-    private int quantity;
 
     /**
-     * Create a new material with the given identifier.
+     * Create a new material with the given attributes.
      *
      * @param identifier
      *          A integer value that (uniquely) identifies this material.
+     * @param supplierName
+     *          The name of the supplier
+     * @param supplierId
+     *          A integer value that (uniquely) identifies the supplier.
      *
      */
-    public Material(int identifier, String supplierName, int supplierIdd, boolean defect, int quantity) {
+    public Material(final int identifier, final String supplierName,
+                    final int supplierId) {
         id = identifier;
         this.supplierName = supplierName;
-        this.supplierId = supplierIdd;
-        this.defect = defect;
-        this.quantity = quantity;
+        this.supplierId = supplierId;
     }
 
     /**
@@ -63,13 +62,15 @@ public class Material implements Serializable {
         return supplierId;
     }
 
+    //CHECKSTYLE:OFF
     /**
      * Represent the material as a string.
      *
      * @return A string representing the properties of the material
      */
     public String toString() {
-        return "Resource ID: " + Integer.toString(id) + " -- Supplier Name: " + supplierName +
-                " -- Supplier ID: " + supplierId + " -- Defect: " + defect  + " -- Quantity: " + quantity;
+        return "Resource ID: " + id + " -- Supplier Name: "
+                + supplierName + " -- Supplier ID: " + supplierId;
     }
+    //CHECKSTYLE:ON
 }

@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -36,10 +34,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class FireWorks extends Application {
 
-    public static final String CASING = "Casing";
-    public static final String EFFECT = "Effect";
-    public static final String PROPELLANT = "Propellant";
-    public static final String WOOD = "Wood";
+    /** Different types of Material provided by Suppliers. */
+    public static enum MaterialType { Casing, Effect, Propellant, Wood }
+
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
     /** The space where we want to store our Material. */
@@ -57,24 +54,30 @@ public class FireWorks extends Application {
     /** The running id for the suppliers. */
     private static int supplierId = 1;
 
-    /**  The data as an observable list for SupplyOrder */
-    private ObservableList<SupplyOrder> Order = FXCollections.observableArrayList();
+    /**  The data as an observable list for SupplyOrder. */
+    private ObservableList<SupplyOrder> order =
+            FXCollections.observableArrayList();
 
-    private static ObservableList<String> typesChoiceList = FXCollections.observableArrayList (
-            new String(CASING),
-            new String(EFFECT),
-            new String(PROPELLANT),
-            new String(WOOD)
-    );
+    /** Specify the different choices a supplier can provide. */
+    private static final ObservableList<String> TYPES_CHOICE_LIST =
+            FXCollections.observableArrayList(MaterialType.Casing.toString(),
+                    MaterialType.Effect.toString(),
+                    MaterialType.Propellant.toString(),
+                    MaterialType.Wood.toString());
 
+    /** Saves data shown in the supplier table. */
     @FXML
     private TableView<SupplyOrder> supplyTable;
+    /** Saves data shown in the name column of the supplier table. */
     @FXML
     private TableColumn<SupplyOrder, String> supplierNameColumn;
+    /** Saves data shown in the type column of the supplier table. */
     @FXML
     private TableColumn<SupplyOrder, String> orderedTypeColumn;
+    /** Saves data shown in the quantity column of the supplier table. */
     @FXML
     private TableColumn<SupplyOrder, String> orderedQuantityColumn;
+    /** Saves data shown in the quality column of the supplier table. */
     @FXML
     private TableColumn<SupplyOrder, String> orderedQualityColumn;
 
@@ -84,28 +87,34 @@ public class FireWorks extends Application {
      */
     @FXML
     private void initialize() {
-        Order.add(new SupplyOrder());
+        order.add(new SupplyOrder());
 
         supplyTable.isEditable();
 
-        // Initialize the person table with the two columns.
-        supplierNameColumn.setCellValueFactory(cellData -> cellData.getValue().supplierNameProperty());
+        supplierNameColumn.setCellValueFactory(
+                cellData -> cellData.getValue().supplierNameProperty());
         supplierNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         supplierNameColumn.isEditable();
 
-        orderedTypeColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
-        orderedTypeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(typesChoiceList));
+        orderedTypeColumn.setCellValueFactory(
+                cellData -> cellData.getValue().typeProperty());
+        orderedTypeColumn.setCellFactory(
+                ComboBoxTableCell.forTableColumn(TYPES_CHOICE_LIST));
         orderedTypeColumn.isEditable();
 
-        orderedQuantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty());
-        orderedQuantityColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderedQuantityColumn.setCellValueFactory(
+                cellData -> cellData.getValue().quantityProperty());
+        orderedQuantityColumn.setCellFactory(
+                TextFieldTableCell.forTableColumn());
         orderedQuantityColumn.isEditable();
 
-        orderedQualityColumn.setCellValueFactory(cellData -> cellData.getValue().qualityProperty());
-        orderedQualityColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderedQualityColumn.setCellValueFactory(
+                cellData -> cellData.getValue().qualityProperty());
+        orderedQualityColumn.setCellFactory(
+                TextFieldTableCell.forTableColumn());
         orderedQualityColumn.isEditable();
 
-        supplyTable.setItems(Order);
+        supplyTable.setItems(order);
     }
 
     /**
@@ -121,51 +130,88 @@ public class FireWorks extends Application {
         SupplyOrder nextOrder;
         Supplier supplier;
 
-        while(!Order.isEmpty()) {
-            nextOrder = Order.remove(0);
+        while (!order.isEmpty()) {
+            nextOrder = order.remove(0);
             LOGGER.debug(nextOrder.toString());
             supplier = new Supplier(supplierId,
                     mozartSpace.getConfig().getSpaceUri(), nextOrder);
             supplier.start();
-            supplierId ++;
+            supplierId++;
         }
 
         System.out.println("No new order!");
-
-
-        /*for (int supplierId = 1;
-             supplierId <= numberOfSuppliers;
-             supplierId++) {
-            supplier = new Supplier(supplierId,
-                    mozartSpace.getConfig().getSpaceUri());
-            supplier.start();
-        }*/
     }
 
-    public void setSupplierName(TableColumn.CellEditEvent<SupplyOrder, String> stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(stCellEditEvent.getTablePosition().getRow()).setSupplierName(
+    /**
+     * This method will be invoked when we create a new order.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void newOrder(final ActionEvent actionEvent) {
+        order.add(new SupplyOrder());
+    }
+
+    /**
+     * This method will be invoked when a new supplier name is set.
+     *
+     * @param stCellEditEvent
+     *          The cell edit event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void setSupplierName(
+            final TableColumn.CellEditEvent<SupplyOrder, String>
+                    stCellEditEvent) {
+        stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow()).setSupplierName(
                 stCellEditEvent.getNewValue());
     }
 
-    public void NewOrder(ActionEvent actionEvent) {
-        Order.add(new SupplyOrder());
-    }
-
-    public void setType(TableColumn.CellEditEvent<SupplyOrder, String> stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(stCellEditEvent.getTablePosition().getRow()).setType(
+    /**
+     * This method will be invoked when a new type for the material is set.
+     *
+     * @param stCellEditEvent
+     *          The cell edit event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void setType(
+            final TableColumn.CellEditEvent<SupplyOrder, String>
+                    stCellEditEvent) {
+        stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow()).setType(
                 stCellEditEvent.getNewValue());
     }
 
-    public void setQuantity(TableColumn.CellEditEvent<SupplyOrder, String> stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(stCellEditEvent.getTablePosition().getRow()).setQuantity(
+    /**
+     * This method will be invoked when a new quantity for a material is set.
+     *
+     * @param stCellEditEvent
+     *          The cell edit event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void setQuantity(
+            final TableColumn.CellEditEvent<SupplyOrder, String>
+                    stCellEditEvent) {
+        stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow()).setQuantity(
                 Integer.parseInt(stCellEditEvent.getNewValue()));
     }
 
-    public void setQuality(TableColumn.CellEditEvent<SupplyOrder, String> stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(stCellEditEvent.getTablePosition().getRow()).setQuality(
+    /**
+     * This method will be invoked when the quality of a material is changed.
+     *
+     * @param stCellEditEvent
+     *          The cell edit event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void setQuality(
+            final TableColumn.CellEditEvent<SupplyOrder, String>
+                    stCellEditEvent) {
+        stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow()).setQuality(
                 Integer.parseInt(stCellEditEvent.getNewValue()));
     }
-
 
     /**
      * Create the space and the core API.
@@ -176,19 +222,23 @@ public class FireWorks extends Application {
         capi = new Capi(mozartSpace);
 
         try {
-            casingContainer = capi.createContainer(CASING,
+            casingContainer = capi.createContainer(
+                    MaterialType.Casing.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            effectContainer = capi.createContainer(EFFECT,
+            effectContainer = capi.createContainer(
+                    MaterialType.Effect.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            propellantContainer = capi.createContainer(PROPELLANT,
+            propellantContainer = capi.createContainer(
+                    MaterialType.Propellant.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            woodContainer = capi.createContainer(WOOD,
+            woodContainer = capi.createContainer(
+                    MaterialType.Wood.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
@@ -214,10 +264,8 @@ public class FireWorks extends Application {
         LOGGER.info("Closed space");
     }
 
-
-
      /**
-     * Start the firework factory.
+     * Start the fireworks factory.
      *
      * @param arguments
      *          A list containing the command line arguments.
@@ -229,18 +277,13 @@ public class FireWorks extends Application {
     }
 
     @Override
-    public void start(final Stage primaryStage) throws Exception {
+    public final void start(final Stage primaryStage) throws Exception {
 
         Parent root = FXMLLoader.load(
                 getClass().getResource("/FireWorks.fxml"));
 
         primaryStage.setTitle("Fireworks Factory");
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(final WindowEvent event) {
-                closeSpace();
-            }
-        });
+        primaryStage.setOnCloseRequest(event -> closeSpace());
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
