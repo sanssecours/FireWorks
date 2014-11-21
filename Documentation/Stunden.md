@@ -4,4 +4,4 @@
 | ------------------------------------ | -------- | ---- |
 |                                      | Johannes | René |
 | Dokumentation von MozartSpaces lesen |       10 |   10 |
-| Konzept                              |        2 |    2 |
+| Konzept                              |       20 |   20 |
