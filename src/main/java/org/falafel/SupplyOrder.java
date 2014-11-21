@@ -48,7 +48,7 @@ public class SupplyOrder {
 
     /** Create a new predefined order. */
     public SupplyOrder() {
-        this("Name", "Wood", 0, 0);
+        this("Name", "Wood", 1, 100);
     }
 
     /**
