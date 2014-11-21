@@ -47,6 +47,12 @@ public class FireWorks extends Application {
     /** Reference to the API for the space. */
     private static Capi capi;
     /** The container for storing the wood supplies. */
+    private static ContainerReference casingContainer;
+    /** The container for storing the wood supplies. */
+    private static ContainerReference effectContainer;
+    /** The container for storing the wood supplies. */
+    private static ContainerReference propellantContainer;
+    /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
@@ -170,6 +176,18 @@ public class FireWorks extends Application {
         capi = new Capi(mozartSpace);
 
         try {
+            casingContainer = capi.createContainer(CASING,
+                    mozartSpace.getConfig().getSpaceUri(),
+                    Container.UNBOUNDED,
+                    null);
+            effectContainer = capi.createContainer(EFFECT,
+                    mozartSpace.getConfig().getSpaceUri(),
+                    Container.UNBOUNDED,
+                    null);
+            propellantContainer = capi.createContainer(PROPELLANT,
+                    mozartSpace.getConfig().getSpaceUri(),
+                    Container.UNBOUNDED,
+                    null);
             woodContainer = capi.createContainer(WOOD,
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
@@ -185,6 +203,9 @@ public class FireWorks extends Application {
      */
     private static void closeSpace() {
         try {
+            capi.destroyContainer(casingContainer, null);
+            capi.destroyContainer(effectContainer, null);
+            capi.destroyContainer(propellantContainer, null);
             capi.destroyContainer(woodContainer, null);
         } catch (MzsCoreException e) {
             e.printStackTrace();
