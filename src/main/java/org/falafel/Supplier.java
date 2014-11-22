@@ -25,6 +25,14 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class Supplier extends Thread {
 
+    /** Constant for the lower bound of the loading time per element. */
+    private static final int LOWERBOUND = 1000;
+    /** Constant for the upper bound of the loading time per element. */
+    private static final int UPPERBOUND = 1000;
+    /** Constant for the transaction timeout time . */
+    private static final int TRANSACTIONTIMEOUT = 3000;
+    /** Constant for the division by 100 . */
+    private static final double HUNDRED = 100.0;
     /** Save the (unique) identifier for this supplier. */
     private final int id;
     /** Get the Logger for the current class. */
@@ -67,36 +75,45 @@ public class Supplier extends Thread {
         Capi capi = new Capi(core);
         ArrayList<Wood> result;
         Material newEntry;
+        int functioningElements = (int) Math.ceil(
+                order.getQuantity() * order.getQuality() / HUNDRED);
+
         System.out.println("Supplier " + id + " active!");
 
-        if (order.getType().equals(
-                FireWorks.MaterialType.Casing.toString())) {
-            newEntry = new Casing(materialId, order.getSupplierName(), id);
-        } else if (order.getType().equals(
-                FireWorks.MaterialType.Effect.toString())) {
-            newEntry = new Effect(materialId, order.getSupplierName(), id,
-                    false);
-        } else if (order.getType().equals(
-                FireWorks.MaterialType.Propellant.toString())) {
-            newEntry = new Propellant(materialId, order.getSupplierName(), id);
-        } else {
-            newEntry = new Wood(materialId, order.getSupplierName(), id);
-        }
-
         Random randomGenerator = new Random();
-        int Low = 1000;
-        int High = 2000;
 
         for (int index = 0; index < order.getQuantity(); index++) {
+            if (order.getType().equals(
+                    FireWorks.MaterialType.Casing.toString())) {
+                newEntry = new Casing(materialId, order.getSupplierName(), id);
+            } else if (order.getType().equals(
+                    FireWorks.MaterialType.Effect.toString())) {
+                if (index <= functioningElements) {
+                    newEntry = new Effect(materialId, order.getSupplierName(),
+                            id, false);
+                } else {
+                    newEntry = new Effect(materialId, order.getSupplierName(),
+                            id, true);
+                }
+            } else if (order.getType().equals(
+                    FireWorks.MaterialType.Propellant.toString())) {
+                newEntry = new Propellant(materialId, order.getSupplierName(),
+                        id);
+            } else {
+                newEntry = new Wood(materialId, order.getSupplierName(), id);
+            }
 
-            TransactionReference supplyTransaction = null;
+            TransactionReference supplyTransaction;
             try {
-                supplyTransaction = capi.createTransaction(3000, spaceUri);
+                supplyTransaction = capi.createTransaction(
+                        TRANSACTIONTIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
                 e.printStackTrace();
+                return;
             }
             try {
-                int waitingTime = randomGenerator.nextInt(High-Low) + Low;
+                int waitingTime = randomGenerator.nextInt(
+                        UPPERBOUND - LOWERBOUND) + LOWERBOUND;
 //                System.out.println("Waiting Time: " + waitingTime);
                 Thread.sleep(waitingTime);
 
@@ -113,7 +130,7 @@ public class Supplier extends Thread {
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, supplyTransaction);
                 LOGGER.debug("Supplier " + id + " Read: " + result.toString());
-
+                capi.commitTransaction(supplyTransaction);
             } catch (MzsCoreException e) {
                 e.printStackTrace();
                 index--;
