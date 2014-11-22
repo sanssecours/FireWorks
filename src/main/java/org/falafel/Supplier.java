@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -81,8 +82,15 @@ public class Supplier extends Thread {
             newEntry = new Wood(materialId, order.getSupplierName(), id);
         }
 
+        Random randomGenerator = new Random();
+        int Low = 1000;
+        int High = 2000;
+
         for (int index = 0; index < order.getQuantity(); index++) {
             try {
+                int waitingTime = randomGenerator.nextInt(High-Low) + Low;
+                System.out.println("Waiting Time: " + waitingTime);
+                Thread.sleep(waitingTime);
                 newEntry.setID(materialId + index);
                 container = capi.lookupContainer(order.getType(), spaceUri,
                         RequestTimeout.TRY_ONCE, null);
@@ -94,6 +102,8 @@ public class Supplier extends Thread {
                         RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Supplier " + id + " Read: " + result.toString());
             } catch (MzsCoreException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
