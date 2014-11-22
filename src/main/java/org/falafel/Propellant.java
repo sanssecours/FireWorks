@@ -1,8 +1,11 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.Queryable;
+
 /**
  * A class representing a propellent package.
  */
+@Queryable
 public class Propellant extends Material {
 
     /**

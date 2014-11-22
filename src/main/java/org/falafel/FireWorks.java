@@ -19,6 +19,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -28,6 +30,7 @@ import org.mozartspaces.core.aspects.ContainerAspect;
 import org.mozartspaces.core.aspects.ContainerIPoint;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -337,7 +340,7 @@ public class FireWorks extends Application {
     public final void setQuality(
             final TableColumn.CellEditEvent<SupplyOrder, String>
                     stCellEditEvent) {
-        SupplyOrder newValue =stCellEditEvent.getTableView().getItems().get(
+        SupplyOrder newValue = stCellEditEvent.getTableView().getItems().get(
                 stCellEditEvent.getTablePosition().getRow());
         try {
             newValue.setQuality(Integer.parseInt(
@@ -375,10 +378,13 @@ public class FireWorks extends Application {
                     null);
             capi.addContainerAspect(materialContainerAspect, effectContainer,
                     ipoints, null);
+
             propellantContainer = capi.createContainer(
                     MaterialType.Propellant.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
+                    Arrays.asList(new LindaCoordinator(), new AnyCoordinator()),
+                    null,
                     null);
             capi.addContainerAspect(materialContainerAspect,
                     propellantContainer, ipoints, null);
