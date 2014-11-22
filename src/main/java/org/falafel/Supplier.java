@@ -28,7 +28,7 @@ public class Supplier extends Thread {
     /** Constant for the lower bound of the loading time per element. */
     private static final int LOWERBOUND = 1000;
     /** Constant for the upper bound of the loading time per element. */
-    private static final int UPPERBOUND = 1000;
+    private static final int UPPERBOUND = 2000;
     /** Constant for the transaction timeout time . */
     private static final int TRANSACTIONTIMEOUT = 3000;
     /** Constant for the division by 100 . */
@@ -88,7 +88,7 @@ public class Supplier extends Thread {
                 newEntry = new Casing(materialId, order.getSupplierName(), id);
             } else if (order.getType().equals(
                     FireWorks.MaterialType.Effect.toString())) {
-                if (index <= functioningElements) {
+                if (index < functioningElements) {
                     newEntry = new Effect(materialId, order.getSupplierName(),
                             id, false);
                 } else {
