@@ -25,7 +25,7 @@ public class Material implements Serializable {
      *          A integer value that (uniquely) identifies the supplier.
      *
      */
-    public Material(int identifier, final String supplierName,
+    public Material(final int identifier, final String supplierName,
                     final int supplierId) {
         id = identifier;
         this.supplierName = supplierName;
@@ -38,7 +38,8 @@ public class Material implements Serializable {
      * @return The (unique) identifier of the material
      *
      */
-    public int getID() {
+    @SuppressWarnings("unused")
+    public final int getID() {
         return id;
     }
 
@@ -48,7 +49,9 @@ public class Material implements Serializable {
      * @param newId
      *          The (unique) identifier of the material
      */
-    public void setID(int newId) { id = newId; }
+    public final void setID(final int newId) {
+        id = newId;
+    }
 
     /**
      * Get the identifier of the material.
@@ -56,6 +59,7 @@ public class Material implements Serializable {
      * @return The (unique) supplier name of the material
      *
      */
+    @SuppressWarnings("unused")
     public final String getSupplierName() {
         return supplierName;
     }
@@ -66,6 +70,7 @@ public class Material implements Serializable {
      * @return The (unique) supplier ID of the material
      *
      */
+    @SuppressWarnings("unused")
     public final int getSupplierId() {
         return supplierId;
     }

@@ -43,6 +43,9 @@ public class Supplier extends Thread {
      *          The resource identifier used to locate the space
      * @param order
      *          The order the supplier should provide
+     * @param startId
+     *          Saves the first identifier of the ids that should be used for
+     *          the materials in the order.
      */
     public Supplier(final int identifier, final URI space,
                     final SupplyOrder order, final int startId) {
@@ -69,7 +72,8 @@ public class Supplier extends Thread {
             newEntry = new Casing(materialId, order.getSupplierName(), id);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Effect.toString())) {
-            newEntry = new Effect(materialId, order.getSupplierName(), id, false);
+            newEntry = new Effect(materialId, order.getSupplierName(), id,
+                    false);
         } else if (order.getType().equals(
                 FireWorks.MaterialType.Propellant.toString())) {
             newEntry = new Propellant(materialId, order.getSupplierName(), id);
@@ -83,7 +87,8 @@ public class Supplier extends Thread {
                 container = capi.lookupContainer(order.getType(), spaceUri,
                         RequestTimeout.TRY_ONCE, null);
                 capi.write(container, new Entry(newEntry));
-                LOGGER.debug("Supplier " + id + " Wrote entry to container " + order.getType());
+                LOGGER.debug("Supplier " + id + " Wrote entry to container "
+                        + order.getType());
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, null);
@@ -92,7 +97,6 @@ public class Supplier extends Thread {
                 e.printStackTrace();
             }
         }
-
 
         core.shutdown(true);
     }

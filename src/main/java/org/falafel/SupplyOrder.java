@@ -46,10 +46,12 @@ public class SupplyOrder {
                 new SimpleStringProperty(Integer.toString(quality));
     }
 
+    //CHECKSTYLE:OFF
     /** Create a new predefined order. */
     public SupplyOrder() {
         this("Name", "Wood", 1, 100);
     }
+    //CHECKSTYLE:ON
 
     /**
      * Get the name of the supplier.

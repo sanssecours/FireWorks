@@ -96,28 +96,32 @@ public class FireWorks extends Application {
     /** Saves data shown in the effectCounterLabel. */
     private static Integer effectCounter = 0;
     /** Saves data shown in the effectCounterLabel. */
-    private static StringProperty effectCounterProperty = new SimpleStringProperty(effectCounter.toString());
+    private static StringProperty effectCounterProperty =
+            new SimpleStringProperty(effectCounter.toString());
     /** Label for the current number of elements in the casing container. */
     @FXML
     private Label casingsCounterLabel;
     /** Saves data shown in the casingsCounterLabel. */
     private static Integer casingsCounter = 0;
     /** Saves data shown in the casingsCounterLabel. */
-    private static StringProperty casingsCounterProperty = new SimpleStringProperty(casingsCounter.toString());
+    private static StringProperty casingsCounterProperty =
+            new SimpleStringProperty(casingsCounter.toString());
     /** Label for the current number of elements in the wood container. */
     @FXML
     private Label woodCounterLabel;
     /** Saves data shown in the woodCounterLabel. */
     private static Integer woodCounter = 0;
     /** Saves data shown in the woodCounterLabel. */
-    private static StringProperty woodCounterProperty = new SimpleStringProperty(woodCounter.toString());
+    private static StringProperty woodCounterProperty =
+            new SimpleStringProperty(woodCounter.toString());
     /** Label for the current number of elements in the propellant container. */
     @FXML
     private Label propellantCounterLabel;
     /** Saves data shown in the propellantCounterLabel. */
     private static Integer propellantCounter = 0;
     /** Saves data shown in the propellantCounterLabel. */
-    private static StringProperty propellantCounterProperty = new SimpleStringProperty(propellantCounter.toString());
+    private static StringProperty propellantCounterProperty =
+            new SimpleStringProperty(propellantCounter.toString());
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -158,34 +162,34 @@ public class FireWorks extends Application {
         supplyTable.setItems(order);
     }
     /**
-     * Updates the counters in the GUI
+     * Updates the counters in the GUI.
      *
      * @param containerId
      *          ID of the changed container
      * @param difference
-     *          change of the elements in the container, can be positive or negative
+     *          The value that should be added or subtracted from the element
+     *          with the identifier {@code containerId}.
      *
      */
-    public static void changeCounterLabels (String containerId, int difference){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if (containerId.equals(casingContainer.getId())){
-                    casingsCounter = casingsCounter + difference;
-                    casingsCounterProperty.set(casingsCounter.toString());
-                }
-                if (containerId.equals(effectContainer.getId())){
-                    effectCounter = effectCounter + difference;
-                    effectCounterProperty.set(effectCounter.toString());
-                }
-                if (containerId.equals(propellantContainer.getId())){
-                    propellantCounter = propellantCounter + difference;
-                    propellantCounterProperty.set(propellantCounter.toString());
-                }
-                if (containerId.equals(woodContainer.getId())){
-                    woodCounter = woodCounter + difference;
-                    woodCounterProperty.set(woodCounter.toString());
-                }
+    public static void changeCounterLabels(final String containerId,
+                                           final int difference) {
+        Platform.runLater(() -> {
+            if (containerId.equals(casingContainer.getId())) {
+                casingsCounter = casingsCounter + difference;
+                casingsCounterProperty.set(casingsCounter.toString());
+            }
+            if (containerId.equals(effectContainer.getId())) {
+                effectCounter = effectCounter + difference;
+                effectCounterProperty.set(effectCounter.toString());
+            }
+            if (containerId.equals(propellantContainer.getId())) {
+                propellantCounter = propellantCounter + difference;
+                propellantCounterProperty.set(
+                        propellantCounter.toString());
+            }
+            if (containerId.equals(woodContainer.getId())) {
+                woodCounter = woodCounter + difference;
+                woodCounterProperty.set(woodCounter.toString());
             }
         });
     }
@@ -207,7 +211,8 @@ public class FireWorks extends Application {
             nextOrder = order.remove(0);
             LOGGER.debug(nextOrder.toString());
             supplier = new Supplier(supplierId,
-                    mozartSpace.getConfig().getSpaceUri(), nextOrder, materialId);
+                    mozartSpace.getConfig().getSpaceUri(), nextOrder,
+                    materialId);
             supplier.start();
             supplierId++;
             materialId = materialId + nextOrder.getQuantity();
@@ -223,6 +228,7 @@ public class FireWorks extends Application {
      *          The action event sent by JavaFx when the user interface
      *          element for this method is invoked.
      */
+    @SuppressWarnings("unused")
     public final void newOrder(final ActionEvent actionEvent) {
         order.add(new SupplyOrder());
     }
@@ -295,8 +301,8 @@ public class FireWorks extends Application {
         mozartSpace = DefaultMzsCore.newInstance();
         capi = new Capi(mozartSpace);
 
-        ContainerAspect materailContainerAspect = new MaterialAspects();
-        Set<ContainerIPoint> ipoints = new HashSet<ContainerIPoint>();
+        ContainerAspect materialContainerAspect = new MaterialAspects();
+        Set<ContainerIPoint> ipoints = new HashSet<>();
         ipoints.add(ContainerIPoint.POST_WRITE);
         ipoints.add(ContainerIPoint.POST_TAKE);
         try {
@@ -305,25 +311,29 @@ public class FireWorks extends Application {
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            capi.addContainerAspect(materailContainerAspect, casingContainer, ipoints, null);
+            capi.addContainerAspect(materialContainerAspect, casingContainer,
+                    ipoints, null);
             effectContainer = capi.createContainer(
                     MaterialType.Effect.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            capi.addContainerAspect(materailContainerAspect, effectContainer, ipoints, null);
+            capi.addContainerAspect(materialContainerAspect, effectContainer,
+                    ipoints, null);
             propellantContainer = capi.createContainer(
                     MaterialType.Propellant.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            capi.addContainerAspect(materailContainerAspect, propellantContainer, ipoints, null);
+            capi.addContainerAspect(materialContainerAspect,
+                    propellantContainer, ipoints, null);
             woodContainer = capi.createContainer(
                     MaterialType.Wood.toString(),
                     mozartSpace.getConfig().getSpaceUri(),
                     Container.UNBOUNDED,
                     null);
-            capi.addContainerAspect(materailContainerAspect, woodContainer, ipoints, null);
+            capi.addContainerAspect(materialContainerAspect, woodContainer,
+                    ipoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
