@@ -111,7 +111,7 @@ public class Supplier extends Thread {
                         + order.getType());
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
-                        RequestTimeout.TRY_ONCE, null);
+                        RequestTimeout.TRY_ONCE, supplyTransaction);
                 LOGGER.debug("Supplier " + id + " Read: " + result.toString());
 
             } catch (MzsCoreException e) {

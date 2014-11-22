@@ -3,9 +3,13 @@ package org.falafel;
 import org.mozartspaces.capi3.Capi3AspectPort;
 import org.mozartspaces.capi3.SubTransaction;
 import org.mozartspaces.capi3.Transaction;
+import org.mozartspaces.capi3.javanative.operation.DefaultContainer;
+import org.mozartspaces.core.CapiUtil;
+import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
+import java.util.List;
 
 /**
  *  This class implements various aspects involving Materials.
@@ -33,9 +37,12 @@ public class MaterialAspects extends AbstractContainerAspect {
                                         final Capi3AspectPort capi3,
                                         final int executionCount) {
 
-        System.out.println("container ID: " + request.getContainer().getId());
-        FireWorks.changeCounterLabels(request.getContainer().getId(),
-                                      request.getEntries().size());
+        //System.out.println("container ID: " + request.getContainer().getId());
+        List<Entry> entries = request.getEntries();
+        for (int index = 0; index < entries.size(); index++) {
+            FireWorks.changeCounterLabels(request.getContainer().getId(),
+                    request.getEntries().size());
+        }
 
         return AspectResult.OK;
     }
