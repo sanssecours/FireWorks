@@ -317,9 +317,14 @@ public class FireWorks extends Application {
     public final void setQuantity(
             final TableColumn.CellEditEvent<SupplyOrder, String>
                     stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(
-                stCellEditEvent.getTablePosition().getRow()).setQuantity(
-                Integer.parseInt(stCellEditEvent.getNewValue()));
+        SupplyOrder newValue = stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow());
+        try {
+            newValue.setQuantity(Integer.parseInt(
+                    stCellEditEvent.getNewValue()));
+        } catch (NumberFormatException e) {
+            System.out.println("Not a number!");
+        }
     }
 
     /**
@@ -332,9 +337,15 @@ public class FireWorks extends Application {
     public final void setQuality(
             final TableColumn.CellEditEvent<SupplyOrder, String>
                     stCellEditEvent) {
-        stCellEditEvent.getTableView().getItems().get(
-                stCellEditEvent.getTablePosition().getRow()).setQuality(
-                Integer.parseInt(stCellEditEvent.getNewValue()));
+        SupplyOrder newValue =stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow());
+        try {
+            newValue.setQuality(Integer.parseInt(
+                    stCellEditEvent.getNewValue()));
+        } catch (NumberFormatException e) {
+            System.out.println("Not a number!");
+        }
+
     }
 
     /**
