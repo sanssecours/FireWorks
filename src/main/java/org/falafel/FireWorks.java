@@ -42,7 +42,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * factory.
  */
 public class FireWorks extends Application {
-   /** Different types of Material provided by Suppliers. */
+
+    /** Different types of Material provided by Suppliers. */
     public static enum MaterialType { Casing, Effect, Propellant, Wood }
 
     /** Get the Logger for the current class. */
@@ -123,6 +124,25 @@ public class FireWorks extends Application {
     private static StringProperty propellantCounterProperty =
             new SimpleStringProperty(propellantCounter.toString());
 
+    /** Label for the current number of open propellant charges in the
+     * container. */
+    @FXML
+    private Label numberOpenPropellantLabel;
+    /** Saves data shown in the numberOpenPropellant. */
+    private static Integer numberOpenPropellantCounter = 0;
+    /** Saves data shown in the numberOpenPropellant. */
+    private static StringProperty numberOpenPropellantCounterProperty =
+            new SimpleStringProperty(numberOpenPropellantCounter.toString());
+    /** Label for the current quantity in grams of open propellant charges in
+     * the container. */
+    @FXML
+    private Label quantityOpenPropellantLabel;
+    /** Saves data shown in the quantityOpenPropellant. */
+    private static Integer quantityOpenPropellantCounter = 0;
+    /** Saves data shown in the quantityOpenPropellant. */
+    private static StringProperty quantityOpenPropellantCounterProperty =
+            new SimpleStringProperty(quantityOpenPropellantCounter.toString());
+
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
@@ -133,6 +153,10 @@ public class FireWorks extends Application {
         effectCounterLabel.textProperty().bind(effectCounterProperty);
         propellantCounterLabel.textProperty().bind(propellantCounterProperty);
         woodCounterLabel.textProperty().bind(woodCounterProperty);
+        numberOpenPropellantLabel.textProperty().bind(
+                numberOpenPropellantCounterProperty);
+        quantityOpenPropellantLabel.textProperty().bind(
+                quantityOpenPropellantCounterProperty);
 
         supplierNameColumn.setCellValueFactory(
                 cellData -> cellData.getValue().supplierNameProperty());
@@ -160,6 +184,26 @@ public class FireWorks extends Application {
         order.add(new SupplyOrder());
         supplyTable.isEditable();
         supplyTable.setItems(order);
+    }
+
+    /**
+     * Updates the counters in the GUI.
+     *
+     * @param difference
+     *          The value that should be added or subtracted from the current
+     *          quantity (in grams).
+     *
+     */
+    public static void changeOpenedPropellantLabels(final int difference) {
+        Platform.runLater(() -> {
+            numberOpenPropellantCounter++;
+            quantityOpenPropellantCounter = quantityOpenPropellantCounter
+                    + difference;
+            numberOpenPropellantCounterProperty.set(
+                    numberOpenPropellantCounter.toString());
+            quantityOpenPropellantCounterProperty.set(
+                    quantityOpenPropellantCounter.toString());
+        });
     }
     /**
      * Updates the counters in the GUI.

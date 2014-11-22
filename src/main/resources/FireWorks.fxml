@@ -128,7 +128,7 @@
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
-                                                <Label fx:id="numberOpenPropellant" alignment="CENTER_RIGHT" layoutX="233.0" layoutY="193.0" prefWidth="81.0" text="0">
+                                                <Label fx:id="numberOpenPropellantLabel" alignment="CENTER_RIGHT" layoutX="233.0" layoutY="193.0" prefWidth="81.0" text="0">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
@@ -144,7 +144,7 @@
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
-                                                <Label fx:id="quantityOpenPropelant" alignment="CENTER_RIGHT" layoutX="235.0" layoutY="226.0" prefWidth="81.0" text="0">
+                                                <Label fx:id="quantityOpenPropellantLabel" alignment="CENTER_RIGHT" layoutX="235.0" layoutY="226.0" prefWidth="81.0" text="0">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>

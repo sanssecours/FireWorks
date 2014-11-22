@@ -8,7 +8,7 @@ public class Propellant extends Material {
     /**
      * Save how much gram a full package of the propellant charge has.
      */
-    private static final int FULL = 500;
+    public static final int FULL = 500;
 
     /**
      * Save how much of the material is still left.
@@ -32,9 +32,18 @@ public class Propellant extends Material {
     }
 
     /**
-     * Return the string representation of the propellent package.
+     * Return the quantity inside the propellant package.
      *
-     * @return A string containing properties of this propellent package
+     * @return containing the current quantity of the propellant package.
+     */
+    public final int getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * Return the string representation of the propellant package.
+     *
+     * @return A string containing properties of this propellant package
      */
     public final String toString() {
        return super.toString() + " -- Quantity: " + quantity;

@@ -37,11 +37,22 @@ public class MaterialAspects extends AbstractContainerAspect {
 
         //System.out.println("container ID: " + request.getContainer().getId());
         List<Entry> entries = request.getEntries();
-        for (int index = 0; index < entries.size(); index++) {
+
+        if (entries.get(0).getValue() instanceof Propellant) {
+            for (Entry entry : entries) {
+                Propellant propellantEntry = (Propellant) entry.getValue();
+                if (propellantEntry.getQuantity() == Propellant.FULL) {
+                    FireWorks.changeCounterLabels(
+                            request.getContainer().getId(), 1);
+                } else {
+                    FireWorks.changeOpenedPropellantLabels(
+                            propellantEntry.getQuantity());
+                }
+            }
+        } else {
             FireWorks.changeCounterLabels(request.getContainer().getId(),
                     request.getEntries().size());
         }
-
         return AspectResult.OK;
     }
 }
