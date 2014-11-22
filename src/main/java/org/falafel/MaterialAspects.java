@@ -3,8 +3,6 @@ package org.falafel;
 import org.mozartspaces.capi3.Capi3AspectPort;
 import org.mozartspaces.capi3.SubTransaction;
 import org.mozartspaces.capi3.Transaction;
-import org.mozartspaces.capi3.javanative.operation.DefaultContainer;
-import org.mozartspaces.core.CapiUtil;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
