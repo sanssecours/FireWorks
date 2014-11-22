@@ -8,6 +8,7 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
 import java.net.URI;
@@ -87,22 +88,40 @@ public class Supplier extends Thread {
         int High = 2000;
 
         for (int index = 0; index < order.getQuantity(); index++) {
+
+            TransactionReference supplyTransaction = null;
+            try {
+                supplyTransaction = capi.createTransaction(3000, spaceUri);
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
+            }
             try {
                 int waitingTime = randomGenerator.nextInt(High-Low) + Low;
-                System.out.println("Waiting Time: " + waitingTime);
+//                System.out.println("Waiting Time: " + waitingTime);
                 Thread.sleep(waitingTime);
+
                 newEntry.setID(materialId + index);
                 container = capi.lookupContainer(order.getType(), spaceUri,
-                        RequestTimeout.TRY_ONCE, null);
-                capi.write(container, new Entry(newEntry));
+                        RequestTimeout.TRY_ONCE, supplyTransaction);
+
+                capi.write(container, RequestTimeout.ZERO, supplyTransaction,
+                        new Entry(newEntry));
+
                 LOGGER.debug("Supplier " + id + " Wrote entry to container "
                         + order.getType());
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Supplier " + id + " Read: " + result.toString());
+
             } catch (MzsCoreException e) {
                 e.printStackTrace();
+                index--;
+                try {
+                    capi.rollbackTransaction(supplyTransaction);
+                } catch (MzsCoreException e1) {
+                    e1.printStackTrace();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
