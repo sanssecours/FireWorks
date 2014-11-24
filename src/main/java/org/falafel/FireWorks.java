@@ -30,6 +30,7 @@ import org.mozartspaces.core.aspects.ContainerAspect;
 import org.mozartspaces.core.aspects.ContainerIPoint;
 import org.slf4j.Logger;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -360,20 +361,25 @@ public class FireWorks extends Application {
         capi = new Capi(mozartSpace);
 
         ContainerAspect materialContainerAspect = new MaterialAspects();
+        URI spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> ipoints = new HashSet<>();
+
         ipoints.add(ContainerIPoint.POST_WRITE);
         ipoints.add(ContainerIPoint.POST_TAKE);
+
+        LOGGER.info("Space URI: " + spaceURI);
+
         try {
             casingContainer = capi.createContainer(
                     MaterialType.Casing.toString(),
-                    mozartSpace.getConfig().getSpaceUri(),
+                    spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, casingContainer,
                     ipoints, null);
             effectContainer = capi.createContainer(
                     MaterialType.Effect.toString(),
-                    mozartSpace.getConfig().getSpaceUri(),
+                    spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, effectContainer,
@@ -381,7 +387,7 @@ public class FireWorks extends Application {
 
             propellantContainer = capi.createContainer(
                     MaterialType.Propellant.toString(),
-                    mozartSpace.getConfig().getSpaceUri(),
+                    spaceURI,
                     Container.UNBOUNDED,
                     Arrays.asList(new LindaCoordinator(), new AnyCoordinator()),
                     null,
@@ -390,7 +396,7 @@ public class FireWorks extends Application {
                     propellantContainer, ipoints, null);
             woodContainer = capi.createContainer(
                     MaterialType.Wood.toString(),
-                    mozartSpace.getConfig().getSpaceUri(),
+                    spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, woodContainer,
