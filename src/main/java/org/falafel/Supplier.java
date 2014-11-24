@@ -98,7 +98,7 @@ public class Supplier extends Thread {
             } else if (order.getType().equals(
                     FireWorks.MaterialType.Propellant.toString())) {
                 newEntry = new Propellant(materialId, order.getSupplierName(),
-                        id);
+                        id, Propellant.CLOSED);
             } else {
                 newEntry = new Wood(materialId, order.getSupplierName(), id);
             }

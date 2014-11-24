@@ -12,11 +12,23 @@ public class Propellant extends Material {
      * Save how much gram a full package of the propellant charge has.
      */
     public static final int FULL = 500;
+    /**
+     * Save how much gram a full package of the propellant charge has.
+     */
+    public static final String CLOSED = "closed";
+    /**
+     * Save how much gram a full package of the propellant charge has.
+     */
+    public static final String OPENED = "opened";
 
     /**
      * Save how much of the material is still left.
      */
     private int quantity;
+    /**
+     * Save if the package is opened.
+     */
+    private String status;
 
     /**
      * Create new propellent package with the given attributes.
@@ -28,10 +40,11 @@ public class Propellant extends Material {
      * @param supplierId
      *          A integer value that (uniquely) identifies the supplier.
      */
-    public Propellant(final int identifier, final String supplierName,
-                      final int supplierId) {
+    public Propellant(final Integer identifier, final String supplierName,
+                      final Integer supplierId, String packageStatus) {
         super(identifier, supplierName, supplierId);
         this.quantity = FULL;
+        this.status = packageStatus;
     }
 
     /**
@@ -41,6 +54,17 @@ public class Propellant extends Material {
      */
     public final int getQuantity() {
         return quantity;
+    }
+
+    /**
+     * Return the quantity inside the propellant package.
+     *
+     * @param takenQuantity
+     *          Quantity taken of the Package
+     */
+    public final void setQuantity(final int takenQuantity) {
+        quantity = takenQuantity;
+        status = OPENED;
     }
 
     /**

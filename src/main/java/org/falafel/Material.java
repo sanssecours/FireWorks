@@ -8,11 +8,11 @@ import java.io.Serializable;
 public class Material implements Serializable {
 
     /** Save an identifier for the material. */
-    private int id;
+    private Integer id;
     /** Save the name of the supplier. */
     private final String supplierName;
     /** Save the id of the supplier. */
-    private final int supplierId;
+    private final Integer supplierId;
 
     /**
      * Create a new material with the given attributes.
@@ -25,8 +25,8 @@ public class Material implements Serializable {
      *          A integer value that (uniquely) identifies the supplier.
      *
      */
-    public Material(final int identifier, final String supplierName,
-                    final int supplierId) {
+    public Material(final Integer identifier, final String supplierName,
+                    final Integer supplierId) {
         id = identifier;
         this.supplierName = supplierName;
         this.supplierId = supplierId;
