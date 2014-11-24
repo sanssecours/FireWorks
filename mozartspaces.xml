@@ -10,7 +10,7 @@
 
     <remoting>
         <defaultScheme>xvsm</defaultScheme>
-        <bindHost>localhost</bindHost>
+        <bindHost>0.0.0.0</bindHost>
         <transports>
             <tcpsocket scheme="xvsm">
                 <threads>1000</threads>

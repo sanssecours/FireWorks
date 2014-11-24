@@ -79,8 +79,10 @@
                         </executions>
                         <configuration>
                             <mainClass>org.falafel.Worker</mainClass>
+
                             <arguments>
                                 <argument>4242</argument>
+                                <argument>xvsm://localhost:9876</argument>
                             </arguments>
                             <classpathScope>runtime</classpathScope>
                         </configuration>
