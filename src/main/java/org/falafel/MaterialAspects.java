@@ -6,7 +6,10 @@ import org.mozartspaces.capi3.Transaction;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
+import org.mozartspaces.core.requests.TakeEntriesRequest;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +30,7 @@ public class MaterialAspects extends AbstractContainerAspect {
      *          The container-specific CAPI-3 interface
      * @param executionCount
      *          The number of processings of this request
-     * @return the aspect result
+     * @return The aspect result
      */
     public final AspectResult postWrite(final WriteEntriesRequest request,
                                         final Transaction tx,
@@ -53,6 +56,31 @@ public class MaterialAspects extends AbstractContainerAspect {
             FireWorks.changeCounterLabels(request.getContainer().getId(),
                     request.getEntries().size());
         }
+        return AspectResult.OK;
+    }
+
+    /**
+     *
+     * @param request
+     *          The original request sent to the core.
+     * @param tx
+     *          The transaction, can be explicit or implicit
+     * @param stx
+     *          The sub-transaction for this operation
+     * @param capi3
+     *          The container-specific CAPI-3 interface
+     * @param executionCount
+     *          The number of processings of this request
+     * @param entries
+     *          The taken entries (result of the CAPI-3 operation)
+     * @return  The aspect result
+     */
+    public final AspectResult postTake(final TakeEntriesRequest<?> request,
+                                       final Transaction tx,
+                                       final SubTransaction stx,
+                                       final Capi3AspectPort capi3,
+                                       final int executionCount,
+                                       final List<Serializable> entries) {
         return AspectResult.OK;
     }
 }
