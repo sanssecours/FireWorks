@@ -30,7 +30,7 @@
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="507.0">
                            <children>
-                              <VBox layoutX="142.0" layoutY="84.0" spacing="20.0" AnchorPane.rightAnchor="141.0" AnchorPane.topAnchor="84.0">
+                              <VBox layoutX="131.0" layoutY="109.0" spacing="20.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="109.0">
                                  <children>
                                     <VBox>
                                        <children>
@@ -46,7 +46,7 @@
                                                       <Font size="24.0" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="297.0" layoutY="30.0" prefWidth="100.0" text="Pieces">
+                                                <Label layoutX="297.0" layoutY="30.0" minWidth="-Infinity" prefWidth="120.0" text="Pieces">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font>
@@ -65,7 +65,7 @@
                                                       <Font size="24.0" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="297.0" layoutY="30.0" prefWidth="100.0" text="Pieces">
+                                                <Label layoutX="297.0" layoutY="30.0" minWidth="-Infinity" prefWidth="120.0" text="Pieces">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font>
@@ -84,7 +84,7 @@
                                                       <Font size="24.0" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="297.0" layoutY="30.0" prefWidth="100.0" text="Pieces">
+                                                <Label layoutX="297.0" layoutY="30.0" minWidth="-Infinity" prefWidth="120.0" text="Pieces">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font>
@@ -103,7 +103,7 @@
                                                       <Font size="24.0" />
                                                    </font>
                                                 </Label>
-                                                <Label layoutX="297.0" layoutY="30.0" prefWidth="100.0" text="Packages">
+                                                <Label layoutX="297.0" layoutY="30.0" minWidth="-Infinity" prefWidth="120.0" text="Packages">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font>
@@ -112,16 +112,14 @@
                                           </HBox>
                                        </children>
                                     </VBox>
+                                    <Label alignment="CENTER_RIGHT" text="Opend Propellent:">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
                                     <VBox alignment="CENTER_RIGHT" layoutX="45.0" layoutY="193.0" spacing="2.0">
                                        <children>
-                                          <HBox spacing="10.0">
-                                             <children>
-                                                <Label alignment="CENTER_RIGHT" text="Opend Propellent:">
-                                                   <font>
-                                                      <Font size="24.0" />
-                                                   </font></Label>
-                                             </children>
-                                          </HBox>
+                                          <HBox spacing="10.0" />
                                           <HBox alignment="CENTER_RIGHT" layoutX="45.0" layoutY="193.0" spacing="10.0">
                                              <children>
                                                 <Label layoutX="171.0" layoutY="195.0" text="Number">
@@ -132,7 +130,7 @@
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
-                                                <Label layoutX="327.0" layoutY="196.0" prefWidth="100.0" text="Packages">
+                                                <Label layoutX="327.0" layoutY="196.0" minWidth="-Infinity" prefWidth="120.0" text="Packages">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
@@ -148,7 +146,7 @@
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
-                                                <Label layoutX="327.0" layoutY="228.0" prefWidth="100.0" text="g">
+                                                <Label layoutX="327.0" layoutY="228.0" prefWidth="120.0" text="g">
                                                    <font>
                                                       <Font size="24.0" />
                                                    </font></Label>
