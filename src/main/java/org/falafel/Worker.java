@@ -7,12 +7,14 @@ import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.TransactionReference;
+import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
 
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * This class represents a worker. A worker collects material from the space
@@ -22,6 +24,9 @@ public final class Worker {
 
     /** Constant for the transaction timeout time. */
     private static final int TRANSACTION_TIMEOUT = 5000;
+
+    /** Get the Logger for the current class. */
+    private static final Logger LOGGER = getLogger(FireWorks.class);
 
     /** Create the worker singleton. */
     private Worker() { }
@@ -56,21 +61,21 @@ public final class Worker {
             return;
         }
 
-        System.out.println("Worker " + workerId + " ready to work!");
+        LOGGER.info("Worker " + workerId + " ready to work!");
 
         ContainerReference casingContainer;
 
         core = DefaultMzsCore.newInstanceWithoutSpace();
         capi = new Capi(core);
         spaceUri = URI.create("xvsm://localhost:9876");
-        System.out.println("Space URI: " + spaceUri);
+        LOGGER.info("Space URI: " + spaceUri);
 
         try {
             collectResourcesTransaction = capi.createTransaction(
                     TRANSACTION_TIMEOUT, spaceUri);
         } catch (MzsCoreException e) {
             e.printStackTrace();
-            System.err.println("Can't create transaction!");
+            LOGGER.error("Can't create transaction!");
             return;
         }
 
@@ -82,7 +87,7 @@ public final class Worker {
                     AnyCoordinator.newSelector(COUNT_ALL),
                     RequestTimeout.TRY_ONCE, collectResourcesTransaction);
 
-            System.out.println("Read: " + result.toString());
+            LOGGER.info("Read: " + result.toString());
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
