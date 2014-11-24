@@ -81,6 +81,25 @@ public class MaterialAspects extends AbstractContainerAspect {
                                        final Capi3AspectPort capi3,
                                        final int executionCount,
                                        final List<Serializable> entries) {
+
+        Material material = (Material) entries.get(0);
+
+        if (material instanceof Propellant) {
+            for (Serializable serializable : entries) {
+                Propellant propellant = (Propellant) serializable;
+                if (propellant.getQuantity() == Propellant.FULL) {
+                    FireWorks.changeCounterLabels(
+                            request.getContainer().getId(), -1);
+                } else {
+                    FireWorks.changeOpenedPropellantLabels(
+                            -propellant.getQuantity());
+                }
+            }
+        } else {
+            FireWorks.changeCounterLabels(request.getContainer().getId(),
+                    -entries.size());
+        }
+
         return AspectResult.OK;
     }
 }
