@@ -137,12 +137,13 @@ public final class Worker {
 
                     List<LindaSelector> selectors = new ArrayList<LindaSelector>();
                     selectors.add(selector);
-                    context.setProperty("gotMaterial", true);
                      propellant = (Propellant) capi.take(containerReference,
                             selectors, RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
                     LOGGER.info("Took propellant: " + propellant.toString());
-                    capi.commitTransaction(collectResourcesTransaction);
+
+                    context.setProperty("gotMaterial", true);
+                    capi.commitTransaction(collectResourcesTransaction, context);
                     LOGGER.info("Took the following Items: " + casing.toString()
                             + effect.toString()
                             + wood.toString()

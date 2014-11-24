@@ -28,6 +28,8 @@ import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.aspects.ContainerAspect;
 import org.mozartspaces.core.aspects.ContainerIPoint;
+import org.mozartspaces.core.aspects.SpaceAspect;
+import org.mozartspaces.core.aspects.SpaceIPoint;
 import org.slf4j.Logger;
 
 import java.net.URI;
@@ -35,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Arrays.*;
 import static org.mozartspaces.core.MzsConstants.Container;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -383,9 +386,16 @@ public class FireWorks extends Application {
         ContainerAspect materialContainerAspect = new MaterialAspects();
         URI spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> ipoints = new HashSet<>();
-
         ipoints.add(ContainerIPoint.POST_WRITE);
-        ipoints.add(ContainerIPoint.POST_TAKE);
+
+        SpaceAspect aspect = new ReduceLabelSpaceAspects();
+        Set<SpaceIPoint> p = new HashSet<>();
+        p.add(SpaceIPoint.POST_COMMIT_TRANSACTION);
+        try {
+            capi.addSpaceAspect(aspect, spaceURI, p, null);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
 
         LOGGER.info("Space URI: " + spaceURI);
 
@@ -409,7 +419,7 @@ public class FireWorks extends Application {
                     MaterialType.Propellant.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
-                    Arrays.asList(new LindaCoordinator(false), new AnyCoordinator()),
+                    asList(new LindaCoordinator(false), new AnyCoordinator()),
                     null,
                     null);
             capi.addContainerAspect(materialContainerAspect,

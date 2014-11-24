@@ -59,36 +59,4 @@ public class MaterialAspects extends AbstractContainerAspect {
         }
         return AspectResult.OK;
     }
-
-    /**
-     *
-     * @param request
-     *          The original request sent to the core.
-     * @param tx
-     *          The transaction, can be explicit or implicit
-     * @param stx
-     *          The sub-transaction for this operation
-     * @param capi3
-     *          The container-specific CAPI-3 interface
-     * @param executionCount
-     *          The number of processings of this request
-     * @param entries
-     *          The taken entries (result of the CAPI-3 operation)
-     * @return  The aspect result
-     */
-    public final AspectResult postTake(final TakeEntriesRequest<?> request,
-                                       final Transaction tx,
-                                       final SubTransaction stx,
-                                       final Capi3AspectPort capi3,
-                                       final int executionCount,
-                                       final List<Serializable> entries) {
-
-        Material material = (Material) entries.get(0);
-
-        if (request.getContext().containsProperty("gotMaterial")) {
-            FireWorks.reduceCasingEffectWood(1);
-        }
-
-        return AspectResult.OK;
-    }
 }
