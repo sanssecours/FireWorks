@@ -1,6 +1,7 @@
 package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -10,9 +11,8 @@ import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
 import java.net.URI;
-import java.util.ArrayList;
 
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.falafel.FireWorks.MaterialType.Casing;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,7 +42,7 @@ public final class Worker {
 
         int workerId;
 
-        ArrayList<Wood> result;
+        Casing casing;
 
         Capi capi;
         MzsCore core;
@@ -63,7 +63,7 @@ public final class Worker {
 
         LOGGER.info("Worker " + workerId + " ready to work!");
 
-        ContainerReference casingContainer;
+        ContainerReference containerReference;
 
         core = DefaultMzsCore.newInstanceWithoutSpace();
         capi = new Capi(core);
@@ -80,16 +80,17 @@ public final class Worker {
         }
 
         try {
-            casingContainer = capi.lookupContainer(
-                    FireWorks.MaterialType.Casing.toString(), spaceUri,
+            containerReference = capi.lookupContainer(
+                    Casing.toString(), spaceUri,
                     RequestTimeout.TRY_ONCE, collectResourcesTransaction);
-            result = capi.read(casingContainer,
-                    AnyCoordinator.newSelector(COUNT_ALL),
-                    RequestTimeout.TRY_ONCE, collectResourcesTransaction);
-
-            LOGGER.info("Read: " + result.toString());
+            casing = (Casing) capi.take(containerReference,
+                    AnyCoordinator.newSelector(1), RequestTimeout.TRY_ONCE,
+                    collectResourcesTransaction).get(0);
+            LOGGER.info("Took the following casing: " + casing.toString());
+        } catch (CountNotMetException e) {
+            LOGGER.info("One of the materials is not available");
         } catch (MzsCoreException e) {
-            e.printStackTrace();
+            LOGGER.info("Could not get all materials in time!");
         }
         core.shutdown(true);
 
