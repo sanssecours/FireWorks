@@ -4,7 +4,6 @@ import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.TransactionReference;
@@ -13,55 +12,68 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 
 /**
  * .
  */
-public class Worker {
+public final class Worker {
 
     /** Constant for the transaction timeout time . */
-    private static final int TRANSACTIONTIMEOUT = 5000;
-    private static int workerId;
+    private static final int TRANSACTION_TIMEOUT = 5000;
 
-    private Worker() { };
+    /** Create the worker singleton. */
+    private Worker() { }
 
+    /**
+     * Start the worker process.
+     *
+     * @param arguments
+     *          A list containing the command line arguments.
+     *
+     */
     public static void main(final String[] arguments) {
-        System.out.println("Please supply an ID!");
-        if (arguments.length < 1) {
-            System.out.println("Please supply an ID!");
-            return;
-        }
-        try {
-            workerId = Integer.parseInt(arguments[0]);
-        } catch (NumberFormatException e) {
-            System.out.println("Please supply a valid ID!");
-            return;
-        }
 
-
-        ContainerReference casingContainer;
-        ContainerReference effectContainer;
-        ContainerReference propellantContainer;
-        ContainerReference woodContainer;
-
-        MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
-        Capi capi = new Capi(core);
-        URI spaceUri = core.getConfig().getSpaceUri();
+        int workerId;
 
         ArrayList<Wood> result;
 
+        Capi capi;
+        MzsCore core;
+        URI spaceUri;
         TransactionReference collectResourcesTransaction;
-        try {
-            collectResourcesTransaction = capi.createTransaction(
-                    TRANSACTIONTIMEOUT, spaceUri);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-            System.out.println("Can't create transaction!");
+
+        if (arguments.length < 1) {
+            System.err.println("Please supply an ID!");
             return;
         }
 
         try {
-            System.out.println("Transaction Happening!");
+            workerId = Integer.parseInt(arguments[0]);
+        } catch (NumberFormatException e) {
+            System.err.println("Please supply a valid ID!");
+            return;
+        }
+
+        System.out.println("Worker " + workerId + " ready to work!");
+
+        ContainerReference casingContainer;
+
+        core = DefaultMzsCore.newInstanceWithoutSpace();
+        capi = new Capi(core);
+        spaceUri = URI.create("xvsm://localhost:9876");
+        System.out.println("Space URI: " + spaceUri);
+
+        try {
+            collectResourcesTransaction = capi.createTransaction(
+                    TRANSACTION_TIMEOUT, spaceUri);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+            System.err.println("Can't create transaction!");
+            return;
+        }
+
+        try {
             casingContainer = capi.lookupContainer(
                     FireWorks.MaterialType.Casing.toString(), spaceUri,
                     RequestTimeout.TRY_ONCE, collectResourcesTransaction);
@@ -73,7 +85,7 @@ public class Worker {
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
-
+        core.shutdown(true);
 
     }
 }
