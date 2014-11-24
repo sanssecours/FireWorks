@@ -1,5 +1,6 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -8,8 +9,12 @@ import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
+import org.mozartspaces.capi3.LindaCoordinator;
+import org.mozartspaces.capi3.LindaCoordinator.LindaSelector;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
@@ -114,17 +119,34 @@ public final class Worker {
                             FireWorks.MaterialType.Wood.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
-
-                    context.setProperty("gotMaterial", true);
                     wood = (Wood) capi.take(containerReference,
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
 
+                    containerReference = capi.lookupContainer(
+                            FireWorks.MaterialType.Propellant.toString(),
+                            spaceUri,
+                            RequestTimeout.TRY_ONCE,
+                            collectResourcesTransaction, null, context);
+
+                    Propellant lindaTemplate = new Propellant(null, null, null,
+                            Propellant.CLOSED);
+                    LindaSelector selector = LindaCoordinator.newSelector(
+                            lindaTemplate, 1);
+
+                    List<LindaSelector> selectors = new ArrayList<LindaSelector>();
+                    selectors.add(selector);
+                    context.setProperty("gotMaterial", true);
+                     propellant = (Propellant) capi.take(containerReference,
+                            selectors, RequestTimeout.TRY_ONCE,
+                            collectResourcesTransaction, null, context).get(0);
+                    LOGGER.info("Took propellant: " + propellant.toString());
                     capi.commitTransaction(collectResourcesTransaction);
                     LOGGER.info("Took the following Items: " + casing.toString()
                             + effect.toString()
-                            + wood.toString());
+                            + wood.toString()
+                            + propellant.toString());
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials in time!");
                     try {

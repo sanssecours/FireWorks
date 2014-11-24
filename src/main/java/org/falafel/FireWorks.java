@@ -409,7 +409,7 @@ public class FireWorks extends Application {
                     MaterialType.Propellant.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
-                    Arrays.asList(new LindaCoordinator(), new AnyCoordinator()),
+                    Arrays.asList(new LindaCoordinator(false), new AnyCoordinator()),
                     null,
                     null);
             capi.addContainerAspect(materialContainerAspect,
