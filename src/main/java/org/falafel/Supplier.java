@@ -29,9 +29,9 @@ public class Supplier extends Thread {
     private static final int LOWERBOUND = 1000;
     /** Constant for the upper bound of the loading time per element. */
     private static final int UPPERBOUND = 2000;
-    /** Constant for the transaction timeout time . */
+    /** Constant for the transaction timeout time. */
     private static final int TRANSACTIONTIMEOUT = 3000;
-    /** Constant for the division by 100 . */
+    /** Constant for the division by 100. */
     private static final double HUNDRED = 100.0;
     /** Save the (unique) identifier for this supplier. */
     private final int id;

@@ -15,11 +15,12 @@ import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 
 /**
- * .
+ * This class represents a worker. A worker collects material from the space
+ * and uses them to create a rocket.
  */
 public final class Worker {
 
-    /** Constant for the transaction timeout time . */
+    /** Constant for the transaction timeout time. */
     private static final int TRANSACTION_TIMEOUT = 5000;
 
     /** Create the worker singleton. */
