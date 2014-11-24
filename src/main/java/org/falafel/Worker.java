@@ -1,26 +1,17 @@
 package org.falafel;
 
-import jdk.nashorn.internal.ir.CatchNode;
-import org.mozartspaces.capi3.AnyCoordinator;
-import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
-import java.io.Serializable;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Random;
 
-import static org.falafel.FireWorks.MaterialType.Casing;
-import static org.falafel.FireWorks.MaterialType.Effect;
-import static org.falafel.FireWorks.MaterialType.Wood;
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -87,42 +78,48 @@ public final class Worker {
 
         while (true) {
             try {
+                RequestContext context = new RequestContext();
                 try {
                     collectResourcesTransaction = capi.createTransaction(
-                            TRANSACTION_TIMEOUT, spaceUri);
+                            TRANSACTION_TIMEOUT, spaceUri, context);
                 } catch (MzsCoreException e) {
                     e.printStackTrace();
                     LOGGER.error("Can't create transaction!");
                     return;
                 }
 
+
+
                 try {
                     containerReference = capi.lookupContainer(
-                            Casing.toString(), spaceUri,
+                            FireWorks.MaterialType.Casing.toString(),
+                            spaceUri,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction);
+                            collectResourcesTransaction, null, context);
                     casing = (Casing) capi.take(containerReference,
-                            AnyCoordinator.newSelector(1),
+                            null,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction).get(0);
+                            collectResourcesTransaction, null,  context).get(0);
 
                     containerReference = capi.lookupContainer(
-                            Effect.toString(), spaceUri,
+                            FireWorks.MaterialType.Effect.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction);
+                            collectResourcesTransaction, null, context);
                     effect = (Effect) capi.take(containerReference,
-                            AnyCoordinator.newSelector(1),
+                           null,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction).get(0);
+                            collectResourcesTransaction, null, context).get(0);
 
                     containerReference = capi.lookupContainer(
-                            Wood.toString(), spaceUri,
+                            FireWorks.MaterialType.Wood.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction);
+                            collectResourcesTransaction, null, context);
+
+                    context.setProperty("gotMaterial", true);
                     wood = (Wood) capi.take(containerReference,
-                            AnyCoordinator.newSelector(1),
+                            null,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction).get(0);
+                            collectResourcesTransaction, null, context).get(0);
 
                     capi.commitTransaction(collectResourcesTransaction);
                     LOGGER.info("Took the following Items: " + casing.toString()

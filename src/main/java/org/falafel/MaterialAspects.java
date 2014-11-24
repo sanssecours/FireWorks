@@ -41,6 +41,7 @@ public class MaterialAspects extends AbstractContainerAspect {
         //System.out.println("container ID: " + request.getContainer().getId());
         List<Entry> entries = request.getEntries();
 
+
         if (entries.get(0).getValue() instanceof Propellant) {
             for (Entry entry : entries) {
                 Propellant propellantEntry = (Propellant) entry.getValue();
@@ -84,20 +85,8 @@ public class MaterialAspects extends AbstractContainerAspect {
 
         Material material = (Material) entries.get(0);
 
-        if (material instanceof Propellant) {
-            for (Serializable serializable : entries) {
-                Propellant propellant = (Propellant) serializable;
-                if (propellant.getQuantity() == Propellant.FULL) {
-                    FireWorks.changeCounterLabels(
-                            request.getContainer().getId(), -1);
-                } else {
-                    FireWorks.changeOpenedPropellantLabels(
-                            -propellant.getQuantity());
-                }
-            }
-        } else {
-            FireWorks.changeCounterLabels(request.getContainer().getId(),
-                    -entries.size());
+        if (request.getContext().containsProperty("gotMaterial")) {
+            FireWorks.reduceCasingEffectWood(1);
         }
 
         return AspectResult.OK;

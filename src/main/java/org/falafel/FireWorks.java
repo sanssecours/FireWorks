@@ -209,6 +209,26 @@ public class FireWorks extends Application {
                     quantityOpenPropellantCounter.toString());
         });
     }
+
+    /**
+     * Updates the counters in the GUI.
+     *
+     * @param difference
+     *          The value that should be subtracted from the Casing, Effect
+     *          and Wood counter in the GUI
+     *
+     */
+    public static void reduceCasingEffectWood(final int difference) {
+        Platform.runLater(() -> {
+            casingsCounter = casingsCounter - difference;
+                casingsCounterProperty.set(casingsCounter.toString());
+                effectCounter = effectCounter - difference;
+                effectCounterProperty.set(effectCounter.toString());
+                woodCounter = woodCounter - difference;
+                woodCounterProperty.set(woodCounter.toString());
+        });
+    }
+
     /**
      * Updates the counters in the GUI.
      *
