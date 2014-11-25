@@ -46,8 +46,9 @@ public class MaterialAspects extends AbstractContainerAspect {
                 if (propellantEntry.getQuantity() == Propellant.FULL) {
                     FireWorks.changeCounterLabels(
                             request.getContainer().getId(), 1);
+                    System.out.println("Propellant: " + propellantEntry);
                 } else {
-                    FireWorks.changeOpenedPropellantLabels(
+                    FireWorks.changeOpenedPropellantLabels(1,
                             propellantEntry.getQuantity());
                 }
             }

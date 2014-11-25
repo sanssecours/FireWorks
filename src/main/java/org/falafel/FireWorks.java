@@ -188,17 +188,43 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         order.add(new SupplyOrder(
-                "Hugh", MaterialType.Casing.toString(), 9, 100));
+                "Hulk", MaterialType.Casing.toString(), 9, 100));
         order.add(new SupplyOrder(
-                "Hugh", MaterialType.Wood.toString(), 9, 100));
+                "Ironman", MaterialType.Wood.toString(), 9, 100));
         order.add(new SupplyOrder(
-                "Hugh", MaterialType.Effect.toString(), 9, 60));
+                "Captain America", MaterialType.Effect.toString(), 9, 60));
         order.add(new SupplyOrder(
-                "Hugh", MaterialType.Propellant.toString(), 2, 100));
+                "Batman", MaterialType.Effect.toString(), 7, 60));
+        order.add(new SupplyOrder(
+                "Thor", MaterialType.Effect.toString(), 7, 60));
+        order.add(new SupplyOrder(
+                "Seaman", MaterialType.Propellant.toString(), 2, 100));
         supplyTable.isEditable();
         supplyTable.setItems(order);
     }
 
+    /**
+     * Updates the counters in the GUI.
+     *
+     * @param number
+     *          The value that should be added or subtracted number of opened
+     *          propellants.
+     * @param difference
+     *          The value that should be added or subtracted from the current
+     *          quantity (in grams).
+     *
+     */
+    public static void changeOpenedPropellantLabels(final int number, final int difference) {
+        Platform.runLater(() -> {
+            numberOpenPropellantCounter = numberOpenPropellantCounter + number;
+            quantityOpenPropellantCounter = quantityOpenPropellantCounter
+                    + difference;
+            numberOpenPropellantCounterProperty.set(
+                    numberOpenPropellantCounter.toString());
+            quantityOpenPropellantCounterProperty.set(
+                    quantityOpenPropellantCounter.toString());
+        });
+    }
     /**
      * Updates the counters in the GUI.
      *
@@ -207,15 +233,11 @@ public class FireWorks extends Application {
      *          quantity (in grams).
      *
      */
-    public static void changeOpenedPropellantLabels(final int difference) {
+    public static void changeClosedPropellantLabels(final int difference) {
         Platform.runLater(() -> {
-            numberOpenPropellantCounter++;
-            quantityOpenPropellantCounter = quantityOpenPropellantCounter
-                    + difference;
-            numberOpenPropellantCounterProperty.set(
-                    numberOpenPropellantCounter.toString());
-            quantityOpenPropellantCounterProperty.set(
-                    quantityOpenPropellantCounter.toString());
+            propellantCounter = propellantCounter + difference;
+            propellantCounterProperty.set(
+                    propellantCounter.toString());
         });
     }
 
@@ -230,11 +252,12 @@ public class FireWorks extends Application {
     public static void reduceCasingEffectWood(final int difference) {
         Platform.runLater(() -> {
             casingsCounter = casingsCounter - difference;
-                casingsCounterProperty.set(casingsCounter.toString());
-                effectCounter = effectCounter - difference;
-                effectCounterProperty.set(effectCounter.toString());
-                woodCounter = woodCounter - difference;
-                woodCounterProperty.set(woodCounter.toString());
+            casingsCounterProperty.set(casingsCounter.toString());
+            effectCounter = effectCounter
+                    - difference - difference - difference;
+            effectCounterProperty.set(effectCounter.toString());
+            woodCounter = woodCounter - difference;
+            woodCounterProperty.set(woodCounter.toString());
         });
     }
 
