@@ -1,6 +1,7 @@
 package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -121,8 +122,15 @@ public class Supplier extends Thread {
                 container = capi.lookupContainer(order.getType(), spaceUri,
                         RequestTimeout.TRY_ONCE, supplyTransaction);
 
-                capi.write(container, RequestTimeout.ZERO, supplyTransaction,
-                        new Entry(newEntry));
+                if(order.getType().equals(FireWorks.MaterialType.Propellant.toString())) {
+                    capi.write(container, RequestTimeout.ZERO, supplyTransaction,
+                            new Entry(newEntry, LindaCoordinator.newCoordinationData()));
+                } else {
+                    capi.write(container, RequestTimeout.ZERO, supplyTransaction,
+                            new Entry(newEntry));
+                }
+
+
 
                 LOGGER.debug("Supplier " + id + " Wrote entry to container "
                         + order.getType());

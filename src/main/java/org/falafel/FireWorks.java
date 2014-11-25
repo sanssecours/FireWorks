@@ -187,7 +187,14 @@ public class FireWorks extends Application {
                 TextFieldTableCell.forTableColumn());
         orderedQualityColumn.isEditable();
 
-        order.add(new SupplyOrder());
+        order.add(new SupplyOrder(
+                "Hugh", MaterialType.Casing.toString(), 9, 100));
+        order.add(new SupplyOrder(
+                "Hugh", MaterialType.Wood.toString(), 9, 100));
+        order.add(new SupplyOrder(
+                "Hugh", MaterialType.Effect.toString(), 9, 60));
+        order.add(new SupplyOrder(
+                "Hugh", MaterialType.Propellant.toString(), 2, 100));
         supplyTable.isEditable();
         supplyTable.setItems(order);
     }
@@ -418,7 +425,7 @@ public class FireWorks extends Application {
                     MaterialType.Propellant.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
-                    asList(new LindaCoordinator(false), new AnyCoordinator()),
+                    asList(new LindaCoordinator(), new AnyCoordinator()),
                     null,
                     null);
             capi.addContainerAspect(materialContainerAspect,
