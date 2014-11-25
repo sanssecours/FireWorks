@@ -39,9 +39,12 @@ public class Propellant extends Material {
      *          The name of the supplier
      * @param supplierId
      *          A integer value that (uniquely) identifies the supplier.
+     * @param packageStatus
+     *          A string value containing the current status (opened/closed)
+     *          of the package.
      */
     public Propellant(final Integer identifier, final String supplierName,
-                      final Integer supplierId, String packageStatus) {
+                      final Integer supplierId, final String packageStatus) {
         super(identifier, supplierName, supplierId);
         this.quantity = FULL;
         this.status = packageStatus;
@@ -65,6 +68,15 @@ public class Propellant extends Material {
     public final void setQuantity(final int takenQuantity) {
         quantity = takenQuantity;
         status = OPENED;
+    }
+
+    /**
+     * Return the status of the propellant package.
+     *
+     * @return the current status of the propellant package.
+     */
+    public final String getStatus() {
+        return status;
     }
 
     /**

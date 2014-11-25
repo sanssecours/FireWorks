@@ -33,11 +33,10 @@ import org.mozartspaces.core.aspects.SpaceIPoint;
 import org.slf4j.Logger;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static org.mozartspaces.core.MzsConstants.Container;
 import static org.slf4j.LoggerFactory.getLogger;
 

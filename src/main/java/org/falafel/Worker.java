@@ -9,7 +9,6 @@ import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
-import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.capi3.LindaCoordinator.LindaSelector;
 
 import java.net.URI;
@@ -135,7 +134,7 @@ public final class Worker {
                     LindaSelector selector = LindaCoordinator.newSelector(
                             lindaTemplate, 1);
 
-                    List<LindaSelector> selectors = new ArrayList<LindaSelector>();
+                    List<LindaSelector> selectors = new ArrayList<>();
                     selectors.add(selector);
                      propellant = (Propellant) capi.take(containerReference,
                             selectors, RequestTimeout.TRY_ONCE,
@@ -143,7 +142,8 @@ public final class Worker {
                     LOGGER.info("Took propellant: " + propellant.toString());
 
                     context.setProperty("gotMaterial", true);
-                    capi.commitTransaction(collectResourcesTransaction, context);
+                    capi.commitTransaction(
+                            collectResourcesTransaction, context);
                     LOGGER.info("Took the following Items: " + casing.toString()
                             + effect.toString()
                             + wood.toString()

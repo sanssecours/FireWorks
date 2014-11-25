@@ -6,10 +6,8 @@ import org.mozartspaces.capi3.Transaction;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
-import org.mozartspaces.core.requests.TakeEntriesRequest;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
