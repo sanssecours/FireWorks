@@ -1,5 +1,6 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.Index;
 import org.mozartspaces.capi3.Queryable;
 
 /**
@@ -28,6 +29,7 @@ public class Propellant extends Material {
     /**
      * Save if the package is opened.
      */
+    @Index
     private String status;
 
     /**
@@ -75,9 +77,9 @@ public class Propellant extends Material {
      *
      * @return the current status of the propellant package.
      */
-    public final String getStatus() {
-        return status;
-    }
+    /*public final void setStatus(Integer newStatus) {
+        status = newStatus;
+    }*/
 
     /**
      * Return the string representation of the propellant package.
@@ -85,6 +87,7 @@ public class Propellant extends Material {
      * @return A string containing properties of this propellant package
      */
     public final String toString() {
-       return super.toString() + " -- Quantity: " + quantity;
+       return "Propellant: " + super.toString() + " -- Quantity: " + quantity
+               + " -- Status: " + status;
     }
 }

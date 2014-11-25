@@ -32,6 +32,6 @@ public class Effect extends Material {
      * @return A string containing properties of this propellent package
      */
     public final String toString() {
-        return super.toString() + " -- Defect: " + defect;
+        return "Effect: " + super.toString() + " -- Defect: " + defect;
     }
 }

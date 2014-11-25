@@ -82,7 +82,7 @@ public class Material implements Serializable {
      * @return A string representing the properties of the material
      */
     public String toString() {
-        return "Resource ID: " + id + " -- Supplier Name: "
+        return "ID: " + id + " -- Supplier Name: "
                 + supplierName + " -- Supplier ID: " + supplierId;
     }
     //CHECKSTYLE:ON

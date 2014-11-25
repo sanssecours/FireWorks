@@ -21,4 +21,12 @@ public class Wood extends Material {
         super(identifier, supplierName, supplierId);
     }
 
+    /**
+     * Return the string representation of the wood.
+     *
+     * @return A string containing properties of this wood
+     */
+    public final String toString() {
+        return "Wood: " + super.toString();
+    }
 }

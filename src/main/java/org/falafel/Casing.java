@@ -20,5 +20,12 @@ public class Casing extends Material {
                   final int supplierId) {
         super(identifier, supplierName, supplierId);
     }
-
+    /**
+     * Return the string representation of the casing.
+     *
+     * @return A string containing properties of this casing
+     */
+    public final String toString() {
+        return "Casing: " + super.toString();
+    }
 }
