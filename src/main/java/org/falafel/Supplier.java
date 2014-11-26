@@ -74,6 +74,7 @@ public class Supplier extends Thread {
 
         int functioningElements = (int) Math.ceil(
                 order.getQuantity() * order.getQuality() / HUNDRED);
+        boolean defect;
 
         ContainerReference container;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
@@ -97,13 +98,8 @@ public class Supplier extends Thread {
             if (orderType.equals(casing)) {
                 newEntry = new Casing(materialId, orderSupplier, id);
             } else if (orderType.equals(effect)) {
-
-                if (index < functioningElements) {
-                    newEntry = new Effect(materialId, orderSupplier, id, false);
-                } else {
-                    newEntry = new Effect(materialId, orderSupplier, id, true);
-                }
-
+                defect = index >= functioningElements;
+                newEntry = new Effect(materialId, orderSupplier, id, defect);
             } else if (orderType.equals(propellant)) {
                 newEntry = new Propellant(materialId, orderSupplier, id,
                         Propellant.CLOSED);
@@ -128,8 +124,7 @@ public class Supplier extends Thread {
                 container = capi.lookupContainer(orderType, spaceUri,
                         RequestTimeout.TRY_ONCE, supplyTransaction);
 
-                if (orderType.equals(
-                        MaterialType.Propellant.toString())) {
+                if (orderType.equals(propellant)) {
                     capi.write(container, RequestTimeout.ZERO,
                             supplyTransaction,
                             new Entry(newEntry,
