@@ -74,7 +74,7 @@ public class Supplier extends Thread {
         ContainerReference container;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
-        ArrayList<Wood> result;
+        ArrayList<Material> result;
         Material newEntry;
         int functioningElements = (int) Math.ceil(
                 order.getQuantity() * order.getQuality() / HUNDRED);
