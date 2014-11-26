@@ -182,6 +182,10 @@ public final class Worker {
 
                             int currentQuantity = propellant.getQuantity();
 
+                            takenOpenQuantity = takenOpenQuantity
+                                    + currentQuantity;
+                            takenOpenPropellant++;
+
                             if (currentQuantity >= missingQuantity) {
                                 // Done with rocket
                                 quantity = quantity + missingQuantity;
@@ -196,10 +200,6 @@ public final class Worker {
                                         - currentQuantity;
                                 propellant.setQuantity(0);
                             }
-
-                            takenOpenQuantity = takenOpenQuantity
-                                    + currentQuantity;
-                            takenOpenPropellant++;
                             propellantsWithQuantity.put(propellant,
                                     currentQuantity);
 
