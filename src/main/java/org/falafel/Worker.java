@@ -16,8 +16,10 @@ import org.slf4j.Logger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
+import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -60,7 +62,7 @@ public final class Worker {
 
         Casing casing;
         ArrayList<Effect> effects;
-        ArrayList<Propellant> propellants = new ArrayList<>();
+        HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
         Wood wood;
         Random randomGenerator = new Random();
 
@@ -124,7 +126,8 @@ public final class Worker {
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
                     effects = capi.take(containerReference,
-                            Arrays.asList(AnyCoordinator.newSelector(NUMBER_EFFECTS_NEEDED)),
+                            Arrays.asList(AnyCoordinator.newSelector(
+                                          NUMBER_EFFECTS_NEEDED)),
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
 
@@ -165,7 +168,7 @@ public final class Worker {
                     int takenOpenPropellant = 0;
                     int quantity = 0;
                     int missingQuantity = propellantQuantity;
-                    propellants = new ArrayList<>();
+                    propellantsWithQuantity  = new HashMap<>();
                     while (quantity < propellantQuantity) {
                         try {
                             Propellant propellant = (Propellant) capi.take(
@@ -177,22 +180,30 @@ public final class Worker {
                                     context).get(0);
 
                             int currentQuantity = propellant.getQuantity();
+
                             if (currentQuantity >= missingQuantity) {
+                                // Done with rocket
                                 quantity = quantity + missingQuantity;
                                 propellant.setQuantity(currentQuantity
                                         - missingQuantity);
+                                currentQuantity = missingQuantity;
                             } else {
+                                // We still need to open a new propellent
+                                // after the current one
                                 quantity = quantity + currentQuantity;
                                 missingQuantity = missingQuantity
                                         - currentQuantity;
                                 propellant.setQuantity(0);
                             }
+
                             takenOpenQuantity = takenOpenQuantity
                                     + currentQuantity;
                             takenOpenPropellant++;
-                            propellants.add(propellant);
+                            propellantsWithQuantity.put(propellant,
+                                    currentQuantity);
 
                         } catch (CountNotMetException e) {
+                            // No open propellent available
 
                             Propellant propellant = (Propellant) capi.take(
                                     containerReference,
@@ -208,7 +219,8 @@ public final class Worker {
 
                             propellant.setQuantity(currentQuantity
                                     - missingQuantity);
-                            propellants.add(propellant);
+                            propellantsWithQuantity.put(propellant,
+                                    missingQuantity);
 
                             context.setProperty("takenClosedPropellant", true);
                         }
@@ -225,28 +237,22 @@ public final class Worker {
                     LOGGER.info("Took the following Items: " + casing.toString()
                             + " " + effects + " "
                             + wood + " "
-                            + propellants);
+                            + propellantsWithQuantity.keySet());
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials in time!");
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
-                        propellants.clear();
+                        propellantsWithQuantity.clear();
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
                         return;
                     }
                 }
 
-
-
                 int waitingTime = randomGenerator.nextInt(
                         UPPERBOUND - LOWERBOUND) + LOWERBOUND;
 
                 Thread.sleep(waitingTime);
-
-
-
-
 
                 ContainerReference container;
                 ArrayList<Propellant> result;
@@ -257,11 +263,11 @@ public final class Worker {
                         RequestTimeout.TRY_ONCE,
                         null);
 
-                for (int i = 0; i < propellants.size(); i++) {
-                    if (propellants.get(i).getQuantity() != 0) {
+                for (Propellant propellant : propellantsWithQuantity.keySet()) {
+                    if (propellant.getQuantity() <= 0) {
                         capi.write(container, RequestTimeout.TRY_ONCE, null,
-                                new Entry(propellants.get(i),
-                                       LindaCoordinator.newCoordinationData()));
+                                new Entry(propellant,
+                                        newCoordinationData()));
                     }
                 }
 
@@ -269,8 +275,6 @@ public final class Worker {
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Propellant after " + result);
-
-
 
             } catch (InterruptedException e) {
                 System.out.println("I'm going home.");
