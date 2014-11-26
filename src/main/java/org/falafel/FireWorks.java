@@ -37,6 +37,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static org.falafel.MaterialType.Casing;
+import static org.falafel.MaterialType.Effect;
+import static org.falafel.MaterialType.Propellant;
+import static org.falafel.MaterialType.Wood;
 import static org.mozartspaces.core.MzsConstants.Container;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -48,9 +52,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * factory.
  */
 public class FireWorks extends Application {
-
-    /** Different types of Material provided by Suppliers. */
-    public static enum MaterialType { Casing, Effect, Propellant, Wood }
 
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(FireWorks.class);
@@ -77,10 +78,10 @@ public class FireWorks extends Application {
 
     /** Specify the different choices a supplier can provide. */
     private static final ObservableList<String> TYPES_CHOICE_LIST =
-            FXCollections.observableArrayList(MaterialType.Casing.toString(),
-                    MaterialType.Effect.toString(),
-                    MaterialType.Propellant.toString(),
-                    MaterialType.Wood.toString());
+            FXCollections.observableArrayList(Casing.toString(),
+                    Effect.toString(),
+                    Propellant.toString(),
+                    Wood.toString());
 
 
     /** Saves data shown in the rocket table. */
@@ -240,17 +241,17 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         order.add(new SupplyOrder(
-                "Hulk", MaterialType.Casing.toString(), 9, 100));
+                "Hulk", Casing.toString(), 9, 100));
         order.add(new SupplyOrder(
-                "Ironman", MaterialType.Wood.toString(), 9, 100));
+                "Ironman", Wood.toString(), 9, 100));
         order.add(new SupplyOrder(
-                "Captain America", MaterialType.Effect.toString(), 9, 60));
+                "Captain America", Effect.toString(), 9, 60));
         order.add(new SupplyOrder(
-                "Batman", MaterialType.Effect.toString(), 7, 60));
+                "Batman", Effect.toString(), 7, 60));
         order.add(new SupplyOrder(
-                "Thor", MaterialType.Effect.toString(), 7, 60));
+                "Thor", Effect.toString(), 7, 60));
         order.add(new SupplyOrder(
-                "Seaman", MaterialType.Propellant.toString(), 2, 100));
+                "Seaman", Propellant.toString(), 2, 100));
         supplyTable.isEditable();
         supplyTable.setItems(order);
     }
@@ -482,14 +483,14 @@ public class FireWorks extends Application {
 
         try {
             casingContainer = capi.createContainer(
-                    MaterialType.Casing.toString(),
+                    Casing.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, casingContainer,
                     ipoints, null);
             effectContainer = capi.createContainer(
-                    MaterialType.Effect.toString(),
+                    Effect.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
@@ -497,7 +498,7 @@ public class FireWorks extends Application {
                     ipoints, null);
 
             propellantContainer = capi.createContainer(
-                    MaterialType.Propellant.toString(),
+                    Propellant.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     asList(new LindaCoordinator(), new AnyCoordinator()),
@@ -506,7 +507,7 @@ public class FireWorks extends Application {
             capi.addContainerAspect(materialContainerAspect,
                     propellantContainer, ipoints, null);
             woodContainer = capi.createContainer(
-                    MaterialType.Wood.toString(),
+                    Wood.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);

@@ -110,7 +110,7 @@ public final class Worker {
 
                 try {
                     containerReference = capi.lookupContainer(
-                            FireWorks.MaterialType.Casing.toString(),
+                            MaterialType.Casing.toString(),
                             spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
@@ -120,7 +120,7 @@ public final class Worker {
                             collectResourcesTransaction, null,  context).get(0);
 
                     containerReference = capi.lookupContainer(
-                            FireWorks.MaterialType.Effect.toString(), spaceUri,
+                            MaterialType.Effect.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
                     effects = capi.take(containerReference,
@@ -129,7 +129,7 @@ public final class Worker {
                             collectResourcesTransaction, null, context);
 
                     containerReference = capi.lookupContainer(
-                            FireWorks.MaterialType.Wood.toString(), spaceUri,
+                            MaterialType.Wood.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
                     wood = (Wood) capi.take(containerReference,
@@ -138,7 +138,7 @@ public final class Worker {
                             collectResourcesTransaction, null, context).get(0);
 
                     containerReference = capi.lookupContainer(
-                            FireWorks.MaterialType.Propellant.toString(),
+                            MaterialType.Propellant.toString(),
                             spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
@@ -150,7 +150,7 @@ public final class Worker {
                     ContainerReference container;
 
                     container = capi.lookupContainer(
-                            FireWorks.MaterialType.Propellant.toString(),
+                            MaterialType.Propellant.toString(),
                             spaceUri,
                             RequestTimeout.TRY_ONCE,
                             null);
@@ -252,7 +252,7 @@ public final class Worker {
                 ArrayList<Propellant> result;
 
                 container = capi.lookupContainer(
-                        FireWorks.MaterialType.Propellant.toString(),
+                        MaterialType.Propellant.toString(),
                         spaceUri,
                         RequestTimeout.TRY_ONCE,
                         null);

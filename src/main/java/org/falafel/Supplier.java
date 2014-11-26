@@ -71,13 +71,22 @@ public class Supplier extends Thread {
      * Start the supplier.
      */
     public final void run() {
+
+        int functioningElements = (int) Math.ceil(
+                order.getQuantity() * order.getQuality() / HUNDRED);
+
         ContainerReference container;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
         ArrayList<Material> result;
         Material newEntry;
-        int functioningElements = (int) Math.ceil(
-                order.getQuantity() * order.getQuality() / HUNDRED);
+
+        String orderType = order.getType();
+        String orderSupplier = order.getSupplierName();
+        String casing = MaterialType.Casing.toString();
+        String effect = MaterialType.Effect.toString();
+        String propellant = MaterialType.Propellant.toString();
+        TransactionReference supplyTransaction;
 
         System.out.println("Supplier " + id + " active!");
 
@@ -85,27 +94,23 @@ public class Supplier extends Thread {
 
         for (int index = 0; index < order.getQuantity(); index++) {
 
-            if (order.getType().equals(
-                    FireWorks.MaterialType.Casing.toString())) {
-                newEntry = new Casing(materialId, order.getSupplierName(), id);
-            } else if (order.getType().equals(
-                    FireWorks.MaterialType.Effect.toString())) {
+            if (orderType.equals(casing)) {
+                newEntry = new Casing(materialId, orderSupplier, id);
+            } else if (orderType.equals(effect)) {
+
                 if (index < functioningElements) {
-                    newEntry = new Effect(materialId, order.getSupplierName(),
-                            id, false);
+                    newEntry = new Effect(materialId, orderSupplier, id, false);
                 } else {
-                    newEntry = new Effect(materialId, order.getSupplierName(),
-                            id, true);
+                    newEntry = new Effect(materialId, orderSupplier, id, true);
                 }
-            } else if (order.getType().equals(
-                    FireWorks.MaterialType.Propellant.toString())) {
-                newEntry = new Propellant(materialId, order.getSupplierName(),
-                        id, Propellant.CLOSED);
+
+            } else if (orderType.equals(propellant)) {
+                newEntry = new Propellant(materialId, orderSupplier, id,
+                        Propellant.CLOSED);
             } else {
-                newEntry = new Wood(materialId, order.getSupplierName(), id);
+                newEntry = new Wood(materialId, orderSupplier, id);
             }
 
-            TransactionReference supplyTransaction;
             try {
                 supplyTransaction = capi.createTransaction(
                         TRANSACTIONTIMEOUT, spaceUri);
@@ -120,11 +125,11 @@ public class Supplier extends Thread {
                 Thread.sleep(waitingTime);
 
                 newEntry.setID(materialId + index);
-                container = capi.lookupContainer(order.getType(), spaceUri,
+                container = capi.lookupContainer(orderType, spaceUri,
                         RequestTimeout.TRY_ONCE, supplyTransaction);
 
-                if (order.getType().equals(
-                        FireWorks.MaterialType.Propellant.toString())) {
+                if (orderType.equals(
+                        MaterialType.Propellant.toString())) {
                     capi.write(container, RequestTimeout.ZERO,
                             supplyTransaction,
                             new Entry(newEntry,
@@ -139,9 +144,9 @@ public class Supplier extends Thread {
                         RequestTimeout.TRY_ONCE, supplyTransaction);
                 capi.commitTransaction(supplyTransaction);
 
-                LOGGER.debug("Supplier " + id + " Read: " + result.toString());
+                LOGGER.debug("Supplier " + id + " Read: " + result);
                 LOGGER.debug("Supplier " + id + " Wrote entry to container "
-                        + order.getType());
+                        + orderType);
             } catch (MzsCoreException e) {
                 e.printStackTrace();
                 index--;
