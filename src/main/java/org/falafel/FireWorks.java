@@ -82,6 +82,54 @@ public class FireWorks extends Application {
                     MaterialType.Propellant.toString(),
                     MaterialType.Wood.toString());
 
+
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn packageIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn rocketIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn woodIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn casingIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn propellantIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn propellantQuantityColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn effectIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn defectIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn workerIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn testerIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn supplierWoodIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn supplierCasingColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn supplierPropellantIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableColumn supplierEffectIdColumn;
+    /** Saves data shown in the rocket table. */
+    @FXML
+    public TableView rocketTable;
+
+
     /** Saves data shown in the supplier table. */
     @FXML
     private TableView<SupplyOrder> supplyTable;
@@ -155,6 +203,10 @@ public class FireWorks extends Application {
      */
     @FXML
     private void initialize() {
+        // initialize rocket table
+
+
+        //  initialize supplier table
         casingsCounterLabel.textProperty().bind(casingsCounterProperty);
         effectCounterLabel.textProperty().bind(effectCounterProperty);
         propellantCounterLabel.textProperty().bind(propellantCounterProperty);

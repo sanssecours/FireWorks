@@ -26,6 +26,12 @@ public class Rocket {
                    ArrayList<Propellant> propellants,
                    Integer propellantQuantity,
                    Integer workerId){
-
+        id = rocketId;
+        this.wood = wood;
+        this.casing = casing;
+        this.effects = effects;
+        this.propellants = propellants;
+        this.propellantQuantity = propellantQuantity;
+        this.workerId = workerId;
     }
 }
