@@ -60,10 +60,10 @@ public final class Worker {
 
         int workerId;
 
-        Casing casing = null;
-        ArrayList<Effect> effects = null;
+        Casing casing;
+        ArrayList<Effect> effects;
         HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
-        Wood wood = null;
+        Wood wood;
         Random randomGenerator = new Random();
         int propellantQuantity;
 
@@ -109,8 +109,6 @@ public final class Worker {
                     return;
                 }
 
-
-
                 try {
                     containerReference = capi.lookupContainer(
                             MaterialType.Casing.toString(),
@@ -120,7 +118,7 @@ public final class Worker {
                     casing = (Casing) capi.take(containerReference,
                             null,
                             RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null,  context).get(0);
+                            collectResourcesTransaction, null, context).get(0);
 
                     containerReference = capi.lookupContainer(
                             MaterialType.Effect.toString(), spaceUri,
@@ -193,7 +191,7 @@ public final class Worker {
                                         - missingQuantity);
                                 currentQuantity = missingQuantity;
                             } else {
-                                // We still need to open a new propellent
+                                // We still need to open a new propellant
                                 // after the current one
                                 quantity = quantity + currentQuantity;
                                 missingQuantity = missingQuantity
@@ -204,8 +202,7 @@ public final class Worker {
                                     currentQuantity);
 
                         } catch (CountNotMetException e) {
-                            // No open propellent available
-
+                            // No open propellant available
                             Propellant propellant = (Propellant) capi.take(
                                     containerReference,
                                     Arrays.asList(LindaCoordinator.newSelector(
@@ -254,26 +251,25 @@ public final class Worker {
                 // Waiting time during worker produces Rocket
                 int waitingTime = randomGenerator.nextInt(
                         UPPERBOUND - LOWERBOUND) + LOWERBOUND;
-
                 Thread.sleep(waitingTime);
 
-                // Worker
+                // Worker produces rocket
+                Rocket producedRocket = new Rocket(1, wood, casing, effects,
+                        propellantsWithQuantity, propellantQuantity ,
+                        workerId);
+
+                // Worker writes the new rocket in the container
                 ContainerReference container;
-                if (wood != null) {
-                    Rocket producedRocket = new Rocket(1, wood, casing, effects,
-                            propellantsWithQuantity, propellantQuantity ,
-                            workerId);
-                    container = capi.lookupContainer(
-                            "createdRockets",
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            null);
-                    capi.write(container, RequestTimeout.TRY_ONCE, null,
-                            new Entry(producedRocket));
-                }
+                container = capi.lookupContainer(
+                        "createdRockets",
+                        spaceUri,
+                        RequestTimeout.TRY_ONCE,
+                        null);
+                capi.write(container, RequestTimeout.TRY_ONCE, null,
+                        new Entry(producedRocket));
 
-                ArrayList<Propellant> result;
-
+                // write the used propellant package back if it still contains
+                // propellant
                 container = capi.lookupContainer(
                         MaterialType.Propellant.toString(),
                         spaceUri,
@@ -288,6 +284,7 @@ public final class Worker {
                     }
                 }
 
+                ArrayList<Propellant> result;
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, null);
@@ -296,7 +293,6 @@ public final class Worker {
             } catch (InterruptedException e) {
                 System.out.println("I'm going home.");
                 core.shutdown(true);
-
             } catch (MzsCoreException e) {
                 e.printStackTrace();
             }
