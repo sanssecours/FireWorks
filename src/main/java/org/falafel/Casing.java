@@ -1,12 +1,12 @@
 package org.falafel;
 
 /**
- * This class represents a piece of wood used to create a rocket.
+ * This class represents a casing used to create a rocket.
  */
 public class Casing extends Material {
 
     /**
-     * Create a new material with the given attributes.
+     * Create a new casing with the given attributes.
      *
      * @param identifier
      *          A integer value that (uniquely) identifies this material.
@@ -20,6 +20,7 @@ public class Casing extends Material {
                   final int supplierId) {
         super(identifier, supplierName, supplierId);
     }
+
     /**
      * Return the string representation of the casing.
      *
