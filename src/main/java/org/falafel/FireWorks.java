@@ -86,49 +86,49 @@ public class FireWorks extends Application {
 
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn packageIdColumn;
+    private TableColumn packageIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn rocketIdColumn;
+    private TableColumn rocketIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn woodIdColumn;
+    private TableColumn woodIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn casingIdColumn;
+    private TableColumn casingIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn propellantIdColumn;
+    private TableColumn propellantIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn propellantQuantityColumn;
+    private TableColumn propellantQuantityColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn effectIdColumn;
+    private TableColumn effectIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn defectIdColumn;
+    private TableColumn defectIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn workerIdColumn;
+    private TableColumn workerIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn testerIdColumn;
+    private TableColumn testerIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn supplierWoodIdColumn;
+    private TableColumn supplierWoodIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn supplierCasingColumn;
+    private TableColumn supplierCasingColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn supplierPropellantIdColumn;
+    private TableColumn supplierPropellantIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableColumn supplierEffectIdColumn;
+    private TableColumn supplierEffectIdColumn;
     /** Saves data shown in the rocket table. */
     @FXML
-    public TableView rocketTable;
+    private TableView rocketTable;
 
 
     /** Saves data shown in the supplier table. */
@@ -240,18 +240,15 @@ public class FireWorks extends Application {
                 TextFieldTableCell.forTableColumn());
         orderedQualityColumn.isEditable();
 
-        order.add(new SupplyOrder(
-                "Hulk", Casing.toString(), 9, 100));
-        order.add(new SupplyOrder(
-                "Ironman", Wood.toString(), 9, 100));
-        order.add(new SupplyOrder(
-                "Captain America", Effect.toString(), 9, 60));
-        order.add(new SupplyOrder(
-                "Batman", Effect.toString(), 7, 60));
-        order.add(new SupplyOrder(
-                "Thor", Effect.toString(), 7, 60));
-        order.add(new SupplyOrder(
-                "Seaman", Propellant.toString(), 2, 100));
+        //CHECKSTYLE:OFF
+        order.add(new SupplyOrder("Hulk", Casing.toString(), 9, 100));
+        order.add(new SupplyOrder("Iron Man", Wood.toString(), 9, 100));
+        order.add(new SupplyOrder("Captain America", Effect.toString(), 9, 60));
+        order.add(new SupplyOrder("Batman", Effect.toString(), 7, 60));
+        order.add(new SupplyOrder("Thor", Effect.toString(), 7, 60));
+        order.add(new SupplyOrder("Seaman", Propellant.toString(), 2, 100));
+        //CHECKSTYLE:ON
+
         supplyTable.isEditable();
         supplyTable.setItems(order);
     }
@@ -267,7 +264,8 @@ public class FireWorks extends Application {
      *          quantity (in grams).
      *
      */
-    public static void changeOpenedPropellantLabels(final int number, final int difference) {
+    public static void changeOpenedPropellantLabels(final int number,
+                                                    final int difference) {
         Platform.runLater(() -> {
             numberOpenPropellantCounter = numberOpenPropellantCounter + number;
             quantityOpenPropellantCounter = quantityOpenPropellantCounter
