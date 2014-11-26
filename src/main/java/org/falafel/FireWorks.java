@@ -83,50 +83,14 @@ public class FireWorks extends Application {
                     Propellant.toString(),
                     Wood.toString());
 
+    /** Save data shown in the rocket table. */
+    @FXML
+    private TableColumn casingIdColumn, packageIdColumn, rocketIdColumn,
+            woodIdColumn, propellantIdColumn, propellantQuantityColumn,
+            effectIdColumn, defectIdColumn, workerIdColumn, testerIdColumn,
+            supplierWoodIdColumn, supplierCasingColumn,
+            supplierPropellantIdColumn, supplierEffectIdColumn;
 
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn packageIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn rocketIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn woodIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn casingIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn propellantIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn propellantQuantityColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn effectIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn defectIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn workerIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn testerIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn supplierWoodIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn supplierCasingColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn supplierPropellantIdColumn;
-    /** Saves data shown in the rocket table. */
-    @FXML
-    private TableColumn supplierEffectIdColumn;
-    /** Saves data shown in the rocket table. */
     @FXML
     private TableView rocketTable;
 
