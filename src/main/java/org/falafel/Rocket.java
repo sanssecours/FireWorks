@@ -170,8 +170,8 @@ public class Rocket implements Serializable {
      */
     public final StringProperty getSupplierPropellantIdProperty() {
         HashSet<String> returnString = new HashSet<>();
-        for (Effect effect : effects) {
-            returnString.add(Integer.toString(effect.getSupplierId()));
+        for (Propellant propellant : propellants.keySet()) {
+            returnString.add(Integer.toString(propellant.getSupplierId()));
         }
         return new SimpleStringProperty(returnString.toString());
     }
@@ -183,9 +183,9 @@ public class Rocket implements Serializable {
      * StringProperty.
      */
     public final StringProperty getSupplierEffectIdProperty() {
-        HashSet<String> returnString = new HashSet<>();
-        for (Propellant propellant : propellants.keySet()) {
-            returnString.add(Integer.toString(propellant.getSupplierId()));
+        ArrayList<String> returnString = new ArrayList<>();
+        for (Effect effect : effects) {
+            returnString.add(Integer.toString(effect.getSupplierId()));
         }
         return new SimpleStringProperty(returnString.toString());
     }

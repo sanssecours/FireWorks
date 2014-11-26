@@ -250,13 +250,15 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         //CHECKSTYLE:OFF
+        /*
         HashMap<Propellant, Integer> propellants = new HashMap<>();
         propellants.put(new Propellant(4, "hugo", 1, org.falafel.Propellant.CLOSED), 100);
+        propellants.put(new Propellant(5, "hugo", 3, org.falafel.Propellant.CLOSED), 130);
         ArrayList<Effect> effects = new ArrayList<>();
         effects.add(new Effect(3, "Hannes", 3, false));
         rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
                 effects, propellants, 130, 434));
-
+        */
         order.add(new SupplyOrder("Hulk", Casing.toString(), 9, 100));
         order.add(new SupplyOrder("Iron Man", Wood.toString(), 9, 100));
         order.add(new SupplyOrder("Captain America", Effect.toString(), 9, 60));

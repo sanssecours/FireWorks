@@ -65,6 +65,7 @@ public final class Worker {
         HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
         Wood wood = null;
         Random randomGenerator = new Random();
+        int propellantQuantity;
 
         Propellant lindaTemplateClosed = new Propellant(null, null, null,
                 Propellant.CLOSED);
@@ -147,7 +148,7 @@ public final class Worker {
                             collectResourcesTransaction, null, context);
 
 
-                    int propellantQuantity = randomGenerator.nextInt(
+                    propellantQuantity = randomGenerator.nextInt(
                             UPPERQUANTITY - LOWERQUANTITY) + LOWERQUANTITY;
 
                     ContainerReference container;
@@ -243,37 +244,25 @@ public final class Worker {
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
+                        continue;
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
                         return;
                     }
                 }
 
+                // Waiting time during worker produces Rocket
                 int waitingTime = randomGenerator.nextInt(
                         UPPERBOUND - LOWERBOUND) + LOWERBOUND;
 
                 Thread.sleep(waitingTime);
 
+                // Worker
                 ContainerReference container;
-                ArrayList<Propellant> result;
-
-                container = capi.lookupContainer(
-                        MaterialType.Propellant.toString(),
-                        spaceUri,
-                        RequestTimeout.TRY_ONCE,
-                        null);
-
-                for (Propellant propellant : propellantsWithQuantity.keySet()) {
-                    if (propellant.getQuantity() <= 0) {
-                        capi.write(container, RequestTimeout.TRY_ONCE, null,
-                                new Entry(propellant,
-                                        newCoordinationData()));
-                    }
-                }
-
                 if (wood != null) {
-                    Rocket producedRocket = new Rocket(1, wood, casing, effects, propellantsWithQuantity, 130 , workerId);
-                    LOGGER.debug("Produced Rocket: " + 12);
+                    Rocket producedRocket = new Rocket(1, wood, casing, effects,
+                            propellantsWithQuantity, propellantQuantity ,
+                            workerId);
                     container = capi.lookupContainer(
                             "createdRockets",
                             spaceUri,
@@ -283,6 +272,21 @@ public final class Worker {
                             new Entry(producedRocket));
                 }
 
+                ArrayList<Propellant> result;
+
+                container = capi.lookupContainer(
+                        MaterialType.Propellant.toString(),
+                        spaceUri,
+                        RequestTimeout.TRY_ONCE,
+                        null);
+
+                for (Propellant propellant : propellantsWithQuantity.keySet()) {
+                    if (propellant.getQuantity() > 0) {
+                        capi.write(container, RequestTimeout.TRY_ONCE, null,
+                                new Entry(propellant,
+                                        newCoordinationData()));
+                    }
+                }
 
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
