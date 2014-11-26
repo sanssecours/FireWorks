@@ -181,13 +181,14 @@
                               <TableColumn fx:id="propellantIdColumn" prefWidth="103.0" text="Propellant IDs" />
                               <TableColumn fx:id="propellantQuantityColumn" prefWidth="117.0" text="Quantity Propellant" />
                               <TableColumn fx:id="effectIdColumn" prefWidth="88.0" text="Effect ID" />
-                              <TableColumn fx:id="defectIdColumn" prefWidth="91.0" text="Defect Effect" />
+                              <TableColumn fx:id="testResultColumn" prefWidth="91.0" text="Test Result" />
                               <TableColumn fx:id="workerIdColumn" minWidth="0.0" prefWidth="85.0" text="Worker ID" />
                               <TableColumn fx:id="testerIdColumn" prefWidth="82.0" text="Tester ID" />
                               <TableColumn fx:id="supplierWoodIdColumn" prefWidth="105.0" text="Supplier Wood" />
                               <TableColumn fx:id="supplierCasingColumn" prefWidth="105.0" text="Supplier Casing" />
                               <TableColumn fx:id="supplierPropellantIdColumn" prefWidth="105.0" text="Supplier Propellant" />
                               <TableColumn fx:id="supplierEffectIdColumn" prefWidth="105.0" text="Supplier Effect" />
+                              <TableColumn fx:id="packerIdColumn" prefWidth="82.0" text="Packer ID" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

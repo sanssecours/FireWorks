@@ -31,6 +31,15 @@ public class Effect extends Material {
      *
      * @return A string containing properties of this effect charge
      */
+    public final String getStatus() {
+        return Boolean.toString(defect);
+    }
+
+    /**
+     * Return the string representation of the effect.
+     *
+     * @return A string containing properties of this effect charge
+     */
     public final String toString() {
         return "Effect: " + super.toString() + " -- Defect: " + defect;
     }

@@ -87,9 +87,10 @@ public class FireWorks extends Application {
     @FXML
     private TableColumn casingIdColumn, packageIdColumn, rocketIdColumn,
             woodIdColumn, propellantIdColumn, propellantQuantityColumn,
-            effectIdColumn, defectIdColumn, workerIdColumn, testerIdColumn,
-            supplierWoodIdColumn, supplierCasingColumn,
-            supplierPropellantIdColumn, supplierEffectIdColumn;
+            effectIdColumn, testResultColumn,
+            workerIdColumn, testerIdColumn, supplierWoodIdColumn,
+            supplierCasingColumn, supplierPropellantIdColumn,
+            supplierEffectIdColumn, packerIdColumn;
 
     @FXML
     private TableView rocketTable;
@@ -171,7 +172,7 @@ public class FireWorks extends Application {
         // initialize rocket table
 
 
-        //  initialize supplier table
+        // initialize current warehouse labels
         casingsCounterLabel.textProperty().bind(casingsCounterProperty);
         effectCounterLabel.textProperty().bind(effectCounterProperty);
         propellantCounterLabel.textProperty().bind(propellantCounterProperty);
@@ -181,6 +182,7 @@ public class FireWorks extends Application {
         quantityOpenPropellantLabel.textProperty().bind(
                 quantityOpenPropellantCounterProperty);
 
+        //  initialize supplier table
         supplierNameColumn.setCellValueFactory(
                 cellData -> cellData.getValue().supplierNameProperty());
         supplierNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());

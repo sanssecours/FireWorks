@@ -1,6 +1,11 @@
 package org.falafel;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * .
@@ -8,24 +13,25 @@ import java.util.ArrayList;
 public class Rocket {
 
     Integer id;
+    Integer packageId = 0;
     Wood wood;
     Casing casing;
     ArrayList<Effect> effects;
-    ArrayList<Propellant> propellants;
+    HashMap<Propellant, Integer> propellants;
     Integer propellantQuantity;
     Integer workerId;
     Integer testerId;
+    Integer packerId;
     Boolean testResult;
     Boolean readyForCollection;
-    Boolean packageId;
 
     public Rocket (Integer rocketId,
                    Wood wood,
                    Casing casing,
                    ArrayList<Effect> effects,
-                   ArrayList<Propellant> propellants,
+                   HashMap<Propellant, Integer> propellants,
                    Integer propellantQuantity,
-                   Integer workerId){
+                   Integer workerId) {
         id = rocketId;
         this.wood = wood;
         this.casing = casing;
@@ -34,4 +40,154 @@ public class Rocket {
         this.propellantQuantity = propellantQuantity;
         this.workerId = workerId;
     }
+    /**
+     * Returns the id of the rocket
+     *
+     * @return Returns the ids of the rocket as StringProperty.
+     */
+    public final StringProperty getIdProperty() {
+        return new SimpleStringProperty(id.toString());
+    }
+    /**
+     * Returns the id of the package in which the rocket is placed
+     *
+     * @return Returns the ids of the package as StringProperty.
+     */
+    public final StringProperty getPackageIdProperty() {
+        return new SimpleStringProperty(packageId.toString());
+    }
+    /**
+     * Returns the id of the built in casing.
+     *
+     * @return Returns the id of the casing as a StringProperty.
+     */
+    public final StringProperty getCasingIdProperty() {
+        return new SimpleStringProperty(Integer.toString(casing.getID()));
+    }
+    /**
+     * Returns the id of the built in packages as a string containing the used
+     * ids.
+     *
+     * @return Returns the ids of the used propellant packages as
+     *          StringProperty.
+     */
+    public final StringProperty getPropellantPackageIdProperty() {
+        ArrayList<String> returnString = new ArrayList<>();
+        for (Propellant propellant : propellants.keySet()) {
+            returnString.add(Integer.toString(propellant.getID()));
+            returnString.add(Integer.toString(propellants.get(propellant)));
+        }
+        return new SimpleStringProperty(returnString.toString());
+    }
+    /**
+     * Returns the id of the built in wood.
+     *
+     * @return Returns the string property of the built in wood.
+     */
+    public final StringProperty getWoodIdProperty() {
+        return new SimpleStringProperty(Integer.toString(wood.getID()));
+    }
+    /**
+     * Returns the id of the built in effects as a string containing the used
+     * ids.
+     *
+     * @return Returns the ids of the used effects as StringProperty.
+     */
+    public final StringProperty getEffectIdProperty() {
+        ArrayList<String> returnString = new ArrayList<>();
+        for (Effect effect : effects) {
+            returnString.add(Integer.toString(effect.getID()));
+            returnString.add(effect.getStatus());
+        }
+        return new SimpleStringProperty(returnString.toString());
+    }
+    /**
+     * Returns the quantity used in the rocket
+     *
+     * @return Returns the propellant quantity as StringProperty.
+     */
+    public final StringProperty getPropellantQuantityProperty() {
+        return new SimpleStringProperty(propellantQuantity.toString());
+    }
+    /**
+     * Returns the the result of the quality test.
+     *
+     * @return Returns the test result of the quality test as StringProperty.
+     */
+    public final StringProperty getTestResultProperty() {
+        return new SimpleStringProperty(Boolean.toString(testResult));
+    }
+    /**
+     * Returns the the id of the worker who built the rocket.
+     *
+     * @return Returns the worker id as StringProperty.
+     */
+    public final StringProperty getWorkerIdProperty() {
+
+        return new SimpleStringProperty(workerId.toString());
+    }
+    /**
+     * Returns the the id of the quality tester who tested the rocket.
+     *
+     * @return Returns the tester id as StringProperty.
+     */
+    public final StringProperty getTesterIdProperty() {
+
+        return new SimpleStringProperty(testerId.toString());
+    }
+    /**
+     * Returns the the id of the logistician who packed up the rocket.
+     *
+     * @return Returns the logistician id as StringProperty.
+     */
+    public final StringProperty getPackerIdProperty() {
+        return new SimpleStringProperty(packerId.toString());
+    }
+    /**
+     * Returns the the id of the supplier who delivered the used wood.
+     *
+     * @return Returns the supplier of the wood id as StringProperty.
+     */
+    public final StringProperty getSupplierWoodIdProperty() {
+        return new SimpleStringProperty(Integer.toString(wood.getSupplierId()));
+    }
+    /**
+     * Returns the the id of the supplier who delivered the used casing.
+     *
+     * @return Returns the supplier of the casing id as StringProperty.
+     */
+    public final StringProperty getSupplierCasingIdProperty() {
+        return new SimpleStringProperty(Integer.toString(
+                casing.getSupplierId()));
+    }
+    /**
+     * Returns the the id of the suppliers who delivered the used propellant
+     * packages.
+     *
+     * @return Returns the suppliers of the propellant charges ids as
+     *          StringProperty.
+     */
+    public final StringProperty getSupplierPropellantIdProperty() {
+        HashSet<String> returnString = new HashSet<>();
+        for (Effect effect : effects) {
+            returnString.add(Integer.toString(effect.getSupplierId()));
+        }
+        return new SimpleStringProperty(returnString.toString());
+    }
+    /**
+     * Returns the the id of the suppliers who delivered the used effect charges
+     * packages.
+     *
+     * @return Returns the suppliers of the effect charges ids as
+     * StringProperty.
+     */
+    public final StringProperty getSupplierEffectIdProperty() {
+        HashSet<String> returnString = new HashSet<>();
+        for (Propellant propellant : propellants.keySet()) {
+            returnString.add(Integer.toString(propellant.getSupplierId()));
+        }
+        return new SimpleStringProperty(returnString.toString());
+    }
+
+
 }
