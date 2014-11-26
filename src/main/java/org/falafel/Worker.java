@@ -60,10 +60,10 @@ public final class Worker {
 
         int workerId;
 
-        Casing casing;
-        ArrayList<Effect> effects;
+        Casing casing = null;
+        ArrayList<Effect> effects = null;
         HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
-        Wood wood;
+        Wood wood = null;
         Random randomGenerator = new Random();
 
         Propellant lindaTemplateClosed = new Propellant(null, null, null,
@@ -270,6 +270,19 @@ public final class Worker {
                                         newCoordinationData()));
                     }
                 }
+
+                if (wood != null) {
+                    Rocket producedRocket = new Rocket(1, wood, casing, effects, propellantsWithQuantity, 130 , workerId);
+                    LOGGER.debug("Produced Rocket: " + 12);
+                    container = capi.lookupContainer(
+                            "createdRockets",
+                            spaceUri,
+                            RequestTimeout.TRY_ONCE,
+                            null);
+                    capi.write(container, RequestTimeout.TRY_ONCE, null,
+                            new Entry(producedRocket));
+                }
+
 
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),

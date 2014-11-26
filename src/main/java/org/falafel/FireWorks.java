@@ -32,10 +32,8 @@ import org.mozartspaces.core.aspects.SpaceAspect;
 import org.mozartspaces.core.aspects.SpaceIPoint;
 import org.slf4j.Logger;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,17 +69,25 @@ public class FireWorks extends Application {
     private static ContainerReference propellantContainer;
     /** The container for storing the wood supplies. */
     private static ContainerReference woodContainer;
+    /** The container for storing the created rockets. */
+    private static ContainerReference createdRockets;
+    /** The container for storing the tested rockets. */
+    private static ContainerReference testedRockets;
+    /** The container for storing the packed rockets. */
+    private static ContainerReference packedRockets;
+    /** The container for storing the thrown out rockets. */
+    private static ContainerReference wasteRockets;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
     /** The running id for the materials. */
     private static int materialId = 1;
 
     /**  The data as an observable list for SupplyOrder. */
-    private ObservableList<SupplyOrder> order =
+    private static ObservableList<SupplyOrder> order =
             FXCollections.observableArrayList();
 
     /**  The data as an observable list for SupplyOrder. */
-    private ObservableList<Rocket> rockets =
+    private static ObservableList<Rocket> rockets =
             FXCollections.observableArrayList();
 
     /** Specify the different choices a supplier can provide. */
@@ -177,14 +183,6 @@ public class FireWorks extends Application {
      */
     @FXML
     private void initialize() {
-        HashMap<Propellant, Integer> propellants = new HashMap<>();
-        propellants.put(new Propellant(4, "Hugo", 1, org.falafel.Propellant.CLOSED), 100);
-        ArrayList<Effect> effects = new ArrayList<>();
-        effects.add(new Effect(3, "Hannes", 3, false));
-
-        rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
-               effects, propellants, 130, 434));
-
         // initialize rocket table
         rocketIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getIdProperty());
@@ -252,6 +250,13 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         //CHECKSTYLE:OFF
+        HashMap<Propellant, Integer> propellants = new HashMap<>();
+        propellants.put(new Propellant(4, "hugo", 1, org.falafel.Propellant.CLOSED), 100);
+        ArrayList<Effect> effects = new ArrayList<>();
+        effects.add(new Effect(3, "Hannes", 3, false));
+        rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
+                effects, propellants, 130, 434));
+
         order.add(new SupplyOrder("Hulk", Casing.toString(), 9, 100));
         order.add(new SupplyOrder("Iron Man", Wood.toString(), 9, 100));
         order.add(new SupplyOrder("Captain America", Effect.toString(), 9, 60));
@@ -262,7 +267,23 @@ public class FireWorks extends Application {
 
         supplyTable.isEditable();
         supplyTable.setItems(order);
+
         rocketTable.setItems(rockets);
+    }
+
+    /**
+     *
+     *
+     * @param containerId defines which rocket table (created/tested, packed
+     *                    or thrown away) should be updated
+     * @param rocket the rocket to add to the container
+     */
+    public static void addNewRocketToTable(String containerId, Rocket rocket) {
+        Platform.runLater(() -> {
+            if (containerId.equals(createdRockets.getId())) {
+                rockets.add(rocket);
+            }
+        });
     }
 
     /**
@@ -476,9 +497,10 @@ public class FireWorks extends Application {
         capi = new Capi(mozartSpace);
 
         ContainerAspect materialContainerAspect = new MaterialAspects();
+        ContainerAspect newRocketContainerAspect = new NewRocketAspects();
         URI spaceURI = mozartSpace.getConfig().getSpaceUri();
-        Set<ContainerIPoint> ipoints = new HashSet<>();
-        ipoints.add(ContainerIPoint.POST_WRITE);
+        Set<ContainerIPoint> iPoints = new HashSet<>();
+        iPoints.add(ContainerIPoint.POST_WRITE);
 
         SpaceAspect aspect = new ReduceLabelSpaceAspects();
         Set<SpaceIPoint> p = new HashSet<>();
@@ -492,21 +514,21 @@ public class FireWorks extends Application {
         LOGGER.info("Space URI: " + spaceURI);
 
         try {
+            // Create the supply containers
             casingContainer = capi.createContainer(
                     Casing.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, casingContainer,
-                    ipoints, null);
+                    iPoints, null);
             effectContainer = capi.createContainer(
                     Effect.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, effectContainer,
-                    ipoints, null);
-
+                    iPoints, null);
             propellantContainer = capi.createContainer(
                     Propellant.toString(),
                     spaceURI,
@@ -515,14 +537,23 @@ public class FireWorks extends Application {
                     null,
                     null);
             capi.addContainerAspect(materialContainerAspect,
-                    propellantContainer, ipoints, null);
+                    propellantContainer, iPoints, null);
             woodContainer = capi.createContainer(
                     Wood.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
             capi.addContainerAspect(materialContainerAspect, woodContainer,
-                    ipoints, null);
+                    iPoints, null);
+
+            // create the container where the newly created rockets are stored
+            createdRockets = capi.createContainer(
+                    "createdRockets",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    null);
+            capi.addContainerAspect(newRocketContainerAspect, createdRockets,
+                    iPoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
