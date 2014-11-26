@@ -32,7 +32,11 @@ import org.mozartspaces.core.aspects.SpaceAspect;
 import org.mozartspaces.core.aspects.SpaceIPoint;
 import org.slf4j.Logger;
 
+import java.lang.reflect.Array;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,6 +80,10 @@ public class FireWorks extends Application {
     private ObservableList<SupplyOrder> order =
             FXCollections.observableArrayList();
 
+    /**  The data as an observable list for SupplyOrder. */
+    private ObservableList<Rocket> rockets =
+            FXCollections.observableArrayList();
+
     /** Specify the different choices a supplier can provide. */
     private static final ObservableList<String> TYPES_CHOICE_LIST =
             FXCollections.observableArrayList(Casing.toString(),
@@ -85,15 +93,15 @@ public class FireWorks extends Application {
 
     /** Save data shown in the rocket table. */
     @FXML
-    private TableColumn casingIdColumn, packageIdColumn, rocketIdColumn,
-            woodIdColumn, propellantIdColumn, propellantQuantityColumn,
-            effectIdColumn, testResultColumn,
+    private TableColumn<Rocket, String> casingIdColumn, packageIdColumn,
+            rocketIdColumn, woodIdColumn, propellantIdColumn,
+            propellantQuantityColumn, effectIdColumn, testResultColumn,
             workerIdColumn, testerIdColumn, supplierWoodIdColumn,
             supplierCasingColumn, supplierPropellantIdColumn,
             supplierEffectIdColumn, packerIdColumn;
-
+    /** Save handler of the rocket table. */
     @FXML
-    private TableView rocketTable;
+    private TableView<Rocket> rocketTable;
 
 
     /** Saves data shown in the supplier table. */
@@ -169,11 +177,48 @@ public class FireWorks extends Application {
      */
     @FXML
     private void initialize() {
+        HashMap<Propellant, Integer> propellants = new HashMap<>();
+        propellants.put(new Propellant(4, "Hugo", 1, org.falafel.Propellant.CLOSED), 100);
+        ArrayList<Effect> effects = new ArrayList<>();
+        effects.add(new Effect(3, "Hannes", 3, false));
+
+        rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
+               effects, propellants, 130, 434));
+
         // initialize rocket table
+        rocketIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getIdProperty());
+        packageIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPackageIdProperty());
+        casingIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getCasingIdProperty());
+        propellantIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPropellantPackageIdProperty());
+        woodIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getWoodIdProperty());
+        effectIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getEffectIdProperty());
+        propellantQuantityColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPropellantQuantityProperty());
+        testResultColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getTestResultProperty());
+        workerIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getWorkerIdProperty());
+        testerIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getTesterIdProperty());
+        packerIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPackerIdProperty());
+        supplierWoodIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSupplierWoodIdProperty());
+        supplierCasingColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSupplierCasingIdProperty());
+        supplierPropellantIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSupplierPropellantIdProperty());
+        supplierEffectIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSupplierEffectIdProperty());
 
-
-        // initialize current warehouse labels
-        casingsCounterLabel.textProperty().bind(casingsCounterProperty);
+                // initialize current warehouse labels
+                casingsCounterLabel.textProperty().bind(casingsCounterProperty);
         effectCounterLabel.textProperty().bind(effectCounterProperty);
         propellantCounterLabel.textProperty().bind(propellantCounterProperty);
         woodCounterLabel.textProperty().bind(woodCounterProperty);
@@ -217,6 +262,7 @@ public class FireWorks extends Application {
 
         supplyTable.isEditable();
         supplyTable.setItems(order);
+        rocketTable.setItems(rockets);
     }
 
     /**

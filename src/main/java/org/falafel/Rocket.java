@@ -3,6 +3,7 @@ package org.falafel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 /**
  * .
  */
-public class Rocket {
+public class Rocket implements Serializable {
 
     Integer id;
     Integer packageId = 0;
@@ -20,10 +21,10 @@ public class Rocket {
     HashMap<Propellant, Integer> propellants;
     Integer propellantQuantity;
     Integer workerId;
-    Integer testerId;
-    Integer packerId;
-    Boolean testResult;
-    Boolean readyForCollection;
+    Integer testerId = 0;
+    Integer packerId = 0;
+    Boolean testResult = false;
+    Boolean readyForCollection = false;
 
     public Rocket (Integer rocketId,
                    Wood wood,
