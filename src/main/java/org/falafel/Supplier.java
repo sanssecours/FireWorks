@@ -84,6 +84,7 @@ public class Supplier extends Thread {
         Random randomGenerator = new Random();
 
         for (int index = 0; index < order.getQuantity(); index++) {
+
             if (order.getType().equals(
                     FireWorks.MaterialType.Casing.toString())) {
                 newEntry = new Casing(materialId, order.getSupplierName(), id);
@@ -112,33 +113,35 @@ public class Supplier extends Thread {
                 e.printStackTrace();
                 return;
             }
+
             try {
                 int waitingTime = randomGenerator.nextInt(
                         UPPERBOUND - LOWERBOUND) + LOWERBOUND;
-//                System.out.println("Waiting Time: " + waitingTime);
                 Thread.sleep(waitingTime);
 
                 newEntry.setID(materialId + index);
                 container = capi.lookupContainer(order.getType(), spaceUri,
                         RequestTimeout.TRY_ONCE, supplyTransaction);
 
-                if(order.getType().equals(FireWorks.MaterialType.Propellant.toString())) {
-                    capi.write(container, RequestTimeout.ZERO, supplyTransaction,
-                            new Entry(newEntry, LindaCoordinator.newCoordinationData()));
+                if (order.getType().equals(
+                        FireWorks.MaterialType.Propellant.toString())) {
+                    capi.write(container, RequestTimeout.ZERO,
+                            supplyTransaction,
+                            new Entry(newEntry,
+                                      LindaCoordinator.newCoordinationData()));
                 } else {
-                    capi.write(container, RequestTimeout.ZERO, supplyTransaction,
-                            new Entry(newEntry));
+                    capi.write(container, RequestTimeout.ZERO,
+                            supplyTransaction, new Entry(newEntry));
                 }
 
-
-
-                LOGGER.debug("Supplier " + id + " Wrote entry to container "
-                        + order.getType());
                 result = capi.read(container,
                         AnyCoordinator.newSelector(COUNT_ALL),
                         RequestTimeout.TRY_ONCE, supplyTransaction);
-                LOGGER.debug("Supplier " + id + " Read: " + result.toString());
                 capi.commitTransaction(supplyTransaction);
+
+                LOGGER.debug("Supplier " + id + " Read: " + result.toString());
+                LOGGER.debug("Supplier " + id + " Wrote entry to container "
+                        + order.getType());
             } catch (MzsCoreException e) {
                 e.printStackTrace();
                 index--;
