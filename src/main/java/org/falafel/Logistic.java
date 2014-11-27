@@ -1,6 +1,5 @@
 package org.falafel;
 
-import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.core.Capi;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import java.net.URI;
 import java.util.ArrayList;
 
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -32,6 +30,8 @@ public final class Logistic {
     /** Specifies how long a logistic worker waits until he tries to get
      *  new rockets after he was unable to get them the last time. */
     private static final int WAIT_TIME_LOGISTIC_MS = 2000;
+    /** Constant for how many rockets are in one package. */
+    private static final int PACKAGE_SIZE = 2;
 
     /**
      * Get the Logger for the current class.
@@ -111,7 +111,7 @@ public final class Logistic {
                     } else {
                         functioningRockets.add(rocket);
                     }
-                } while (functioningRockets.size() < 5);
+                } while (functioningRockets.size() < PACKAGE_SIZE);
 
                 container = capi.lookupContainer("finishedRockets",
                         spaceUri, MzsConstants.RequestTimeout.TRY_ONCE,
@@ -145,31 +145,6 @@ public final class Logistic {
                     LOGGER.error("Logistician can't rollback transaction!");
                     System.exit(1);
                 }
-            } catch (MzsCoreException e) {
-                LOGGER.error("Logistician has problem with space!");
-                System.exit(1);
-            }
-            try {
-                container = capi.lookupContainer(
-                        "trashedRockets",
-                        spaceUri,
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        null);
-                ArrayList<Rocket> readRocket;
-                readRocket = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        MzsConstants.RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Rockets in the trash: " + readRocket);
-
-                container = capi.lookupContainer(
-                        "finishedRockets",
-                        spaceUri,
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        null);
-                readRocket = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        MzsConstants.RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Rockets in finished container " + readRocket);
             } catch (MzsCoreException e) {
                 LOGGER.error("Logistician has problem with space!");
                 System.exit(1);

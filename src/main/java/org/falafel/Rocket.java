@@ -263,7 +263,7 @@ public class Rocket implements Serializable {
         packageId = id;
     }
     /**
-     * Set if the rocket is finihed and ready to collect.
+     * Set if the rocket is finished and ready to collect.
      *
      * @param readyForCollection flag which tells that the rocket is finished
      */
