@@ -20,10 +20,7 @@ import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * This class represents the qulity tester who decides if a rocket is defect or
- * not. The criteria for a defect rocket are if:
- *      more than one effect charge is faulty
- *      it contains less than 120g of the propellant charge
+ * This class represents a logistic worker.
  */
 public final class Logistic {
 
