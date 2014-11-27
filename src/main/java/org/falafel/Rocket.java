@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * .
@@ -183,7 +184,7 @@ public class Rocket implements Serializable {
      * StringProperty.
      */
     public final StringProperty getSupplierEffectIdProperty() {
-        ArrayList<String> returnString = new ArrayList<>();
+        TreeSet<String> returnString = new TreeSet<>();
         for (Effect effect : effects) {
             returnString.add(Integer.toString(effect.getSupplierId()));
         }
