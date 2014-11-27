@@ -270,13 +270,13 @@ public class FireWorks extends Application {
         rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
                 effects, propellants, 130, 434));
         */
-        order.add(new SupplyOrder("Hulk", Casing.toString(), 15, 100));
-        order.add(new SupplyOrder("Iron Man", Wood.toString(), 15, 100));
-        order.add(new SupplyOrder("Captain America", Effect.toString(), 10, 100));
-        order.add(new SupplyOrder("Batman", Effect.toString(), 10, 100));
-        order.add(new SupplyOrder("Thor", Effect.toString(), 10, 60));
-        order.add(new SupplyOrder("Seaman", Propellant.toString(), 5, 100));
-        order.add(new SupplyOrder("Hawk", Propellant.toString(), 5, 100));
+        order.add(new SupplyOrder("Hulk", Casing.toString(), 150, 100));
+        order.add(new SupplyOrder("Iron Man", Wood.toString(), 150, 100));
+        order.add(new SupplyOrder("Captain America", Effect.toString(), 150, 100));
+        order.add(new SupplyOrder("Batman", Effect.toString(), 150, 60));
+        order.add(new SupplyOrder("Thor", Effect.toString(), 150, 60));
+        order.add(new SupplyOrder("Seaman", Propellant.toString(), 50, 100));
+        order.add(new SupplyOrder("Hawk", Propellant.toString(), 50, 100));
         //CHECKSTYLE:ON
 
         supplyTable.isEditable();
