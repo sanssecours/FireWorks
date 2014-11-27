@@ -6,8 +6,12 @@
 
 # -- Variables -----------------------------------------------------------------
 
-first_worker_id=10
-last_worker_id=20
+first_worker_id=1001
+last_worker_id=1003
+first_tester_id=2001
+last_tester_id=2002
+first_logistic_id=3001
+last_logistic_id=3002
 
 # Compile sources
 mvn compile
@@ -22,4 +26,16 @@ sleep 10
 for (( worker = first_worker_id; worker <= last_worker_id; worker++ )); do
     echo "Start worker $worker"
     mvn exec:java -PWorker -Dworker.id=$worker&
+done
+
+# Start testers
+for (( tester = first_tester_id; tester <= last_tester_id; tester++ )); do
+    echo "Start tester $tester"
+    mvn exec:java -PTester -Dtester.id=$tester&
+done
+
+# Start logistic workers
+for (( worker = first_logistic_id; worker <= last_logistic_id; worker++ )); do
+    echo "Start logistic worker $worker"
+    mvn exec:java -PLogistic -Dlogistic.id=$worker&
 done
