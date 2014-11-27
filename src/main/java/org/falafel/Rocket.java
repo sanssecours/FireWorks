@@ -229,4 +229,28 @@ public class Rocket implements Serializable {
     public final Integer getPropellantQuantity() {
         return propellantQuantity;
     }
+    /**
+     * returning the result of the quality test
+     *
+     * @return bollean value of the test result
+     */
+    public Boolean getTestResult() {
+        return testResult;
+    }
+    /**
+     * sets the id of the quality tester who tested the rocket
+     *
+     * @param testerId of the quality tester
+     */
+    public void setTester(int testerId) {
+        this.testerId = testerId;
+    }
+    /**
+     * Return the string representation of the rocket.
+     *
+     * @return A string containing the rocket
+     */
+    public final String toString() {
+        return "Rocket Id: " + id;
+    }
 }

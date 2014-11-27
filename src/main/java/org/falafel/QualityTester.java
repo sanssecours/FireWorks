@@ -2,6 +2,7 @@ package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
+import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -14,9 +15,8 @@ import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -27,27 +27,31 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class QualityTester {
 
-    /** Constant for the transaction timeout time. */
+    /**
+     * Constant for the transaction timeout time.
+     */
     private static final int TRANSACTION_TIMEOUT = 3000;
-    /** Get the Logger for the current class. */
+    /**
+     * Get the Logger for the current class.
+     */
     private static final Logger LOGGER = getLogger(FireWorks.class);
 
-    /** Create the quality tester singleton. */
-    private QualityTester() { }
+    /**
+     * Create the quality tester singleton.
+     */
+    private QualityTester() {
+    }
 
     /**
      * Start the quality tester process.
      *
-     * @param arguments
-     *          A list containing the command line arguments.
-     *
+     * @param arguments A list containing the command line arguments.
      */
     public static void main(final String[] arguments) {
         int testerId;
         ArrayList<Rocket> rockets;
         Rocket rocket;
         ArrayList<Effect> effects;
-        int propellantQuantity;
 
         Capi capi;
         MzsCore core;
@@ -74,51 +78,85 @@ public class QualityTester {
         capi = new Capi(core);
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
-        try {
-            getRocketsTransaction = capi.createTransaction(
-                    TRANSACTION_TIMEOUT, spaceUri);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try {
-            container = capi.lookupContainer("createdRockets", spaceUri,
-                    MzsConstants.RequestTimeout.TRY_ONCE,
-                    getRocketsTransaction);
-            rockets = capi.take(container,
-                    AnyCoordinator.newSelector(1),
-                    MzsConstants.RequestTimeout.TRY_ONCE,
-                    getRocketsTransaction);
-
-            rocket = rockets.get(0);
-
-            effects = rocket.getEffects();
-
-            int defectCount = 0;
-            for (Effect effect : effects) {
-                if (effect.getStatus()) {
-                    defectCount++;
-                }
-            }
-            if (defectCount > 1 || rocket.getPropellantQuantity() < 120) {
-                rocket.setTestResult(true);
-            } else {
-                rocket.setTestResult(false);
-            }
-
-            capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
-                    getRocketsTransaction, new Entry(rocket));
-        } catch (CountNotMetException e1) {
-            LOGGER.info("Could not get a rocket in time!");
+        while (true) {
             try {
-                capi.rollbackTransaction(getRocketsTransaction);
-            } catch (MzsCoreException e2) {
-                LOGGER.error("Can't rollback transaction!");
+                getRocketsTransaction = capi.createTransaction(
+                        TRANSACTION_TIMEOUT, spaceUri);
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
                 return;
             }
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
+
+            try {
+                container = capi.lookupContainer("createdRockets", spaceUri,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction);
+                rockets = capi.take(container,
+                        AnyCoordinator.newSelector(1),
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction);
+
+                rocket = rockets.get(0);
+
+                effects = rocket.getEffects();
+
+                int defectCount = 0;
+                for (Effect effect : effects) {
+                    if (effect.getStatus()) {
+                        defectCount++;
+                    }
+                }
+                if (defectCount > 1 || rocket.getPropellantQuantity() < 120) {
+                    rocket.setTestResult(true);
+                } else {
+                    rocket.setTestResult(false);
+                }
+
+                rocket.setTester(testerId);
+
+                container = capi.lookupContainer("testedRockets", spaceUri,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction);
+                capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction, new Entry(rocket,
+                                FifoCoordinator.newCoordinationData()));
+
+                capi.commitTransaction(getRocketsTransaction);
+            } catch (CountNotMetException e1) {
+                LOGGER.info("Could not get a rocket in time!");
+                try {
+                    capi.rollbackTransaction(getRocketsTransaction);
+                } catch (MzsCoreException e2) {
+                    LOGGER.error("Can't rollback transaction!");
+                    return;
+                }
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
+            }
+            try {
+                container = capi.lookupContainer(
+                        "createdRockets",
+                        spaceUri,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        null);
+                ArrayList<Rocket> readRocket;
+                readRocket = capi.read(container,
+                        AnyCoordinator.newSelector(COUNT_ALL),
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                LOGGER.debug("Rockets still created container " + readRocket);
+
+                container = capi.lookupContainer(
+                        "testedRockets",
+                        spaceUri,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        null);
+                readRocket = capi.read(container,
+                        AnyCoordinator.newSelector(COUNT_ALL),
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                LOGGER.debug("Rockets in tested container " + readRocket);
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

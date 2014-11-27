@@ -20,6 +20,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -289,6 +290,24 @@ public class FireWorks extends Application {
     }
 
     /**
+     * Updates the tested result of a rocket in the rocket table
+     *
+     * @param updatedRocket which has been tested
+     */
+    public static void updateTestedStatusOfARocket(Rocket updatedRocket) {
+        Platform.runLater(() -> {
+            for (int index = 0; index < rockets.size(); index++ ) {
+                Rocket rocket = rockets.get(index);
+                int id = rocket.getRocketId();
+                int newId = updatedRocket.getRocketId();
+                if (id == newId) {
+                    rockets.set(index, updatedRocket);
+                    break;
+                }
+            }
+        });
+    }
+    /**
      * Updates the counters in the GUI.
      *
      * @param number
@@ -500,6 +519,7 @@ public class FireWorks extends Application {
 
         ContainerAspect materialContainerAspect = new MaterialAspects();
         ContainerAspect newRocketContainerAspect = new NewRocketAspects();
+        ContainerAspect testedRocketContainerAspect = new TestedRocketAspects();
         URI spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> iPoints = new HashSet<>();
         iPoints.add(ContainerIPoint.POST_WRITE);
@@ -556,6 +576,17 @@ public class FireWorks extends Application {
                     null);
             capi.addContainerAspect(newRocketContainerAspect, createdRockets,
                     iPoints, null);
+            // create the container where the tested rockets are stored with a
+            // FiFo coordinator
+            testedRockets = capi.createContainer(
+                    "testedRockets",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    asList(new FifoCoordinator(), new AnyCoordinator()),
+                    null,
+                    null);
+            capi.addContainerAspect(testedRocketContainerAspect, testedRockets,
+                    iPoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -601,4 +632,5 @@ public class FireWorks extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
+
 }
