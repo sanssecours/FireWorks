@@ -32,6 +32,9 @@ public final class Worker {
 
     /** Constant for the transaction timeout time. */
     private static final int TRANSACTION_TIMEOUT = 5000;
+    /** Specifies how long a worker waits until he tries to get new material
+     *  after he failed the last time. */
+    private static final int WAIT_TIME_WORKER_MS = 2000;
     /** Constant for the lower bound of the working time per element. */
     private static final int LOWERBOUND = 1000;
     /** Constant for the upper bound of the working time per element. */
@@ -238,6 +241,8 @@ public final class Worker {
                             + propellantsWithQuantity.keySet());
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials in time!");
+                    // Wait some time until we try to get new material
+                    Thread.sleep(WAIT_TIME_WORKER_MS);
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
