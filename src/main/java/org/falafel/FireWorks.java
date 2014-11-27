@@ -269,12 +269,13 @@ public class FireWorks extends Application {
         rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
                 effects, propellants, 130, 434));
         */
-        order.add(new SupplyOrder("Hulk", Casing.toString(), 9, 100));
-        order.add(new SupplyOrder("Iron Man", Wood.toString(), 9, 100));
-        order.add(new SupplyOrder("Captain America", Effect.toString(), 9, 60));
-        order.add(new SupplyOrder("Batman", Effect.toString(), 7, 60));
-        order.add(new SupplyOrder("Thor", Effect.toString(), 7, 60));
-        order.add(new SupplyOrder("Seaman", Propellant.toString(), 2, 100));
+        order.add(new SupplyOrder("Hulk", Casing.toString(), 15, 100));
+        order.add(new SupplyOrder("Iron Man", Wood.toString(), 15, 100));
+        order.add(new SupplyOrder("Captain America", Effect.toString(), 10, 100));
+        order.add(new SupplyOrder("Batman", Effect.toString(), 10, 100));
+        order.add(new SupplyOrder("Thor", Effect.toString(), 10, 60));
+        order.add(new SupplyOrder("Seaman", Propellant.toString(), 5, 100));
+        order.add(new SupplyOrder("Hawk", Propellant.toString(), 5, 100));
         //CHECKSTYLE:ON
 
         supplyTable.isEditable();
@@ -284,14 +285,28 @@ public class FireWorks extends Application {
     }
 
     /**
+     * The faulty rocket is displayed in the trash table.
+     *
+     * @param rocket which is trashed
+     */
+    public static void addRocketToTrash(final Rocket rocket) {
+        Platform.runLater(() -> {
+            trashedRocketsList.add(rocket);
+            System.out.println("Trashed Rockets: " + trashedRocketsList);
+        });
+    }
+
+    /**
      * Add packed rockets to the shipping list.
      *
      * @param rockets rockets which are packed for shipping
      */
     public static void addRocketsToFinishedContainer(
                 final ArrayList<Rocket> rockets) {
-        packedRocketsList.addAll(rockets);
-        System.out.println("Packed Rockets: " + packedRocketsList);
+        Platform.runLater(() -> {
+            packedRocketsList.addAll(rockets);
+            System.out.println("Packed Rockets: " + packedRocketsList);
+        });
     }
 
     /**
@@ -543,6 +558,8 @@ public class FireWorks extends Application {
         ContainerAspect testedRocketContainerAspect = new TestedRocketAspects();
         ContainerAspect packedRocketContainerAspect =
                 new FinishedRocketAspects();
+        ContainerAspect trashedRocketContainerAspect =
+                new TrashedRocketAspects();
         URI spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> iPoints = new HashSet<>();
         iPoints.add(ContainerIPoint.POST_WRITE);
@@ -629,6 +646,8 @@ public class FireWorks extends Application {
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(trashedRocketContainerAspect, wasteRockets,
+                    iPoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
