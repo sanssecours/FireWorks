@@ -1,6 +1,5 @@
 package org.falafel;
 
-import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -16,7 +15,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -134,12 +132,8 @@ public class Supplier extends Thread {
                             supplyTransaction, new Entry(newEntry));
                 }
 
-                result = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        RequestTimeout.TRY_ONCE, supplyTransaction);
                 capi.commitTransaction(supplyTransaction);
 
-                LOGGER.debug("Supplier " + id + " Read: " + result);
                 LOGGER.debug("Supplier " + id + " Wrote entry to container "
                         + orderType);
             } catch (MzsCoreException e) {
