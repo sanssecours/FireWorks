@@ -98,7 +98,7 @@ public class Rocket implements Serializable {
         ArrayList<String> returnString = new ArrayList<>();
         for (Effect effect : effects) {
             returnString.add(Integer.toString(effect.getID()));
-            returnString.add(effect.getStatus());
+            returnString.add(Boolean.toString(effect.getStatus()));
         }
         return new SimpleStringProperty(returnString.toString());
     }
@@ -198,10 +198,35 @@ public class Rocket implements Serializable {
         id = newId;
     }
     /**
+     * returns the id of the rocket
      *
      * @return the id of the rocket
      */
     public final Integer getRocketId() {
         return id;
+    }
+    /**
+     * Return the effect charges of the rocket
+     *
+     * @return the array list with the effect charger
+     */
+    public final ArrayList<Effect> getEffects() {
+        return effects;
+    }
+    /**
+     * Set the result of quality test
+     *
+     * @param result of the quality test as boolean
+     */
+    public final void setTestResult(boolean result) {
+        testResult = result;
+    }
+    /**
+     * Return the quantity of the propellant charges of the rocket
+     *
+     * @return the integer value of the propellant charge
+     */
+    public final Integer getPropellantQuantity() {
+        return propellantQuantity;
     }
 }

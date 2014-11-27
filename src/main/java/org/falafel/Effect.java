@@ -27,12 +27,12 @@ public class Effect extends Material {
     }
 
     /**
-     * Return the string representation of the effect.
+     * Return the defect status of the effect.
      *
-     * @return A string containing properties of this effect charge
+     * @return A boolean of this effect charges defect status
      */
-    public final String getStatus() {
-        return Boolean.toString(defect);
+    public final Boolean getStatus() {
+        return defect;
     }
 
     /**
