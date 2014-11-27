@@ -12,6 +12,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <worker.id>1001</worker.id>
+        <tester.id>2001</tester.id>
+        <logistic.id>3001</logistic.id>
     </properties>
 
     <repositories>
@@ -80,7 +83,7 @@
                         <configuration>
                             <mainClass>org.falafel.Worker</mainClass>
                             <arguments>
-                                <argument>4242</argument>
+                                <argument>${worker.id}</argument>
                                 <argument>xvsm://localhost:9876</argument>
                             </arguments>
                             <classpathScope>runtime</classpathScope>
@@ -109,7 +112,7 @@
                         <configuration>
                             <mainClass>org.falafel.QualityTester</mainClass>
                             <arguments>
-                                <argument>11</argument>
+                                <argument>${tester.id}</argument>
                                 <argument>xvsm://localhost:9876</argument>
                             </arguments>
                             <classpathScope>runtime</classpathScope>
@@ -138,7 +141,7 @@
                         <configuration>
                             <mainClass>org.falafel.Logistic</mainClass>
                             <arguments>
-                                <argument>31</argument>
+                                <argument>${logistic.id}</argument>
                                 <argument>xvsm://localhost:9876</argument>
                             </arguments>
                             <classpathScope>runtime</classpathScope>
