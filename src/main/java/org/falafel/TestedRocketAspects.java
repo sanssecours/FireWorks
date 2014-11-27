@@ -42,7 +42,7 @@ public class TestedRocketAspects extends AbstractContainerAspect {
         if (entries.get(0).getValue() instanceof Rocket) {
             for (Entry entry : entries) {
                 Rocket rocket = (Rocket) entry.getValue();
-                FireWorks.updateTestedStatusOfARocket(rocket);
+                FireWorks.updateOfARocketInRocketsTable(rocket);
             }
         }
         return AspectResult.OK;

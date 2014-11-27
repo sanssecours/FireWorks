@@ -167,9 +167,9 @@
                      <children>
                         <TabPane layoutX="188.0" layoutY="28.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="1196.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="398.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
-                            <Tab text="Shipped" />
-                              <Tab text="Trashed" />
-                            <Tab text="Produced" />
+                            <Tab closable="false" onSelectionChanged="#displayProducedRocketsTab" text="Produced" />
+                            <Tab onSelectionChanged="#displayShippedRocketsTab" text="Shipped" />
+                              <Tab onSelectionChanged="#displayTrashedRocketsTab" text="Trashed" />
                           </tabs>
                         </TabPane>
                         <TableView fx:id="rocketTable" layoutY="36.0" prefHeight="402.0" prefWidth="1196.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="36.0">

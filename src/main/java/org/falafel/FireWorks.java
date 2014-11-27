@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -114,7 +115,7 @@ public class FireWorks extends Application {
             supplierEffectIdColumn, packerIdColumn;
     /** Save handler of the rocket table. */
     @FXML
-    private TableView<Rocket> rocketTable;
+    private TableView<Rocket> rocketTable = new TableView<>();
 
 
     /** Saves data shown in the supplier table. */
@@ -292,7 +293,6 @@ public class FireWorks extends Application {
     public static void addRocketToTrash(final Rocket rocket) {
         Platform.runLater(() -> {
             trashedRocketsList.add(rocket);
-            System.out.println("Trashed Rockets: " + trashedRocketsList);
         });
     }
 
@@ -305,7 +305,6 @@ public class FireWorks extends Application {
                 final ArrayList<Rocket> rockets) {
         Platform.runLater(() -> {
             packedRocketsList.addAll(rockets);
-            System.out.println("Packed Rockets: " + packedRocketsList);
         });
     }
 
@@ -330,7 +329,8 @@ public class FireWorks extends Application {
      *
      * @param updatedRocket which has been tested
      */
-    public static void updateTestedStatusOfARocket(final Rocket updatedRocket) {
+    public static void updateOfARocketInRocketsTable(
+            final Rocket updatedRocket) {
         Platform.runLater(() -> {
             for (int index = 0; index < rockets.size(); index++) {
                 Rocket rocket = rockets.get(index);
@@ -472,6 +472,39 @@ public class FireWorks extends Application {
     @SuppressWarnings("unused")
     public final void newOrder(final ActionEvent actionEvent) {
         order.add(new SupplyOrder());
+    }
+
+    /**
+     * This method will be called when the shipped tab is pressed.
+     *
+     * @param event
+     *          The event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void displayShippedRocketsTab(final Event event) {
+        rocketTable.setItems(packedRocketsList);
+    }
+
+    /**
+     * This method will be called when the trashed tab is pressed.
+     *
+     * @param event
+     *          The event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void displayTrashedRocketsTab(final Event event) {
+        rocketTable.setItems(trashedRocketsList);
+    }
+
+    /**
+     * This method will be called when the produced tab is pressed.
+     *
+     * @param event
+     *          The event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void displayProducedRocketsTab(final Event event) {
+        rocketTable.setItems(rockets);
     }
 
     /**
