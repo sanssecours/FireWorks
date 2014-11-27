@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import java.net.URI;
 import java.util.ArrayList;
 
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -145,32 +144,6 @@ public final class QualityTester {
                     LOGGER.error("Can't rollback transaction!");
                     System.exit(1);
                 }
-            } catch (MzsCoreException e) {
-                //e.printStackTrace();
-                LOGGER.error("Tester has problem with space!");
-                System.exit(1);
-            }
-            try {
-                container = capi.lookupContainer(
-                        "createdRockets",
-                        spaceUri,
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        null);
-                ArrayList<Rocket> readRocket;
-                readRocket = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        MzsConstants.RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Rockets still created container " + readRocket);
-
-                container = capi.lookupContainer(
-                        "testedRockets",
-                        spaceUri,
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        null);
-                readRocket = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        MzsConstants.RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Rockets in tested container " + readRocket);
             } catch (MzsCoreException e) {
                 //e.printStackTrace();
                 LOGGER.error("Tester has problem with space!");
