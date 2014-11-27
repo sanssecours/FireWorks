@@ -189,6 +189,19 @@ public class Rocket implements Serializable {
         }
         return new SimpleStringProperty(returnString.toString());
     }
-
-
+    /**
+     * Set the id of the Rocket
+     *
+     * @param newId integer value which is set for the rocket id
+     */
+    public final void setNewRocketId(Integer newId) {
+        id = newId;
+    }
+    /**
+     *
+     * @return the id of the rocket
+     */
+    public final Integer getRocketId() {
+        return id;
+    }
 }

@@ -268,6 +268,14 @@ public final class Worker {
                 capi.write(container, RequestTimeout.TRY_ONCE, null,
                         new Entry(producedRocket));
 
+                ArrayList<Rocket> readRocket;
+                readRocket = capi.read(container,
+                        AnyCoordinator.newSelector(COUNT_ALL),
+                        RequestTimeout.TRY_ONCE, null);
+                for (Rocket rocket : readRocket) {
+                    LOGGER.debug("Rockets in container " + rocket.getRocketId());
+                }
+
                 // write the used propellant package back if it still contains
                 // propellant
                 container = capi.lookupContainer(

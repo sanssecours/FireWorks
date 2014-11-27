@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class NewRocketAspects extends AbstractContainerAspect {
 
+    private static Integer id = 1;
     /**
      * This aspect will be called after an entry is written to an container.
      *
@@ -43,6 +44,8 @@ public class NewRocketAspects extends AbstractContainerAspect {
         if (entries.get(0).getValue() instanceof Rocket) {
             for (Entry entry : entries) {
                 Rocket rocket = (Rocket) entry.getValue();
+                rocket.setNewRocketId(id);
+                id++;
                 FireWorks.addNewRocketToTable(request.getContainer().getId(),
                         rocket);
             }
