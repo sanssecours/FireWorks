@@ -60,12 +60,12 @@ public final class Worker {
 
         int workerId;
 
-        Casing casing;
-        ArrayList<Effect> effects;
+        Casing casing = null;
+        ArrayList<Effect> effects = new ArrayList<>();
         HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
-        Wood wood;
+        Wood wood = null;
         Random randomGenerator = new Random();
-        int propellantQuantity;
+        int propellantQuantity = 0;
 
         Propellant lindaTemplateClosed = new Propellant(null, null, null,
                 Propellant.CLOSED);
@@ -75,7 +75,7 @@ public final class Worker {
         Capi capi;
         MzsCore core;
         URI spaceUri;
-        TransactionReference collectResourcesTransaction;
+        TransactionReference collectResourcesTransaction = null;
         if (arguments.length != 2) {
             System.err.println("Usage: worker <Id> <Space URI>!");
             return;
@@ -85,7 +85,7 @@ public final class Worker {
             workerId = Integer.parseInt(arguments[0]);
             spaceUri = URI.create(arguments[1]);
         } catch (Exception e) {
-            System.err.println("Please supply a valid values!");
+            System.err.println("Please supply valid command line arguments!");
             return;
         }
 
@@ -104,9 +104,9 @@ public final class Worker {
                     collectResourcesTransaction = capi.createTransaction(
                             TRANSACTION_TIMEOUT, spaceUri, context);
                 } catch (MzsCoreException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     LOGGER.error("Can't create transaction!");
-                    return;
+                    System.exit(1);
                 }
 
                 try {
@@ -244,7 +244,7 @@ public final class Worker {
                         continue;
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
-                        return;
+                        System.exit(1);
                     }
                 }
 
@@ -300,7 +300,9 @@ public final class Worker {
                 System.out.println("I'm going home.");
                 core.shutdown(true);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                LOGGER.error("Worker has s space problem");
+                System.exit(1);
             }
         }
 

@@ -57,9 +57,8 @@ public final class Logistic {
         Capi capi;
         MzsCore core;
         URI spaceUri;
-        TransactionReference getRocketsTransaction;
-        TransactionReference trashRocketsTransaction;
-        int numberCollectedRockets = 0;
+        TransactionReference getRocketsTransaction = null;
+
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
             return;
@@ -84,11 +83,10 @@ public final class Logistic {
             try {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
-                trashRocketsTransaction = capi.createTransaction(
-                        TRANSACTION_TIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
-                return;
+                //e.printStackTrace();
+                LOGGER.error("Logistican can't create transaction!");
+                System.exit(1);
             }
 
             try {
@@ -136,11 +134,12 @@ public final class Logistic {
                 try {
                     capi.rollbackTransaction(getRocketsTransaction);
                 } catch (MzsCoreException e2) {
-                    LOGGER.error("Can't rollback transaction!");
-                    return;
+                    LOGGER.error("Logistican can't rollback transaction!");
+                    System.exit(1);
                 }
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                LOGGER.error("Logistican has problem with space!");
+                System.exit(1);
             }
             try {
                 container = capi.lookupContainer(
@@ -164,7 +163,8 @@ public final class Logistic {
                         MzsConstants.RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Rockets in finished container " + readRocket);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                LOGGER.error("Logistican has problem with space!");
+                System.exit(1);
             }
         }
     }

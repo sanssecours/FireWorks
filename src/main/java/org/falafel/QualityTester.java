@@ -25,12 +25,16 @@ import static org.slf4j.LoggerFactory.getLogger;
  *      more than one effect charge is faulty
  *      it contains less than 120g of the propellant charge
  */
-public class QualityTester {
+public final class QualityTester {
 
     /**
      * Constant for the transaction timeout time.
      */
     private static final int TRANSACTION_TIMEOUT = 3000;
+    /**
+     * Constant for the minimum .
+     */
+    private static final int MINIMAL_PROPELLANT = 120;
     /**
      * Get the Logger for the current class.
      */
@@ -56,7 +60,7 @@ public class QualityTester {
         Capi capi;
         MzsCore core;
         URI spaceUri;
-        TransactionReference getRocketsTransaction;
+        TransactionReference getRocketsTransaction = null;
 
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
@@ -66,7 +70,7 @@ public class QualityTester {
             testerId = Integer.parseInt(arguments[0]);
             spaceUri = URI.create(arguments[1]);
         } catch (Exception e) {
-            System.err.println("Please supply a valid values!");
+            System.err.println("Please supply valid command line arguments!");
             return;
         }
 
@@ -83,8 +87,9 @@ public class QualityTester {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
-                return;
+                //e.printStackTrace();
+                LOGGER.error("Can't create transaction!");
+                System.exit(1);
             }
 
             try {
@@ -106,7 +111,8 @@ public class QualityTester {
                         defectCount++;
                     }
                 }
-                if (defectCount > 1 || rocket.getPropellantQuantity() < 120) {
+                if (defectCount > 1 || rocket.getPropellantQuantity()
+                                                        < MINIMAL_PROPELLANT) {
                     rocket.setTestResult(true);
                 } else {
                     rocket.setTestResult(false);
@@ -128,10 +134,12 @@ public class QualityTester {
                     capi.rollbackTransaction(getRocketsTransaction);
                 } catch (MzsCoreException e2) {
                     LOGGER.error("Can't rollback transaction!");
-                    return;
+                    System.exit(1);
                 }
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                LOGGER.error("Tester has problem with space!");
+                System.exit(1);
             }
             try {
                 container = capi.lookupContainer(
@@ -155,7 +163,9 @@ public class QualityTester {
                         MzsConstants.RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Rockets in tested container " + readRocket);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                LOGGER.error("Tester has problem with space!");
+                System.exit(1);
             }
         }
     }
