@@ -254,7 +254,14 @@ public class Rocket implements Serializable {
     public final void setPackerId(final Integer packerId) {
         this.packerId = packerId;
     }
-
+    /**
+     * Set the id of the package containing the rocket.
+     *
+     * @param id of the package
+     */
+    public final void setPackageId(final Integer id) {
+        packageId = id;
+    }
     /**
      * Set if the rocket is finihed and ready to collect.
      *
@@ -271,4 +278,5 @@ public class Rocket implements Serializable {
     public final String toString() {
         return "Rocket Id: " + id;
     }
+
 }

@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -87,8 +86,15 @@ public class FireWorks extends Application {
     private static ObservableList<SupplyOrder> order =
             FXCollections.observableArrayList();
 
-    /**  The data as an observable list for SupplyOrder. */
+    /**  The data as an observable list for rockets. */
     private static ObservableList<Rocket> rockets =
+            FXCollections.observableArrayList();
+    /**  The data as an observable list for the trashed rockets. */
+    private static ObservableList<Rocket> trashedRocketsList =
+            FXCollections.observableArrayList();
+    /** The data as an observable list for the rockets which are already packed.
+     * */
+    private static ObservableList<Rocket> packedRocketsList =
             FXCollections.observableArrayList();
 
     /** Specify the different choices a supplier can provide. */
@@ -192,13 +198,15 @@ public class FireWorks extends Application {
         casingIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getCasingIdProperty());
         propellantIdColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getPropellantPackageIdProperty());
+                cellData
+                      -> cellData.getValue().getPropellantPackageIdProperty());
         woodIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getWoodIdProperty());
         effectIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getEffectIdProperty());
         propellantQuantityColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getPropellantQuantityProperty());
+                cellData
+                       -> cellData.getValue().getPropellantQuantityProperty());
         testResultColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getTestResultProperty());
         workerIdColumn.setCellValueFactory(
@@ -212,7 +220,8 @@ public class FireWorks extends Application {
         supplierCasingColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getSupplierCasingIdProperty());
         supplierPropellantIdColumn.setCellValueFactory(
-                cellData -> cellData.getValue().getSupplierPropellantIdProperty());
+                cellData
+                     -> cellData.getValue().getSupplierPropellantIdProperty());
         supplierEffectIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getSupplierEffectIdProperty());
 
@@ -275,13 +284,25 @@ public class FireWorks extends Application {
     }
 
     /**
+     * Add packed rockets to the shipping list.
+     *
+     * @param rockets rockets which are packed for shipping
+     */
+    public static void addRocketsToFinishedContainer(
+                final ArrayList<Rocket> rockets) {
+        packedRocketsList.addAll(rockets);
+        System.out.println("Packed Rockets: " + packedRocketsList);
+    }
+
+    /**
      *
      *
      * @param containerId defines which rocket table (created/tested, packed
      *                    or thrown away) should be updated
      * @param rocket the rocket to add to the container
      */
-    public static void addNewRocketToTable(String containerId, Rocket rocket) {
+    public static void addNewRocketToTable(final String containerId,
+                                           final Rocket rocket) {
         Platform.runLater(() -> {
             if (containerId.equals(createdRockets.getId())) {
                 rockets.add(rocket);
@@ -290,11 +311,11 @@ public class FireWorks extends Application {
     }
 
     /**
-     * Updates the tested result of a rocket in the rocket table
+     * Updates the tested result of a rocket in the rocket table.
      *
      * @param updatedRocket which has been tested
      */
-    public static void updateTestedStatusOfARocket(Rocket updatedRocket) {
+    public static void updateTestedStatusOfARocket(final Rocket updatedRocket) {
         Platform.runLater(() -> {
             for (int index = 0; index < rockets.size(); index++) {
                 Rocket rocket = rockets.get(index);
@@ -520,6 +541,8 @@ public class FireWorks extends Application {
         ContainerAspect materialContainerAspect = new MaterialAspects();
         ContainerAspect newRocketContainerAspect = new NewRocketAspects();
         ContainerAspect testedRocketContainerAspect = new TestedRocketAspects();
+        ContainerAspect packedRocketContainerAspect =
+                new FinishedRocketAspects();
         URI spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> iPoints = new HashSet<>();
         iPoints.add(ContainerIPoint.POST_WRITE);
@@ -597,6 +620,8 @@ public class FireWorks extends Application {
                     asList(new FifoCoordinator(), new AnyCoordinator()),
                     null,
                     null);
+            capi.addContainerAspect(packedRocketContainerAspect, packedRockets,
+                    iPoints, null);
 
             // create the container where the trashed rockets are stored
             wasteRockets = capi.createContainer(
@@ -649,5 +674,4 @@ public class FireWorks extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
 }
