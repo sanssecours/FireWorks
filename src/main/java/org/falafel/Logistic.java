@@ -25,12 +25,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  *      more than one effect charge is faulty
  *      it contains less than 120g of the propellant charge
  */
-public class Logistic {
+public final class Logistic {
 
     /**
      * Constant for the transaction timeout time.
      */
-    private static final int TRANSACTION_TIMEOUT = 3000;
+    private static final long TRANSACTION_TIMEOUT =
+                                        MzsConstants.RequestTimeout.INFINITE;
     /**
      * Get the Logger for the current class.
      */
@@ -50,12 +51,15 @@ public class Logistic {
     public static void main(final String[] arguments) {
         int packerId;
         ArrayList<Rocket> rockets;
+        ArrayList<Rocket> functioningRockets;
+        ArrayList<Rocket> trashedRockets;
         Rocket rocket;
         Capi capi;
         MzsCore core;
         URI spaceUri;
         TransactionReference getRocketsTransaction;
-
+        TransactionReference trashRocketsTransaction;
+        int numberCollectedRockets = 0;
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
             return;
@@ -80,44 +84,53 @@ public class Logistic {
             try {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
+                trashRocketsTransaction = capi.createTransaction(
+                        TRANSACTION_TIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
                 e.printStackTrace();
                 return;
             }
 
             try {
-                container = capi.lookupContainer("testedRockets", spaceUri,
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction);
-                rockets = capi.take(container,
-                        FifoCoordinator.newSelector(1),
-                        MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction);
-
-                rocket = rockets.get(0);
-                rocket.setPackerId(packerId);
-                rocket.setReadyForCollection(true);
-
-                if (rocket.getTestResult()) {
-                    container = capi.lookupContainer("trashedRockets", spaceUri,
+                functioningRockets = new ArrayList<>();
+                trashedRockets = new ArrayList<>();
+                do {
+                    container = capi.lookupContainer("testedRockets", spaceUri,
                             MzsConstants.RequestTimeout.TRY_ONCE,
                             getRocketsTransaction);
-                    capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
-                            getRocketsTransaction, new Entry(rocket));
-                } else {
-                    container = capi.lookupContainer("finishedRockets",
-                            spaceUri, MzsConstants.RequestTimeout.TRY_ONCE,
+                    rockets = capi.take(container,
+                            FifoCoordinator.newSelector(1),
+                            MzsConstants.RequestTimeout.TRY_ONCE,
                             getRocketsTransaction);
-                    capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
-                            getRocketsTransaction, new Entry(rocket,
-                                    FifoCoordinator.newCoordinationData()));
-                }
 
+                    rocket = rockets.get(0);
+                    rocket.setPackerId(packerId);
+                    rocket.setReadyForCollection(true);
 
+                    if (rocket.getTestResult()) {
+                        trashedRockets.add(rocket);
+                    } else {
+                        functioningRockets.add(rocket);
+                    }
+                } while (functioningRockets.size() < 5);
 
-
+                container = capi.lookupContainer("finishedRockets",
+                        spaceUri, MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction);
+                capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
+                        getRocketsTransaction, new Entry(functioningRockets,
+                                FifoCoordinator.newCoordinationData()));
 
                 capi.commitTransaction(getRocketsTransaction);
+
+                container = capi.lookupContainer("trashedRockets", spaceUri,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        null);
+                for (Rocket trash : trashedRockets) {
+                    capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
+                            null, new Entry(trash));
+                }
+
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get all 5 rockets in time!");
                 try {
