@@ -31,7 +31,7 @@ public final class Logistic {
      *  new rockets after he was unable to get them the last time. */
     private static final int WAIT_TIME_LOGISTIC_MS = 2000;
     /** Constant for how many rockets are in one package. */
-    private static final int PACKAGE_SIZE = 2;
+    private static final int PACKAGE_SIZE = 5;
 
     /**
      * Get the Logger for the current class.
