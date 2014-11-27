@@ -7,11 +7,11 @@
 # -- Variables -----------------------------------------------------------------
 
 first_worker_id=1001
-last_worker_id=1003
+last_worker_id=1010
 first_tester_id=2001
-last_tester_id=2002
+last_tester_id=2010
 first_logistic_id=3001
-last_logistic_id=3002
+last_logistic_id=3006
 
 # Compile sources
 mvn compile
