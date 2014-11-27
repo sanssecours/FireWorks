@@ -85,7 +85,7 @@ public final class Logistic {
                         TRANSACTION_TIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
                 //e.printStackTrace();
-                LOGGER.error("Logistican can't create transaction!");
+                LOGGER.error("Logistician can't create transaction!");
                 System.exit(1);
             }
 
@@ -134,11 +134,11 @@ public final class Logistic {
                 try {
                     capi.rollbackTransaction(getRocketsTransaction);
                 } catch (MzsCoreException e2) {
-                    LOGGER.error("Logistican can't rollback transaction!");
+                    LOGGER.error("Logistician can't rollback transaction!");
                     System.exit(1);
                 }
             } catch (MzsCoreException e) {
-                LOGGER.error("Logistican has problem with space!");
+                LOGGER.error("Logistician has problem with space!");
                 System.exit(1);
             }
             try {
@@ -163,7 +163,7 @@ public final class Logistic {
                         MzsConstants.RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Rockets in finished container " + readRocket);
             } catch (MzsCoreException e) {
-                LOGGER.error("Logistican has problem with space!");
+                LOGGER.error("Logistician has problem with space!");
                 System.exit(1);
             }
         }
