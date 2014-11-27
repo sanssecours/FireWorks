@@ -296,7 +296,7 @@ public class FireWorks extends Application {
      */
     public static void updateTestedStatusOfARocket(Rocket updatedRocket) {
         Platform.runLater(() -> {
-            for (int index = 0; index < rockets.size(); index++ ) {
+            for (int index = 0; index < rockets.size(); index++) {
                 Rocket rocket = rockets.get(index);
                 int id = rocket.getRocketId();
                 int newId = updatedRocket.getRocketId();
@@ -587,6 +587,23 @@ public class FireWorks extends Application {
                     null);
             capi.addContainerAspect(testedRocketContainerAspect, testedRockets,
                     iPoints, null);
+
+            // create the container where the packed rockets are stored with a
+            // FiFo coordinator
+            packedRockets = capi.createContainer(
+                    "finishedRockets",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    asList(new FifoCoordinator(), new AnyCoordinator()),
+                    null,
+                    null);
+
+            // create the container where the trashed rockets are stored
+            wasteRockets = capi.createContainer(
+                    "trashedRockets",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    null);
         } catch (Exception e) {
             e.printStackTrace();
         }

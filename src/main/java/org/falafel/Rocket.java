@@ -42,7 +42,7 @@ public class Rocket implements Serializable {
         this.workerId = workerId;
     }
     /**
-     * Returns the id of the rocket
+     * Returns the id of the rocket.
      *
      * @return Returns the ids of the rocket as StringProperty.
      */
@@ -50,7 +50,7 @@ public class Rocket implements Serializable {
         return new SimpleStringProperty(id.toString());
     }
     /**
-     * Returns the id of the package in which the rocket is placed
+     * Returns the id of the package in which the rocket is placed.
      *
      * @return Returns the ids of the package as StringProperty.
      */
@@ -103,7 +103,7 @@ public class Rocket implements Serializable {
         return new SimpleStringProperty(returnString.toString());
     }
     /**
-     * Returns the quantity used in the rocket
+     * Returns the quantity used in the rocket.
      *
      * @return Returns the propellant quantity as StringProperty.
      */
@@ -190,15 +190,15 @@ public class Rocket implements Serializable {
         return new SimpleStringProperty(returnString.toString());
     }
     /**
-     * Set the id of the Rocket
+     * Set the id of the Rocket.
      *
      * @param newId integer value which is set for the rocket id
      */
-    public final void setNewRocketId(Integer newId) {
+    public final void setNewRocketId(final Integer newId) {
         id = newId;
     }
     /**
-     * returns the id of the rocket
+     * returns the id of the rocket.
      *
      * @return the id of the rocket
      */
@@ -206,7 +206,7 @@ public class Rocket implements Serializable {
         return id;
     }
     /**
-     * Return the effect charges of the rocket
+     * Return the effect charges of the rocket.
      *
      * @return the array list with the effect charger
      */
@@ -214,15 +214,15 @@ public class Rocket implements Serializable {
         return effects;
     }
     /**
-     * Set the result of quality test
+     * Set the result of quality test.
      *
      * @param result of the quality test as boolean
      */
-    public final void setTestResult(boolean result) {
+    public final void setTestResult(final boolean result) {
         testResult = result;
     }
     /**
-     * Return the quantity of the propellant charges of the rocket
+     * Return the quantity of the propellant charges of the rocket.
      *
      * @return the integer value of the propellant charge
      */
@@ -230,20 +230,37 @@ public class Rocket implements Serializable {
         return propellantQuantity;
     }
     /**
-     * returning the result of the quality test
+     * returning the result of the quality test.
      *
      * @return bollean value of the test result
      */
-    public Boolean getTestResult() {
+    public final Boolean getTestResult() {
         return testResult;
     }
     /**
-     * sets the id of the quality tester who tested the rocket
+     * sets the id of the quality tester who tested the rocket.
      *
      * @param testerId of the quality tester
      */
-    public void setTester(int testerId) {
+    public final void setTester(final int testerId) {
         this.testerId = testerId;
+    }
+    /**
+     * Set the id of the worker who packed the rocket in logistics.
+     *
+     * @param packerId the id for the packer
+     */
+    public final void setPackerId(final Integer packerId) {
+        this.packerId = packerId;
+    }
+
+    /**
+     * Set if the rocket is finihed and ready to collect.
+     *
+     * @param readyForCollection flag which tells that the rocket is finished
+     */
+    public final void setReadyForCollection(final boolean readyForCollection) {
+        this.readyForCollection = readyForCollection;
     }
     /**
      * Return the string representation of the rocket.
