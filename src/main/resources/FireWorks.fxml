@@ -154,6 +154,25 @@
                                           </HBox>
                                        </children>
                                     </VBox>
+                                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                       <children>
+                                          <Label layoutX="144.0" layoutY="363.0" text="# Table">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="numberRocketsLabel" alignment="CENTER_RIGHT" layoutX="246.0" layoutY="363.0" prefWidth="81.0" text="0">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="295.0" layoutY="363.0" prefWidth="120.0" text="Rockets">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                            </children></AnchorPane>
