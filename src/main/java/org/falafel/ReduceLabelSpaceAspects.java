@@ -35,8 +35,6 @@ public class ReduceLabelSpaceAspects extends AbstractSpaceAspect {
                         "takenOpenQuantity");
 
                 FireWorks.changeOpenedPropellantLabels(-number, -quantity);
-                System.out.println("Reduce number " + number
-                        + " and difference " + quantity);
             }
 
         }

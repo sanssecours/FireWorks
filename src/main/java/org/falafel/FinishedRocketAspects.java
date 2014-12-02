@@ -39,7 +39,6 @@ public class FinishedRocketAspects extends AbstractContainerAspect {
                                         final Capi3AspectPort capi3,
                                         final int executionCount) {
 
-        //System.out.println("container ID: " + request.getContainer().getId());
         List<Entry> entries = request.getEntries();
 
         ArrayList<Rocket> rockets = (ArrayList<Rocket>)

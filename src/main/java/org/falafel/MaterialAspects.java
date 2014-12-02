@@ -36,7 +36,6 @@ public class MaterialAspects extends AbstractContainerAspect {
                                         final Capi3AspectPort capi3,
                                         final int executionCount) {
 
-        //System.out.println("container ID: " + request.getContainer().getId());
         List<Entry> entries = request.getEntries();
 
 
@@ -46,7 +45,6 @@ public class MaterialAspects extends AbstractContainerAspect {
                 if (propellantEntry.getQuantity() == Propellant.FULL) {
                     FireWorks.changeCounterLabels(
                             request.getContainer().getId(), 1);
-                    System.out.println("Propellant: " + propellantEntry);
                 } else {
                     FireWorks.changeOpenedPropellantLabels(1,
                             propellantEntry.getQuantity());
