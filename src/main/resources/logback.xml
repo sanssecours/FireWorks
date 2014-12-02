@@ -7,7 +7,7 @@
     </appender>
 
     <logger name="org.mozartspaces" level="ERROR"/>
-    <logger name="org.falafel" level="DEBUG" />
+    <logger name="org.falafel" level="WARN" />
 
     <root level="ERROR">
         <appender-ref ref="stdout"/>

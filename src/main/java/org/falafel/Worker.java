@@ -2,6 +2,7 @@ package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
+import org.mozartspaces.capi3.InvalidTransactionException;
 import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -45,7 +46,7 @@ public final class Worker {
     private static final int UPPERQUANTITY = 145;
 
     /** Get the Logger for the current class. */
-    private static final Logger LOGGER = getLogger(FireWorks.class);
+    private static final Logger LOGGER = getLogger(Worker.class);
     /** How many effect charges are needed to build a rocket. */
     private static final int NUMBER_EFFECTS_NEEDED = 3;
 
@@ -242,11 +243,13 @@ public final class Worker {
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials in time!");
                     // Wait some time until we try to get new material
-                    Thread.sleep(WAIT_TIME_WORKER_MS);
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
+                        Thread.sleep(WAIT_TIME_WORKER_MS);
                         continue;
+                    } catch (InvalidTransactionException ite) {
+                        LOGGER.error("Invalid transaction");
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
                         System.exit(1);

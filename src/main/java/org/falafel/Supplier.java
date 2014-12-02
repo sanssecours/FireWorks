@@ -35,7 +35,7 @@ public class Supplier extends Thread {
     /** Save the (unique) identifier for this supplier. */
     private final int id;
     /** Get the Logger for the current class. */
-    private static final Logger LOGGER = getLogger(FireWorks.class);
+    private static final Logger LOGGER = getLogger(Supplier.class);
     /** The resource identifier for the space. */
     private final URI spaceUri;
     /** The order which the supplier shipped. */

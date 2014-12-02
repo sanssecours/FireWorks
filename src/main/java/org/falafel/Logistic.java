@@ -36,7 +36,7 @@ public final class Logistic {
     /**
      * Get the Logger for the current class.
      */
-    private static final Logger LOGGER = getLogger(FireWorks.class);
+    private static final Logger LOGGER = getLogger(Logistic.class);
 
     /**
      * Create the quality tester singleton.
@@ -132,18 +132,18 @@ public final class Logistic {
 
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get all 5 rockets in time!");
-                try {
-                    Thread.sleep(WAIT_TIME_LOGISTIC_MS);
-                } catch (InterruptedException e) {
-                    LOGGER.error("I was interrupted while trying to sleep. "
-                            + "How rude!");
-                }
 
                 try {
                     capi.rollbackTransaction(getRocketsTransaction);
                 } catch (MzsCoreException e2) {
                     LOGGER.error("Logistician can't rollback transaction!");
                     System.exit(1);
+                }
+                try {
+                    Thread.sleep(WAIT_TIME_LOGISTIC_MS);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
                 }
             } catch (MzsCoreException e) {
                 LOGGER.error("Logistician has problem with space!");

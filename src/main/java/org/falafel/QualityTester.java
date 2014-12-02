@@ -40,7 +40,7 @@ public final class QualityTester {
     /**
      * Get the Logger for the current class.
      */
-    private static final Logger LOGGER = getLogger(FireWorks.class);
+    private static final Logger LOGGER = getLogger(QualityTester.class);
 
     /**
      * Create the quality tester singleton.
