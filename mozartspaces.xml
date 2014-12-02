@@ -13,7 +13,7 @@
         <bindHost>0.0.0.0</bindHost>
         <transports>
             <tcpsocket scheme="xvsm">
-                <threads>1000</threads>
+                <threads>200</threads>
                 <receiverPort>9876</receiverPort>
                 <serializer>${serializers.serializer(0)}</serializer>
             </tcpsocket>
