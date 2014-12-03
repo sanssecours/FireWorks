@@ -49,6 +49,8 @@ public final class Worker {
     private static final Logger LOGGER = getLogger(Worker.class);
     /** How many effect charges are needed to build a rocket. */
     private static final int NUMBER_EFFECTS_NEEDED = 3;
+    /** The mozart spaces core. */
+    private static MzsCore core;
 
     /** Create the worker singleton. */
     private Worker() { }
@@ -61,7 +63,8 @@ public final class Worker {
      *
      */
     public static void main(final String[] arguments) {
-
+        Worker.addShutdownHook();
+        System.out.println("Leave the factory with Ctrl + C");
         int workerId;
 
         Casing casing = null;
@@ -77,7 +80,6 @@ public final class Worker {
                 Propellant.OPENED);
 
         Capi capi;
-        MzsCore core;
         URI spaceUri;
         TransactionReference collectResourcesTransaction = null;
         if (arguments.length != 2) {
@@ -314,5 +316,26 @@ public final class Worker {
             }
         }
 
+    }
+
+    /**
+     * adds a shutdown hook (called before shutdown).
+     */
+    private static void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                System.out.println("I'm packing my stuff together.");
+                close();
+            }
+        });
+    }
+
+    /**
+     * Shutting down the logistic worker.
+     */
+    private static void close()	{
+        System.out.println("I'm going home.");
+        core.shutdown(true);
     }
 }
