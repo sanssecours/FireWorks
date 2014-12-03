@@ -37,6 +37,8 @@ public final class Logistic {
      * Get the Logger for the current class.
      */
     private static final Logger LOGGER = getLogger(Logistic.class);
+    /** The mozart spaces core. */
+    private static MzsCore core;
 
     /**
      * Create the quality tester singleton.
@@ -50,13 +52,14 @@ public final class Logistic {
      * @param arguments A list containing the command line arguments.
      */
     public static void main(final String[] arguments) {
+        Logistic.addShutdownHook();
+        System.out.println("Leave the factory with Ctrl + C");
         int packerId;
         ArrayList<Rocket> rockets;
         ArrayList<Rocket> functioningRockets;
         ArrayList<Rocket> trashedRockets;
         Rocket rocket;
         Capi capi;
-        MzsCore core;
         URI spaceUri;
         TransactionReference getRocketsTransaction = null;
 
@@ -150,5 +153,26 @@ public final class Logistic {
                 System.exit(1);
             }
         }
+    }
+
+    /**
+     * adds a shutdown hook (called before shutdown).
+     */
+    private static void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                System.out.println("I'm packing my stuff together.");
+                close();
+            }
+        });
+    }
+
+    /**
+     * Shutting down the logistic worker.
+     */
+    private static void close()	{
+        System.out.println("I'm going home.");
+        core.shutdown(true);
     }
 }
