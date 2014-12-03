@@ -200,7 +200,7 @@
                               <TableColumn fx:id="propellantIdColumn" prefWidth="85.0" text="Propellant IDs" />
                               <TableColumn fx:id="propellantQuantityColumn" prefWidth="116.0" text="Quantity Propellant" />
                               <TableColumn fx:id="effectIdColumn" prefWidth="57.0" text="Effect ID" />
-                              <TableColumn fx:id="testResultColumn" prefWidth="74.0" text="Test Result" />
+                              <TableColumn fx:id="testResultColumn" prefWidth="74.0" text="Defect" />
                               <TableColumn fx:id="workerIdColumn" minWidth="0.0" prefWidth="64.0" text="Worker ID" />
                               <TableColumn fx:id="testerIdColumn" prefWidth="59.0" text="Tester ID" />
                               <TableColumn fx:id="packerIdColumn" prefWidth="68.0" text="Packer ID" />
