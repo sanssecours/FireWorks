@@ -146,8 +146,8 @@ public final class Logistic {
                                 + "tested container!");
                         System.exit(1);
                     }
-                    functioningRockets.clear();
                 }
+                functioningRockets.clear();
                 try {
                     Thread.sleep(WAIT_TIME_LOGISTIC_MS);
                 } catch (InterruptedException e) {
