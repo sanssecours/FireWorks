@@ -43,6 +43,7 @@ public class TrashedRocketAspects extends AbstractContainerAspect {
             for (Entry entry : entries) {
                 Rocket rocket = (Rocket) entry.getValue();
                 FireWorks.addRocketToTrash(rocket);
+                FireWorks.updateOfARocketInRocketsTable(rocket);
             }
         }
         return AspectResult.OK;
