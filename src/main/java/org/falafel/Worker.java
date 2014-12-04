@@ -10,6 +10,7 @@ import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.MzsTimeoutException;
 import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
@@ -242,16 +243,18 @@ public final class Worker {
                             + " " + effects + " "
                             + wood + " "
                             + propellantsWithQuantity.keySet());
+                } catch (MzsTimeoutException toe) {
+                    LOGGER.debug("Can't get materials in transaction time!");
+                    Thread.sleep(WAIT_TIME_WORKER_MS);
+                    continue;
                 } catch (MzsCoreException e) {
-                    LOGGER.info("Could not get all materials in time!");
+                    LOGGER.info("Could not get all materials!");
                     // Wait some time until we try to get new material
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
                         Thread.sleep(WAIT_TIME_WORKER_MS);
                         continue;
-                    } catch (InvalidTransactionException ite) {
-                        LOGGER.error("Invalid transaction");
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
                         System.exit(1);

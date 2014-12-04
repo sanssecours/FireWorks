@@ -10,6 +10,7 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.MzsTimeoutException;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
@@ -133,8 +134,16 @@ public final class QualityTester {
                                 FifoCoordinator.newCoordinationData()));
 
                 capi.commitTransaction(getRocketsTransaction);
+            } catch (MzsTimeoutException toe) {
+                LOGGER.debug("Can't finish in transaction time!");
+                try {
+                    Thread.sleep(WAIT_TIME_TESTER_MS);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
+                }
             } catch (CountNotMetException e1) {
-                LOGGER.info("Could not get a rocket in time!");
+                LOGGER.info("Could not get a rocket!");
                 try {
                     Thread.sleep(WAIT_TIME_TESTER_MS);
                 } catch (InterruptedException e) {

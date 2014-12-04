@@ -145,7 +145,7 @@ public class Supplier extends Thread {
                         + orderType);
             } catch (MzsTimeoutException toe) {
                 index--;
-                LOGGER.debug("Can't write in container in time!");
+                LOGGER.debug("Can't write in container in transaction time!");
             } catch (MzsCoreException e) {
                 index--;
                 try {
