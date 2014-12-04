@@ -9,7 +9,6 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
-import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
 import java.net.URI;
@@ -22,16 +21,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class Logistic {
 
-    /**
-     * Constant for the transaction timeout time.
-     */
-    private static final long TRANSACTION_TIMEOUT = 3000;
-                                       // MzsConstants.RequestTimeout.INFINITE;
     /** Specifies how long a logistic worker waits until he tries to get
      *  new rockets after he was unable to get them the last time. */
     private static final int WAIT_TIME_LOGISTIC_MS = 2000;
     /** Constant for how many rockets are in one package. */
     private static final int PACKAGE_SIZE = 5;
+    /** Constant for how long the shutdown hook is waiting. */
+    private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
     /** Collected functioning rockets. */
     private static ArrayList<Rocket> functioningRockets = new ArrayList<>();
 
@@ -41,6 +37,8 @@ public final class Logistic {
     private static final Logger LOGGER = getLogger(Logistic.class);
     /** The mozart spaces core. */
     private static MzsCore core;
+    /** Flag to tell if the program is shutdown. */
+    private static boolean shutdown = false;
 
     /**
      * Create the quality tester singleton.
@@ -61,7 +59,6 @@ public final class Logistic {
         Rocket rocket;
         Capi capi;
         URI spaceUri;
-        TransactionReference getRocketsTransaction = null;
 
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
@@ -103,7 +100,7 @@ public final class Logistic {
         }
 
 
-        while (true) {
+        while (!shutdown) {
             try {
 
                 rockets = capi.take(rocketContainer,
@@ -169,16 +166,16 @@ public final class Logistic {
             @Override
             public void run() {
                 System.out.println("I'm packing my stuff together.");
-                close();
+                shutdown = true;
+                try {
+                    Thread.sleep(WAIT_TIME_TO_SHUTDOWN);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
+                }
+                core.shutdown(true);
+                System.out.println("I'm going home.");
             }
         });
-    }
-
-    /**
-     * Shutting down the logistic worker.
-     */
-    private static void close()	{
-        System.out.println("I'm going home.");
-        core.shutdown(true);
     }
 }

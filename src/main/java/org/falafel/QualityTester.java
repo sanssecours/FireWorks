@@ -34,6 +34,8 @@ public final class QualityTester {
     /** Specifies how long a tester waits until he tries to get a new rocket
      *  after he was unable to get one the last time. */
     private static final int WAIT_TIME_TESTER_MS = 2000;
+    /** Constant for how long the shutdown hook is waiting. */
+    private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
     /**
      * Constant for the minimum .
      */
@@ -44,6 +46,8 @@ public final class QualityTester {
     private static final Logger LOGGER = getLogger(QualityTester.class);
     /** The mozart spaces core. */
     private static MzsCore core;
+    /** Flag to tell if the program is shutdown. */
+    private static boolean shutdown = false;
 
     /**
      * Create the quality tester singleton.
@@ -88,7 +92,7 @@ public final class QualityTester {
         capi = new Capi(core);
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
-        while (true) {
+        while (!shutdown) {
             try {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
@@ -172,16 +176,16 @@ public final class QualityTester {
             @Override
             public void run() {
                 System.out.println("I'm packing my stuff together.");
-                close();
+                shutdown = true;
+                try {
+                    Thread.sleep(WAIT_TIME_TO_SHUTDOWN);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
+                }
+                core.shutdown(true);
+                System.out.println("I'm going home.");
             }
         });
-    }
-
-    /**
-     * Shutting down the logistic worker.
-     */
-    private static void close()	{
-        System.out.println("I'm going home.");
-        core.shutdown(true);
     }
 }

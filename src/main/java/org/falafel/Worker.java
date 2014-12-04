@@ -2,7 +2,6 @@ package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
-import org.mozartspaces.capi3.InvalidTransactionException;
 import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
@@ -45,6 +44,8 @@ public final class Worker {
     private static final int LOWERQUANTITY = 115;
     /** Constant for the upper bound of the propellant quantity. */
     private static final int UPPERQUANTITY = 145;
+    /** Constant for how long the shutdown hook is waiting. */
+    private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
 
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(Worker.class);
@@ -52,6 +53,8 @@ public final class Worker {
     private static final int NUMBER_EFFECTS_NEEDED = 3;
     /** The mozart spaces core. */
     private static MzsCore core;
+    /** Flag to tell if the program is shutdown. */
+    private static boolean shutdown = false;
 
     /** Create the worker singleton. */
     private Worker() { }
@@ -67,11 +70,6 @@ public final class Worker {
         Worker.addShutdownHook();
         System.out.println("Leave the factory with Ctrl + C");
         int workerId;
-
-        Casing casing = null;
-        ArrayList<Effect> effects = new ArrayList<>();
-        HashMap<Propellant, Integer> propellantsWithQuantity = new HashMap<>();
-        Wood wood = null;
         Random randomGenerator = new Random();
         int propellantQuantity = 0;
 
@@ -83,6 +81,12 @@ public final class Worker {
         Capi capi;
         URI spaceUri;
         TransactionReference collectResourcesTransaction = null;
+        Casing casing = null;
+        ArrayList<Effect> effects = new ArrayList<>();
+        HashMap<Propellant, Integer> propellantsWithQuantity =
+                new HashMap<>();
+        Wood wood = null;
+
         if (arguments.length != 2) {
             System.err.println("Usage: worker <Id> <Space URI>!");
             return;
@@ -104,7 +108,7 @@ public final class Worker {
         capi = new Capi(core);
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
-        while (true) {
+        while (!shutdown) {
             try {
                 RequestContext context = new RequestContext();
                 try {
@@ -271,6 +275,8 @@ public final class Worker {
                         propellantsWithQuantity, propellantQuantity ,
                         workerId);
 
+                wood = null;
+
                 // Worker writes the new rocket in the container
                 ContainerReference container;
                 container = capi.lookupContainer(
@@ -280,6 +286,8 @@ public final class Worker {
                         null);
                 capi.write(container, RequestTimeout.TRY_ONCE, null,
                         new Entry(producedRocket));
+
+
 
                 ArrayList<Rocket> readRocket;
                 readRocket = capi.read(container,
@@ -309,6 +317,8 @@ public final class Worker {
                         RequestTimeout.TRY_ONCE, null);
                 LOGGER.debug("Propellant after " + result);
 
+
+
             } catch (InterruptedException e) {
                 System.out.println("I'm going home.");
                 core.shutdown(true);
@@ -329,16 +339,16 @@ public final class Worker {
             @Override
             public void run() {
                 System.out.println("I'm packing my stuff together.");
-                close();
+                shutdown = true;
+                try {
+                    Thread.sleep(WAIT_TIME_TO_SHUTDOWN);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
+                }
+                core.shutdown(true);
+                System.out.println("I'm going home.");
             }
         });
-    }
-
-    /**
-     * Shutting down the logistic worker.
-     */
-    private static void close()	{
-        System.out.println("I'm going home.");
-        core.shutdown(true);
     }
 }
