@@ -135,7 +135,7 @@ public final class Logistic {
                 LOGGER.info("Could not get all 5 rockets in time!");
 
                 for (Rocket returnRocket : functioningRockets) {
-                    returnRocket.setPackageId(0);
+                    returnRocket.setPackerId(0);
                     returnRocket.setReadyForCollection(false);
                     try {
                         capi.write(rocketContainer,
