@@ -8,6 +8,7 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants.RequestTimeout;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.MzsTimeoutException;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
@@ -105,18 +106,24 @@ public class Supplier extends Thread {
                 newEntry = new Wood(materialId, orderSupplier, id);
             }
 
+            int waitingTime = randomGenerator.nextInt(
+                    UPPERBOUND - LOWERBOUND) + LOWERBOUND;
+            try {
+                Thread.sleep(waitingTime);
+            } catch (InterruptedException e) {
+                LOGGER.error("I was interrupted while trying to sleep. "
+                        + "How rude!");
+            }
+
             try {
                 supplyTransaction = capi.createTransaction(
                         TRANSACTIONTIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
-                e.printStackTrace();
+                LOGGER.debug("Can't create transaction!");
                 return;
             }
 
             try {
-                int waitingTime = randomGenerator.nextInt(
-                        UPPERBOUND - LOWERBOUND) + LOWERBOUND;
-                Thread.sleep(waitingTime);
 
                 newEntry.setID(materialId + index);
                 container = capi.lookupContainer(orderType, spaceUri,
@@ -136,16 +143,16 @@ public class Supplier extends Thread {
 
                 LOGGER.debug("Supplier " + id + " Wrote entry to container "
                         + orderType);
+            } catch (MzsTimeoutException toe) {
+                index--;
+                LOGGER.debug("Can't write in container in time!");
             } catch (MzsCoreException e) {
-                e.printStackTrace();
                 index--;
                 try {
                     capi.rollbackTransaction(supplyTransaction);
                 } catch (MzsCoreException e1) {
-                    e1.printStackTrace();
+                    LOGGER.debug("Can't rollback transaction!");
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
