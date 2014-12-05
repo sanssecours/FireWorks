@@ -1,5 +1,7 @@
 package org.falafel;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -45,26 +47,26 @@ public class Rocket implements Serializable {
     /**
      * Returns the id of the rocket.
      *
-     * @return Returns the ids of the rocket as StringProperty.
+     * @return Returns the ids of the rocket as IntegerProperty.
      */
-    public final StringProperty getIdProperty() {
-        return new SimpleStringProperty(id.toString());
+    public final IntegerProperty getIdProperty() {
+        return new SimpleIntegerProperty(id);
     }
     /**
      * Returns the id of the package in which the rocket is placed.
      *
-     * @return Returns the ids of the package as StringProperty.
+     * @return Returns the ids of the package as IntegerProperty.
      */
-    public final StringProperty getPackageIdProperty() {
-        return new SimpleStringProperty(packageId.toString());
+    public final IntegerProperty getPackageIdProperty() {
+        return new SimpleIntegerProperty(packageId);
     }
     /**
      * Returns the id of the built in casing.
      *
-     * @return Returns the id of the casing as a StringProperty.
+     * @return Returns the id of the casing as a IntegerProperty.
      */
-    public final StringProperty getCasingIdProperty() {
-        return new SimpleStringProperty(Integer.toString(casing.getID()));
+    public final IntegerProperty getCasingIdProperty() {
+        return new SimpleIntegerProperty(casing.getID());
     }
     /**
      * Returns the id of the built in packages as a string containing the used
@@ -84,10 +86,10 @@ public class Rocket implements Serializable {
     /**
      * Returns the id of the built in wood.
      *
-     * @return Returns the string property of the built in wood.
+     * @return Returns the IntegerProperty of the built in wood.
      */
-    public final StringProperty getWoodIdProperty() {
-        return new SimpleStringProperty(Integer.toString(wood.getID()));
+    public final IntegerProperty getWoodIdProperty() {
+        return new SimpleIntegerProperty(wood.getID());
     }
     /**
      * Returns the id of the built in effects as a string containing the used
@@ -106,10 +108,10 @@ public class Rocket implements Serializable {
     /**
      * Returns the quantity used in the rocket.
      *
-     * @return Returns the propellant quantity as StringProperty.
+     * @return Returns the propellant quantity as IntegerProperty.
      */
-    public final StringProperty getPropellantQuantityProperty() {
-        return new SimpleStringProperty(propellantQuantity.toString());
+    public final IntegerProperty getPropellantQuantityProperty() {
+        return new SimpleIntegerProperty(propellantQuantity);
     }
     /**
      * Returns the the result of the quality test.
@@ -122,45 +124,42 @@ public class Rocket implements Serializable {
     /**
      * Returns the the id of the worker who built the rocket.
      *
-     * @return Returns the worker id as StringProperty.
+     * @return Returns the worker id as IntegerProperty.
      */
-    public final StringProperty getWorkerIdProperty() {
-
-        return new SimpleStringProperty(workerId.toString());
+    public final IntegerProperty getWorkerIdProperty() {
+        return new SimpleIntegerProperty(workerId);
     }
     /**
      * Returns the the id of the quality tester who tested the rocket.
      *
-     * @return Returns the tester id as StringProperty.
+     * @return Returns the tester id as IntegerProperty.
      */
-    public final StringProperty getTesterIdProperty() {
-
-        return new SimpleStringProperty(testerId.toString());
+    public final IntegerProperty getTesterIdProperty() {
+        return new SimpleIntegerProperty(testerId);
     }
     /**
      * Returns the the id of the logistician who packed up the rocket.
      *
-     * @return Returns the logistician id as StringProperty.
+     * @return Returns the logistician id as IntegerProperty.
      */
-    public final StringProperty getPackerIdProperty() {
-        return new SimpleStringProperty(packerId.toString());
+    public final IntegerProperty getPackerIdProperty() {
+        return new SimpleIntegerProperty(packerId);
     }
     /**
      * Returns the the id of the supplier who delivered the used wood.
      *
-     * @return Returns the supplier of the wood id as StringProperty.
+     * @return Returns the supplier of the wood id as IntegerProperty.
      */
-    public final StringProperty getSupplierWoodIdProperty() {
-        return new SimpleStringProperty(Integer.toString(wood.getSupplierId()));
+    public final IntegerProperty getSupplierWoodIdProperty() {
+        return new SimpleIntegerProperty(wood.getSupplierId());
     }
     /**
      * Returns the the id of the supplier who delivered the used casing.
      *
-     * @return Returns the supplier of the casing id as StringProperty.
+     * @return Returns the supplier of the casing id as IntegerProperty.
      */
-    public final StringProperty getSupplierCasingIdProperty() {
-        return new SimpleStringProperty(Integer.toString(
-                casing.getSupplierId()));
+    public final IntegerProperty getSupplierCasingIdProperty() {
+        return new SimpleIntegerProperty(casing.getSupplierId());
     }
     /**
      * Returns the the id of the suppliers who delivered the used propellant

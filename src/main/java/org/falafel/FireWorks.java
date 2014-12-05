@@ -107,12 +107,15 @@ public class FireWorks extends Application {
 
     /** Save data shown in the rocket table. */
     @FXML
-    private TableColumn<Rocket, String> casingIdColumn, packageIdColumn,
-            rocketIdColumn, woodIdColumn, propellantIdColumn,
-            propellantQuantityColumn, effectIdColumn, testResultColumn,
+    private TableColumn<Rocket, String> effectIdColumn, propellantIdColumn,
+            testResultColumn,  supplierPropellantIdColumn,
+            supplierEffectIdColumn;
+    /** Save data shown in the rocket table. */
+    @FXML
+    private TableColumn<Rocket, Number> rocketIdColumn, casingIdColumn,
+            packageIdColumn, woodIdColumn, propellantQuantityColumn,
             workerIdColumn, testerIdColumn, supplierWoodIdColumn,
-            supplierCasingColumn, supplierPropellantIdColumn,
-            supplierEffectIdColumn, packerIdColumn;
+            supplierCasingIdColumn, packerIdColumn;
     /** Save handler of the rocket table. */
     @FXML
     private TableView<Rocket> rocketTable = new TableView<>();
@@ -228,7 +231,7 @@ public class FireWorks extends Application {
                 cellData -> cellData.getValue().getPackerIdProperty());
         supplierWoodIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getSupplierWoodIdProperty());
-        supplierCasingColumn.setCellValueFactory(
+        supplierCasingIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getSupplierCasingIdProperty());
         supplierPropellantIdColumn.setCellValueFactory(
                 cellData
