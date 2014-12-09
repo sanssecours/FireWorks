@@ -26,6 +26,8 @@ mvn compile
 
 ## Execution
 
+Before you start any of the command line programs you need to start the FireWorks GUI since it is responsible for managing the MozartSpace.
+
 ### FireWorks GUI
 
 To start the graphical user interface you can use the following Maven command:
