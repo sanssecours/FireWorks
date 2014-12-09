@@ -749,4 +749,9 @@ public class FireWorks extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
+
+    public void clearOrder(ActionEvent actionEvent) {
+        order.clear();
+    }
+
 }
