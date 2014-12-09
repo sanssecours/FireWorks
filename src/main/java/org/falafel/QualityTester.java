@@ -149,16 +149,16 @@ public final class QualityTester {
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get a rocket!");
                 try {
-                    Thread.sleep(WAIT_TIME_TESTER_MS);
-                } catch (InterruptedException e) {
-                    LOGGER.error("I was interrupted while trying to sleep. "
-                            + "How rude!");
-                }
-                try {
                     capi.rollbackTransaction(getRocketsTransaction);
                 } catch (MzsCoreException e2) {
                     LOGGER.error("Can't rollback transaction!");
                     System.exit(1);
+                }
+                try {
+                    Thread.sleep(WAIT_TIME_TESTER_MS);
+                } catch (InterruptedException e) {
+                    LOGGER.error("I was interrupted while trying to sleep. "
+                            + "How rude!");
                 }
             } catch (MzsCoreException e) {
                 //e.printStackTrace();
