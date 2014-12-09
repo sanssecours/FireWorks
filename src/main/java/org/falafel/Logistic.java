@@ -137,7 +137,8 @@ public final class Logistic {
                     try {
                         capi.write(rocketContainer,
                                 MzsConstants.RequestTimeout.TRY_ONCE,
-                                null, new Entry(returnRocket));
+                                null, new Entry(returnRocket,
+                                        FifoCoordinator.newCoordinationData()));
                     } catch (MzsCoreException e) {
                         LOGGER.error("Logistician can't return rockets to "
                                 + "tested container!");
