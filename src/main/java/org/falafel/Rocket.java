@@ -16,26 +16,57 @@ import java.util.TreeSet;
  */
 public class Rocket implements Serializable {
 
-    Integer id;
-    Integer packageId = 0;
-    Wood wood;
-    Casing casing;
-    ArrayList<Effect> effects;
-    HashMap<Propellant, Integer> propellants;
-    Integer propellantQuantity;
-    Integer workerId;
-    Integer testerId = 0;
-    Integer packerId = 0;
-    Boolean testResult = false;
-    Boolean readyForCollection = false;
+    /** The identification of this rocket. */
+    private Integer id;
+    /** The id of the package that contains this rocket. */
+    private Integer packageId = 0;
+    /** The wood used to construct this rocket. */
+    private Wood wood;
+    /** The casing used to construct this rocket. */
+    private Casing casing;
+    /** The list of effects used to construct this rocket. */
+    private ArrayList<Effect> effects;
+    /** The propellants together with the amounts of them used to create this
+     *  rocket. */
+    private HashMap<Propellant, Integer> propellants;
+    /** The whole amount of propellant used to create this rocket. */
+    private Integer propellantQuantity;
+    /** The id of the worker that put together this rocket. */
+    private Integer workerId;
+    /** The id of the tester that checked this rocket. */
+    private Integer testerId = 0;
+    /** The id of the logistician that boxed this rocket. */
+    private Integer packerId = 0;
+    /** This value specifies if this rocket is defect or not. */
+    private Boolean testResult = false;
+    /** This value specifies if this rocket is ready to be collected. */
+    private Boolean readyForCollection = false;
 
-    public Rocket (Integer rocketId,
-                   Wood wood,
-                   Casing casing,
-                   ArrayList<Effect> effects,
-                   HashMap<Propellant, Integer> propellants,
-                   Integer propellantQuantity,
-                   Integer workerId) {
+    /**
+     * Create a new rocket with the given arguments.
+     *
+     * @param rocketId
+     *          The identifier for the rocket
+     * @param wood
+     *          The wood used to construct the new rocket
+     * @param casing
+     *          The casing used to construct the new rocket
+     * @param effects
+     *          A list of effects used to create the new rocket
+     * @param propellants
+     *          The propellants used to create the new rocket
+     * @param propellantQuantity
+     *          The amount of propellant contained in the new rocket
+     * @param workerId
+     *          The id of the worker that created the new rocket
+     */
+    public Rocket(final Integer rocketId,
+                  final Wood wood,
+                  final Casing casing,
+                  final ArrayList<Effect> effects,
+                  final HashMap<Propellant, Integer> propellants,
+                  final Integer propellantQuantity,
+                  final Integer workerId) {
         id = rocketId;
         this.wood = wood;
         this.casing = casing;
@@ -232,7 +263,7 @@ public class Rocket implements Serializable {
     /**
      * returning the result of the quality test.
      *
-     * @return bollean value of the test result
+     * @return boolean value of the test result
      */
     public final Boolean getTestResult() {
         return testResult;
