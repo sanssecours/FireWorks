@@ -68,7 +68,7 @@ public final class Logistic {
             packerId = Integer.parseInt(arguments[0]);
             spaceUri = URI.create(arguments[1]);
         } catch (Exception e) {
-            System.err.println("Please supply a valid values!");
+            System.err.println("Please supply valid values!");
             return;
         }
 
