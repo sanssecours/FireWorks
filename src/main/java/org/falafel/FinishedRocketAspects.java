@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class FinishedRocketAspects extends AbstractContainerAspect {
 
+    /** The current id for the next package of rockets. */
     private static Integer id = 1;
 
     /**
@@ -41,8 +42,9 @@ public class FinishedRocketAspects extends AbstractContainerAspect {
 
         List<Entry> entries = request.getEntries();
 
-        ArrayList<Rocket> rockets = (ArrayList<Rocket>)
-                                            entries.get(0).getValue();
+        @SuppressWarnings("unchecked")
+        ArrayList<Rocket> rockets
+                = (ArrayList<Rocket>) entries.get(0).getValue();
 
         for (Rocket rocket : rockets) {
             rocket.setPackageId(id);
