@@ -4,7 +4,7 @@ import org.mozartspaces.capi3.Index;
 import org.mozartspaces.capi3.Queryable;
 
 /**
- * A class representing a propellent package.
+ * A class representing a propellant package.
  */
 @Queryable
 public class Propellant extends Material {
@@ -33,7 +33,7 @@ public class Propellant extends Material {
     private String status;
 
     /**
-     * Create new propellent package with the given attributes.
+     * Create new propellant package with the given attributes.
      *
      * @param identifier
      *          A integer value that (uniquely) identifies this material.
