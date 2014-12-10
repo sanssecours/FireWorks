@@ -72,12 +72,6 @@ public class FireWorks extends Application {
     private static ContainerReference woodContainer;
     /** The container for storing the created rockets. */
     private static ContainerReference createdRockets;
-    /** The container for storing the tested rockets. */
-    private static ContainerReference testedRockets;
-    /** The container for storing the packed rockets. */
-    private static ContainerReference packedRockets;
-    /** The container for storing the thrown out rockets. */
-    private static ContainerReference wasteRockets;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
     /** The running id for the materials. */
@@ -119,7 +113,6 @@ public class FireWorks extends Application {
     /** Save handler of the rocket table. */
     @FXML
     private TableView<Rocket> rocketTable = new TableView<>();
-
 
     /** Saves data shown in the supplier table. */
     @FXML
@@ -188,15 +181,21 @@ public class FireWorks extends Application {
     private static StringProperty quantityOpenPropellantCounterProperty =
             new SimpleStringProperty(quantityOpenPropellantCounter.toString());
 
+    /** Displays the number of rockets in the current rocket table. */
     @FXML
     private Label numberRocketsLabel;
+    /** The number of produced rockets. */
+    @FXML
     private static StringProperty numberRocketsProperty =
             new SimpleStringProperty("0");
+    /** The number of shipped rockets. */
+    @FXML
     private static StringProperty numberShippedRocketsProperty =
             new SimpleStringProperty("0");
+    /** The number of trashed rockets. */
+    @FXML
     private static StringProperty numberTrashedRocketsProperty =
             new SimpleStringProperty("0");
-
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -275,18 +274,10 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         //CHECKSTYLE:OFF
-        /*
-        HashMap<Propellant, Integer> propellants = new HashMap<>();
-        propellants.put(new Propellant(4, "hugo", 1, org.falafel.Propellant.CLOSED), 100);
-        propellants.put(new Propellant(5, "hugo", 3, org.falafel.Propellant.CLOSED), 130);
-        ArrayList<Effect> effects = new ArrayList<>();
-        effects.add(new Effect(3, "Hannes", 3, false));
-        rockets.add(new Rocket(1, new Wood(1, "hugo", 1), new Casing(2, "Rene", 2),
-                effects, propellants, 130, 434));
-        */
         order.add(new SupplyOrder("Hulk", Casing.toString(), 150, 100));
         order.add(new SupplyOrder("Iron Man", Wood.toString(), 150, 100));
-        order.add(new SupplyOrder("Captain America", Effect.toString(), 150, 100));
+        order.add(new SupplyOrder("Captain America", Effect.toString(), 150,
+                  100));
         order.add(new SupplyOrder("Batman", Effect.toString(), 150, 60));
         order.add(new SupplyOrder("Thor", Effect.toString(), 150, 60));
         order.add(new SupplyOrder("Seaman", Propellant.toString(), 50, 100));
@@ -501,6 +492,7 @@ public class FireWorks extends Application {
      *          The event sent by JavaFx when the user interface
      *          element for this method is invoked.
      */
+    @SuppressWarnings("unused")
     public final void displayShippedRocketsTab(final Event event) {
         rocketTable.setItems(packedRocketsList);
         numberRocketsLabel.textProperty().bind(numberShippedRocketsProperty);
@@ -513,6 +505,7 @@ public class FireWorks extends Application {
      *          The event sent by JavaFx when the user interface
      *          element for this method is invoked.
      */
+    @SuppressWarnings("unused")
     public final void displayTrashedRocketsTab(final Event event) {
         rocketTable.setItems(trashedRocketsList);
         numberRocketsLabel.textProperty().bind(numberTrashedRocketsProperty);
@@ -525,6 +518,7 @@ public class FireWorks extends Application {
      *          The event sent by JavaFx when the user interface
      *          element for this method is invoked.
      */
+    @SuppressWarnings("unused")
     public final void displayProducedRocketsTab(final Event event) {
         rocketTable.setItems(rockets);
         numberRocketsLabel.textProperty().bind(numberRocketsProperty);
@@ -674,7 +668,8 @@ public class FireWorks extends Application {
                     iPoints, null);
             // create the container where the tested rockets are stored with a
             // FiFo coordinator
-            testedRockets = capi.createContainer(
+            /* The container for storing the tested rockets. */
+            ContainerReference testedRockets = capi.createContainer(
                     "testedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -686,7 +681,8 @@ public class FireWorks extends Application {
 
             // create the container where the packed rockets are stored with a
             // FiFo coordinator
-            packedRockets = capi.createContainer(
+            /* The container for storing the packed rockets. */
+            ContainerReference packedRockets = capi.createContainer(
                     "finishedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -697,7 +693,8 @@ public class FireWorks extends Application {
                     iPoints, null);
 
             // create the container where the trashed rockets are stored
-            wasteRockets = capi.createContainer(
+            /* The container for storing the thrown out rockets. */
+            ContainerReference wasteRockets = capi.createContainer(
                     "trashedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -750,7 +747,16 @@ public class FireWorks extends Application {
         primaryStage.show();
     }
 
-    public void clearOrder(ActionEvent actionEvent) {
+    /**
+     * Remove all suppliers from the supplier table.
+     *
+     * @param actionEvent
+     *          The event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     *
+     */
+    @SuppressWarnings("unused")
+    public final void clearOrder(final ActionEvent actionEvent) {
         order.clear();
     }
 
