@@ -73,6 +73,12 @@ public class FireWorks extends Application {
     private static ContainerReference woodContainer;
     /** The container for storing the created rockets. */
     private static ContainerReference createdRockets;
+    /** The container for storing the tested rockets. */
+    private static ContainerReference testedRockets;
+    /** The container for storing the packed rockets. */
+    private static ContainerReference packedRockets;
+    /** The container for storing the thrown out rockets. */
+    private static ContainerReference wasteRockets;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
     /** The running id for the materials. */
@@ -673,8 +679,7 @@ public class FireWorks extends Application {
                     iPoints, null);
             // create the container where the tested rockets are stored with a
             // FiFo coordinator
-            /* The container for storing the tested rockets. */
-            ContainerReference testedRockets = capi.createContainer(
+            testedRockets = capi.createContainer(
                     "testedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -686,8 +691,7 @@ public class FireWorks extends Application {
 
             // create the container where the packed rockets are stored with a
             // FiFo coordinator
-            /* The container for storing the packed rockets. */
-            ContainerReference packedRockets = capi.createContainer(
+            packedRockets = capi.createContainer(
                     "finishedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -698,8 +702,7 @@ public class FireWorks extends Application {
                     iPoints, null);
 
             // create the container where the trashed rockets are stored
-            /* The container for storing the thrown out rockets. */
-            ContainerReference wasteRockets = capi.createContainer(
+            wasteRockets = capi.createContainer(
                     "trashedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
@@ -721,6 +724,10 @@ public class FireWorks extends Application {
             capi.destroyContainer(effectContainer, null);
             capi.destroyContainer(propellantContainer, null);
             capi.destroyContainer(woodContainer, null);
+            capi.destroyContainer(createdRockets, null);
+            capi.destroyContainer(testedRockets, null);
+            capi.destroyContainer(packedRockets, null);
+            capi.destroyContainer(wasteRockets, null);
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
