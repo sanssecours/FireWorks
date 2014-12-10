@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -115,7 +114,6 @@ public final class Worker {
                     collectResourcesTransaction = capi.createTransaction(
                             TRANSACTION_TIMEOUT, spaceUri, context);
                 } catch (MzsCoreException e) {
-                    //e.printStackTrace();
                     LOGGER.error("Can't create transaction!");
                     System.exit(1);
                 }
@@ -156,23 +154,8 @@ public final class Worker {
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
 
-
                     propellantQuantity = randomGenerator.nextInt(
                             UPPERQUANTITY - LOWERQUANTITY) + LOWERQUANTITY;
-
-                    ContainerReference container;
-
-                    container = capi.lookupContainer(
-                            MaterialType.Propellant.toString(),
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            null);
-
-                    ArrayList<Propellant> result;
-                    result = capi.read(container,
-                            AnyCoordinator.newSelector(COUNT_ALL),
-                            RequestTimeout.TRY_ONCE, null);
-                    LOGGER.debug("Propellant container before take: " + result);
 
                     int takenOpenQuantity = 0;
                     int takenOpenPropellant = 0;
@@ -235,15 +218,14 @@ public final class Worker {
                         }
                     }
 
-                    context.setProperty("takenOpenQuantity",
-                            takenOpenQuantity);
+                    context.setProperty("takenOpenQuantity", takenOpenQuantity);
                     context.setProperty("takenOpenPropellant",
                             takenOpenPropellant);
 
                     context.setProperty("gotMaterial", true);
                     capi.commitTransaction(
                             collectResourcesTransaction, context);
-                    LOGGER.info("Took the following Items: " + casing.toString()
+                    LOGGER.info("Took the following Items: " + casing
                             + " " + effects + " "
                             + wood + " "
                             + propellantsWithQuantity.keySet());
@@ -287,14 +269,6 @@ public final class Worker {
                 capi.write(container, RequestTimeout.TRY_ONCE, null,
                         new Entry(producedRocket));
 
-
-
-                ArrayList<Rocket> readRocket;
-                readRocket = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Rockets still in container " + readRocket);
-
                 // write the used propellant package back if it still contains
                 // propellant
                 container = capi.lookupContainer(
@@ -310,14 +284,6 @@ public final class Worker {
                                         newCoordinationData()));
                     }
                 }
-
-                ArrayList<Propellant> result;
-                result = capi.read(container,
-                        AnyCoordinator.newSelector(COUNT_ALL),
-                        RequestTimeout.TRY_ONCE, null);
-                LOGGER.debug("Propellant after " + result);
-
-
 
             } catch (InterruptedException e) {
                 System.out.println("I'm going home.");
