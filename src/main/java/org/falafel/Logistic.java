@@ -110,7 +110,6 @@ public final class Logistic {
 
                 rocket = rockets.get(0);
                 rocket.setPackerId(packerId);
-                rocket.setReadyForCollection(true);
 
                 if (rocket.getTestResult()) {
                     capi.write(trashContainer,
@@ -133,7 +132,6 @@ public final class Logistic {
 
                 for (Rocket returnRocket : functioningRockets) {
                     returnRocket.setPackerId(0);
-                    returnRocket.setReadyForCollection(false);
                     try {
                         capi.write(rocketContainer,
                                 MzsConstants.RequestTimeout.TRY_ONCE,

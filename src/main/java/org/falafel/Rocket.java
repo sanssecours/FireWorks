@@ -39,8 +39,6 @@ public class Rocket implements Serializable {
     private Integer packerId = 0;
     /** This value specifies if this rocket is defect or not. */
     private Boolean testResult = false;
-    /** This value specifies if this rocket is ready to be collected. */
-    private Boolean readyForCollection = false;
 
     /**
      * Create a new rocket with the given arguments.
@@ -291,14 +289,6 @@ public class Rocket implements Serializable {
      */
     public final void setPackageId(final Integer id) {
         packageId = id;
-    }
-    /**
-     * Set if the rocket is finished and ready to collect.
-     *
-     * @param readyForCollection flag which tells that the rocket is finished
-     */
-    public final void setReadyForCollection(final boolean readyForCollection) {
-        this.readyForCollection = readyForCollection;
     }
     /**
      * Return the string representation of the rocket.
