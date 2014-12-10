@@ -37,7 +37,7 @@ public final class QualityTester {
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
     /**
-     * Constant for the minimum .
+     * Constant for the minimum.
      */
     private static final int MINIMAL_PROPELLANT = 120;
     /**
@@ -97,7 +97,6 @@ public final class QualityTester {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
             } catch (MzsCoreException e) {
-                //e.printStackTrace();
                 LOGGER.error("Can't create transaction!");
                 System.exit(1);
             }
@@ -161,7 +160,6 @@ public final class QualityTester {
                             + "How rude!");
                 }
             } catch (MzsCoreException e) {
-                //e.printStackTrace();
                 LOGGER.error("Tester has problem with space!");
                 System.exit(1);
             }
