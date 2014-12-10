@@ -15,7 +15,9 @@ import java.util.List;
  */
 public class NewRocketAspects extends AbstractContainerAspect {
 
+    /** The id for the next rocket. */
     private static Integer id = 1;
+
     /**
      * This aspect will be called after an entry is written to an container.
      *
