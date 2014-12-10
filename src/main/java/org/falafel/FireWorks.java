@@ -4,8 +4,9 @@ package org.falafel;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -135,32 +136,32 @@ public class FireWorks extends Application {
     /** Saves data shown in the effectCounterLabel. */
     private static Integer effectCounter = 0;
     /** Saves data shown in the effectCounterLabel. */
-    private static StringProperty effectCounterProperty =
-            new SimpleStringProperty(effectCounter.toString());
+    private static IntegerProperty effectCounterProperty =
+            new SimpleIntegerProperty(effectCounter);
     /** Label for the current number of elements in the casing container. */
     @FXML
     private Label casingsCounterLabel;
     /** Saves data shown in the casingsCounterLabel. */
     private static Integer casingsCounter = 0;
     /** Saves data shown in the casingsCounterLabel. */
-    private static StringProperty casingsCounterProperty =
-            new SimpleStringProperty(casingsCounter.toString());
+    private static IntegerProperty casingsCounterProperty =
+            new SimpleIntegerProperty(casingsCounter);
     /** Label for the current number of elements in the wood container. */
     @FXML
     private Label woodCounterLabel;
     /** Saves data shown in the woodCounterLabel. */
     private static Integer woodCounter = 0;
     /** Saves data shown in the woodCounterLabel. */
-    private static StringProperty woodCounterProperty =
-            new SimpleStringProperty(woodCounter.toString());
+    private static IntegerProperty woodCounterProperty =
+            new SimpleIntegerProperty(woodCounter);
     /** Label for the current number of elements in the propellant container. */
     @FXML
     private Label propellantCounterLabel;
     /** Saves data shown in the propellantCounterLabel. */
     private static Integer propellantCounter = 0;
     /** Saves data shown in the propellantCounterLabel. */
-    private static StringProperty propellantCounterProperty =
-            new SimpleStringProperty(propellantCounter.toString());
+    private static IntegerProperty propellantCounterProperty =
+            new SimpleIntegerProperty(propellantCounter);
 
     /** Label for the current number of open propellant charges in the
      * container. */
@@ -169,8 +170,8 @@ public class FireWorks extends Application {
     /** Saves data shown in the numberOpenPropellant. */
     private static Integer numberOpenPropellantCounter = 0;
     /** Saves data shown in the numberOpenPropellant. */
-    private static StringProperty numberOpenPropellantCounterProperty =
-            new SimpleStringProperty(numberOpenPropellantCounter.toString());
+    private static IntegerProperty numberOpenPropellantCounterProperty =
+            new SimpleIntegerProperty(numberOpenPropellantCounter);
     /** Label for the current quantity in grams of open propellant charges in
      * the container. */
     @FXML
@@ -178,24 +179,24 @@ public class FireWorks extends Application {
     /** Saves data shown in the quantityOpenPropellant. */
     private static Integer quantityOpenPropellantCounter = 0;
     /** Saves data shown in the quantityOpenPropellant. */
-    private static StringProperty quantityOpenPropellantCounterProperty =
-            new SimpleStringProperty(quantityOpenPropellantCounter.toString());
+    private static IntegerProperty quantityOpenPropellantCounterProperty =
+            new SimpleIntegerProperty(quantityOpenPropellantCounter);
 
     /** Displays the number of rockets in the current rocket table. */
     @FXML
     private Label numberRocketsLabel;
     /** The number of produced rockets. */
     @FXML
-    private static StringProperty numberRocketsProperty =
-            new SimpleStringProperty("0");
+    private static IntegerProperty numberRocketsProperty =
+            new SimpleIntegerProperty(0);
     /** The number of shipped rockets. */
     @FXML
-    private static StringProperty numberShippedRocketsProperty =
-            new SimpleStringProperty("0");
+    private static IntegerProperty numberShippedRocketsProperty =
+            new SimpleIntegerProperty(0);
     /** The number of trashed rockets. */
     @FXML
-    private static StringProperty numberTrashedRocketsProperty =
-            new SimpleStringProperty("0");
+    private static IntegerProperty numberTrashedRocketsProperty =
+            new SimpleIntegerProperty(0);
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -239,15 +240,20 @@ public class FireWorks extends Application {
                 cellData -> cellData.getValue().getSupplierEffectIdProperty());
 
         // initialize current warehouse labels
-        casingsCounterLabel.textProperty().bind(casingsCounterProperty);
-        effectCounterLabel.textProperty().bind(effectCounterProperty);
-        propellantCounterLabel.textProperty().bind(propellantCounterProperty);
-        woodCounterLabel.textProperty().bind(woodCounterProperty);
+        casingsCounterLabel.textProperty().bind(
+                Bindings.convert(casingsCounterProperty));
+        effectCounterLabel.textProperty().bind(
+                Bindings.convert(effectCounterProperty));
+        propellantCounterLabel.textProperty().bind(
+                Bindings.convert(propellantCounterProperty));
+        woodCounterLabel.textProperty().bind(
+                Bindings.convert(woodCounterProperty));
         numberOpenPropellantLabel.textProperty().bind(
-                numberOpenPropellantCounterProperty);
+                Bindings.convert(numberOpenPropellantCounterProperty));
         quantityOpenPropellantLabel.textProperty().bind(
-                quantityOpenPropellantCounterProperty);
-        numberRocketsLabel.textProperty().bind(numberRocketsProperty);
+                Bindings.convert(quantityOpenPropellantCounterProperty));
+        numberRocketsLabel.textProperty().bind(
+                Bindings.convert(numberRocketsProperty));
 
         //  initialize supplier table
         supplierNameColumn.setCellValueFactory(
@@ -288,7 +294,7 @@ public class FireWorks extends Application {
         supplyTable.setItems(order);
 
         rocketTable.setItems(rockets);
-        numberRocketsProperty.set(Integer.toString(rockets.size()));
+        numberRocketsProperty.set(rockets.size());
     }
 
     /**
@@ -299,8 +305,7 @@ public class FireWorks extends Application {
     public static void addRocketToTrash(final Rocket rocket) {
         Platform.runLater(() -> {
             trashedRocketsList.add(rocket);
-            numberTrashedRocketsProperty.set(Integer.toString(
-                    trashedRocketsList.size()));
+            numberTrashedRocketsProperty.set(trashedRocketsList.size());
         });
     }
 
@@ -313,8 +318,7 @@ public class FireWorks extends Application {
                 final ArrayList<Rocket> rockets) {
         Platform.runLater(() -> {
             packedRocketsList.addAll(rockets);
-            numberShippedRocketsProperty.set(Integer.toString(
-                    packedRocketsList.size()));
+            numberShippedRocketsProperty.set(packedRocketsList.size());
         });
     }
 
@@ -330,7 +334,7 @@ public class FireWorks extends Application {
         Platform.runLater(() -> {
             if (containerId.equals(createdRockets.getId())) {
                 rockets.add(rocket);
-                numberRocketsProperty.set(Integer.toString(rockets.size()));
+                numberRocketsProperty.set(rockets.size());
             }
         });
     }
@@ -372,9 +376,9 @@ public class FireWorks extends Application {
             quantityOpenPropellantCounter = quantityOpenPropellantCounter
                     + difference;
             numberOpenPropellantCounterProperty.set(
-                    numberOpenPropellantCounter.toString());
+                    numberOpenPropellantCounter);
             quantityOpenPropellantCounterProperty.set(
-                    quantityOpenPropellantCounter.toString());
+                    quantityOpenPropellantCounter);
         });
     }
     /**
@@ -388,8 +392,7 @@ public class FireWorks extends Application {
     public static void changeClosedPropellantLabels(final int difference) {
         Platform.runLater(() -> {
             propellantCounter = propellantCounter + difference;
-            propellantCounterProperty.set(
-                    propellantCounter.toString());
+            propellantCounterProperty.set(propellantCounter);
         });
     }
 
@@ -404,12 +407,12 @@ public class FireWorks extends Application {
     public static void reduceCasingEffectWood(final int difference) {
         Platform.runLater(() -> {
             casingsCounter = casingsCounter - difference;
-            casingsCounterProperty.set(casingsCounter.toString());
+            casingsCounterProperty.set(casingsCounter);
             effectCounter = effectCounter
                     - difference - difference - difference;
-            effectCounterProperty.set(effectCounter.toString());
+            effectCounterProperty.set(effectCounter);
             woodCounter = woodCounter - difference;
-            woodCounterProperty.set(woodCounter.toString());
+            woodCounterProperty.set(woodCounter);
         });
     }
 
@@ -428,20 +431,19 @@ public class FireWorks extends Application {
         Platform.runLater(() -> {
             if (containerId.equals(casingContainer.getId())) {
                 casingsCounter = casingsCounter + difference;
-                casingsCounterProperty.set(casingsCounter.toString());
+                casingsCounterProperty.set(casingsCounter);
             }
             if (containerId.equals(effectContainer.getId())) {
                 effectCounter = effectCounter + difference;
-                effectCounterProperty.set(effectCounter.toString());
+                effectCounterProperty.set(effectCounter);
             }
             if (containerId.equals(propellantContainer.getId())) {
                 propellantCounter = propellantCounter + difference;
-                propellantCounterProperty.set(
-                        propellantCounter.toString());
+                propellantCounterProperty.set(propellantCounter);
             }
             if (containerId.equals(woodContainer.getId())) {
                 woodCounter = woodCounter + difference;
-                woodCounterProperty.set(woodCounter.toString());
+                woodCounterProperty.set(woodCounter);
             }
         });
     }
@@ -495,7 +497,8 @@ public class FireWorks extends Application {
     @SuppressWarnings("unused")
     public final void displayShippedRocketsTab(final Event event) {
         rocketTable.setItems(packedRocketsList);
-        numberRocketsLabel.textProperty().bind(numberShippedRocketsProperty);
+        numberRocketsLabel.textProperty().bind(
+                Bindings.convert(numberShippedRocketsProperty));
     }
 
     /**
@@ -508,7 +511,8 @@ public class FireWorks extends Application {
     @SuppressWarnings("unused")
     public final void displayTrashedRocketsTab(final Event event) {
         rocketTable.setItems(trashedRocketsList);
-        numberRocketsLabel.textProperty().bind(numberTrashedRocketsProperty);
+        numberRocketsLabel.textProperty().bind(
+                Bindings.convert(numberTrashedRocketsProperty));
     }
 
     /**
@@ -521,7 +525,8 @@ public class FireWorks extends Application {
     @SuppressWarnings("unused")
     public final void displayProducedRocketsTab(final Event event) {
         rocketTable.setItems(rockets);
-        numberRocketsLabel.textProperty().bind(numberRocketsProperty);
+        numberRocketsLabel.textProperty().bind(
+                Bindings.convert(numberRocketsProperty));
     }
 
     /**
