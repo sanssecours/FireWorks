@@ -1,6 +1,7 @@
 package org.falafel;
 
 import org.mozartspaces.capi3.Transaction;
+import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.aspects.AbstractSpaceAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.CommitTransactionRequest;
@@ -21,18 +22,17 @@ public class ReduceLabelSpaceAspects extends AbstractSpaceAspect {
     public final AspectResult postCommitTransaction(
             final CommitTransactionRequest request, final Transaction tx) {
 
-        if (request.getContext().containsProperty("gotMaterial")) {
+        RequestContext context = request.getContext();
+
+        if (context.containsProperty("gotMaterial")) {
             FireWorks.reduceCasingEffectWood(1);
 
-            if (request.getContext().containsProperty("takenClosedPropellant"))
-            {
+            if (context.containsProperty("takenClosedPropellant")) {
                 FireWorks.changeClosedPropellantLabels(-1);
             }
-            if (request.getContext().containsProperty("takenOpenPropellant")) {
-                int number = (int) request.getContext().getProperty(
-                        "takenOpenPropellant");
-                int quantity = (int) request.getContext().getProperty(
-                        "takenOpenQuantity");
+            if (context.containsProperty("takenOpenPropellant")) {
+                int number = (int) context.getProperty("takenOpenPropellant");
+                int quantity = (int) context.getProperty("takenOpenQuantity");
 
                 FireWorks.changeOpenedPropellantLabels(-number, -quantity);
             }
