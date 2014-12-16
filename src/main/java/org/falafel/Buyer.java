@@ -1,5 +1,12 @@
 package org.falafel;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -8,10 +15,12 @@ import java.net.URI;
  * A buyer orders rockets from the factory and stores them into his space after
  * the rockets were produced.
  */
-public final class Buyer {
+public final class Buyer extends Application {
 
-    /** Create a new empty buyer. */
-    private Buyer() { }
+    /** The unique identification of this buyer. */
+    private static Integer buyerId;
+    /** The URI of the fireworks factory. */
+    private static URI spaceUri;
 
     /**
      * Start the buyer.
@@ -19,9 +28,6 @@ public final class Buyer {
      * @param arguments A list containing the command line arguments.
      */
     public static void main(final String[] arguments) {
-
-        Integer buyerId;
-        URI spaceUri;
 
         if (arguments.length != 2) {
             System.err.println("Usage: buyer <Id> <Space URI>");
@@ -32,10 +38,19 @@ public final class Buyer {
             spaceUri = URI.create(arguments[1]);
         } catch (Exception e) {
             System.err.println("Please supply valid command line arguments!");
-            return;
+            System.exit(1);
         }
 
-        System.out.println("Id:  " + buyerId + "\nURI: " + spaceUri);
+        launch(arguments);
+    }
+
+    @Override
+    public void start(final Stage primaryStage) throws IOException {
+
+        Parent root = FXMLLoader.load(getClass().getResource("/Buyer.fxml"));
+        primaryStage.setTitle("Buyer " + buyerId + "— " + spaceUri);
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
     }
 
 }
