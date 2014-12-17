@@ -142,15 +142,33 @@ public class FireWorks extends Application {
     private TableColumn<SupplyOrder, String> orderedQualityColumn;
     /** Saves data shown in the color column of the supplier table. */
     @FXML
-    public TableColumn<SupplyOrder, String> orderedColorColumn;
-    /** Label for the current number of elements in the effect container. */
+    private TableColumn<SupplyOrder, String> orderedColorColumn;
+
+    /** Label for the current number of the blue effects in the container.*/
     @FXML
-    private Label effectCounterLabel;
-    /** Saves data shown in the effectCounterLabel. */
-    private static Integer effectCounter = 0;
-    /** Saves data shown in the effectCounterLabel. */
-    private static IntegerProperty effectCounterProperty =
-            new SimpleIntegerProperty(effectCounter);
+    private Label blueEffectCounterLabel;
+    /** Saves data shown in the blueEffectCounterLabel. */
+    private static Integer blueEffectCounter = 0;
+    /** Saves data shown in the blueEffectCounterLabel. */
+    private static IntegerProperty blueEffectCounterProperty =
+            new SimpleIntegerProperty(blueEffectCounter);
+    /** Label for the current number of the green effects in the container.*/
+    @FXML
+    private Label greenEffectCounterLabel;
+    /** Saves data shown in the greenEffectCounterLabel. */
+    private static Integer greenEffectCounter = 0;
+    /** Saves data shown in the greenEffectCounterLabel. */
+    private static IntegerProperty greenEffectCounterProperty =
+            new SimpleIntegerProperty(greenEffectCounter);
+    /** Label for the current number of the red effects in the container.*/
+    @FXML
+    private Label redEffectCounterLabel;
+    /** Saves data shown in the redEffectCounterLabel. */
+    private static Integer redEffectCounter = 0;
+    /** Saves data shown in the redEffectCounterLabel. */
+    private static IntegerProperty redEffectCounterProperty =
+            new SimpleIntegerProperty(redEffectCounter);
+
     /** Label for the current number of elements in the casing container. */
     @FXML
     private Label casingsCounterLabel;
@@ -255,8 +273,12 @@ public class FireWorks extends Application {
         // initialize current warehouse labels
         casingsCounterLabel.textProperty().bind(
                 Bindings.convert(casingsCounterProperty));
-        effectCounterLabel.textProperty().bind(
-                Bindings.convert(effectCounterProperty));
+        blueEffectCounterLabel.textProperty().bind(
+                Bindings.convert(blueEffectCounterProperty));
+        greenEffectCounterLabel.textProperty().bind(
+                Bindings.convert(greenEffectCounterProperty));
+        redEffectCounterLabel.textProperty().bind(
+                Bindings.convert(redEffectCounterProperty));
         propellantCounterLabel.textProperty().bind(
                 Bindings.convert(propellantCounterProperty));
         woodCounterLabel.textProperty().bind(
@@ -433,11 +455,42 @@ public class FireWorks extends Application {
         Platform.runLater(() -> {
             casingsCounter = casingsCounter - difference;
             casingsCounterProperty.set(casingsCounter);
-            effectCounter = effectCounter
+     /*       effectCounter = effectCounter
                     - difference - difference - difference;
             effectCounterProperty.set(effectCounter);
+      */
             woodCounter = woodCounter - difference;
             woodCounterProperty.set(woodCounter);
+        });
+    }
+
+    /**
+     * Method to change the conter for the effect labels in the FireWorks GUI.
+     *
+     * @param effectColor
+     *          color of the counter which changes
+     * @param difference
+     *          value which should be added or subtracted to the effect label
+     */
+    public static void changeEffectLabels(final EffectColor effectColor,
+                                          final int difference) {
+        Platform.runLater(() -> {
+            switch (effectColor) {
+                case Blue:
+                    blueEffectCounter += difference;
+                    blueEffectCounterProperty.set(blueEffectCounter);
+                    break;
+                case Red:
+                    redEffectCounter += difference;
+                    redEffectCounterProperty.set(redEffectCounter);
+                    break;
+                case Green:
+                    greenEffectCounter += difference;
+                    greenEffectCounterProperty.set(greenEffectCounter);
+                    break;
+                default:
+                    System.err.println("Effect with wrong color!");
+            }
         });
     }
 
@@ -457,10 +510,6 @@ public class FireWorks extends Application {
             if (containerId.equals(casingContainer.getId())) {
                 casingsCounter = casingsCounter + difference;
                 casingsCounterProperty.set(casingsCounter);
-            }
-            if (containerId.equals(effectContainer.getId())) {
-                effectCounter = effectCounter + difference;
-                effectCounterProperty.set(effectCounter);
             }
             if (containerId.equals(propellantContainer.getId())) {
                 propellantCounter = propellantCounter + difference;

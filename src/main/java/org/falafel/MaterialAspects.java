@@ -38,7 +38,6 @@ public class MaterialAspects extends AbstractContainerAspect {
 
         List<Entry> entries = request.getEntries();
 
-
         if (entries.get(0).getValue() instanceof Propellant) {
             for (Entry entry : entries) {
                 Propellant propellantEntry = (Propellant) entry.getValue();
@@ -49,6 +48,11 @@ public class MaterialAspects extends AbstractContainerAspect {
                     FireWorks.changeOpenedPropellantLabels(1,
                             propellantEntry.getQuantity());
                 }
+            }
+        } else if (entries.get(0).getValue() instanceof Effect) {
+            for (Entry entry : entries) {
+                Effect effectEntry = (Effect) entry.getValue();
+                FireWorks.changeEffectLabels(effectEntry.getColor(), 1);
             }
         } else {
             FireWorks.changeCounterLabels(request.getContainer().getId(),

@@ -13,7 +13,6 @@ import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Random;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -78,7 +77,6 @@ public class Supplier extends Thread {
         ContainerReference container;
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
-        ArrayList<Material> result;
         Material newEntry;
 
         String orderType = order.getType();
