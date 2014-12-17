@@ -47,6 +47,12 @@ public final class Buyer extends Application {
     @Override
     public void start(final Stage primaryStage) throws IOException {
 
+        final float minWidth = 300;
+        final float minHeight = 200;
+
+        primaryStage.setMinWidth(minWidth);
+        primaryStage.setMinHeight(minHeight);
+
         Parent root = FXMLLoader.load(getClass().getResource("/Buyer.fxml"));
         primaryStage.setTitle("Buyer " + buyerId + "— " + spaceUri);
         primaryStage.setScene(new Scene(root));
