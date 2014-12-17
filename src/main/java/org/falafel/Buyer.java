@@ -1,9 +1,13 @@
 package org.falafel;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +25,23 @@ public final class Buyer extends Application {
     private static Integer buyerId;
     /** The URI of the fireworks factory. */
     private static URI spaceUri;
+
+    @FXML
+    private TableView newPurchaseTableView;
+    @FXML
+    private TableColumn<SupplyOrder, String> newQuantityPurchaseColumn,
+            newColor1PurchaseColumn, newColor2PurchaseColumn,
+            newColor3PurchaseColumn;
+    @FXML
+    private TableView purchaseTableView;
+    @FXML
+    private TableColumn<SupplyOrder, String> statusPurchaseColumn,
+            color1PurchaseColumn, color2PurchaseColumn,
+            color3PurchaseColumn;
+    @FXML
+    private TableColumn<SupplyOrder, Number> idPurchaseColumn,
+            quantityPurchaseColumn;
+
 
     /**
      * Start the buyer.
@@ -55,8 +76,20 @@ public final class Buyer extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("/Buyer.fxml"));
         primaryStage.setTitle("Buyer " + buyerId + "— " + spaceUri);
+        primaryStage.setOnCloseRequest(event -> closeBuyer());
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
+    private void closeBuyer() {
+    }
+
+    public void newPurchase(ActionEvent actionEvent) {
+    }
+
+    public void clearPurchase(ActionEvent actionEvent) {
+    }
+
+    public void orderPurchase(ActionEvent actionEvent) {
+    }
 }
