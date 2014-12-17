@@ -105,6 +105,10 @@ public class FireWorks extends Application {
                     Effect.toString(),
                     Propellant.toString(),
                     Wood.toString());
+    /** Specify the different choices for the color of an effect. */
+    private static final ObservableList<String> EFFECT_COLOR_CHOICE_LIST =
+            FXCollections.observableArrayList(EffectColor.Blue.toString(),
+                    EffectColor.Green.toString(), EffectColor.Red.toString());
 
     /** Save data shown in the rocket table. */
     @FXML
@@ -136,6 +140,9 @@ public class FireWorks extends Application {
     /** Saves data shown in the quality column of the supplier table. */
     @FXML
     private TableColumn<SupplyOrder, String> orderedQualityColumn;
+    /** Saves data shown in the color column of the supplier table. */
+    @FXML
+    public TableColumn<SupplyOrder, String> orderedColorColumn;
     /** Label for the current number of elements in the effect container. */
     @FXML
     private Label effectCounterLabel;
@@ -273,6 +280,12 @@ public class FireWorks extends Application {
                 ComboBoxTableCell.forTableColumn(TYPES_CHOICE_LIST));
         orderedTypeColumn.isEditable();
 
+        orderedColorColumn.setCellValueFactory(
+                cellData -> cellData.getValue().colorProperty());
+        orderedColorColumn.setCellFactory(
+                ComboBoxTableCell.forTableColumn(EFFECT_COLOR_CHOICE_LIST));
+        orderedColorColumn.isEditable();
+
         orderedQuantityColumn.setCellValueFactory(
                 cellData -> cellData.getValue().quantityProperty());
         orderedQuantityColumn.setCellFactory(
@@ -286,14 +299,20 @@ public class FireWorks extends Application {
         orderedQualityColumn.isEditable();
 
         //CHECKSTYLE:OFF
-        order.add(new SupplyOrder("Hulk", Casing.toString(), 150, 100));
-        order.add(new SupplyOrder("Iron Man", Wood.toString(), 150, 100));
-        order.add(new SupplyOrder("Captain America", Effect.toString(), 150,
-                  100));
-        order.add(new SupplyOrder("Batman", Effect.toString(), 150, 60));
-        order.add(new SupplyOrder("Thor", Effect.toString(), 150, 60));
-        order.add(new SupplyOrder("Seaman", Propellant.toString(), 50, 100));
-        order.add(new SupplyOrder("Hawk", Propellant.toString(), 50, 100));
+        order.add(new SupplyOrder("Hulk", Casing.toString(), EffectColor.Blue,
+                5, 100));
+        order.add(new SupplyOrder("Iron Man", Wood.toString(), EffectColor.Blue,
+                5, 100));
+        order.add(new SupplyOrder("Captain America", Effect.toString(),
+                EffectColor.Blue, 5, 100));
+        order.add(new SupplyOrder("Batman", Effect.toString(), EffectColor.Red,
+                5, 60));
+        order.add(new SupplyOrder("Thor", Effect.toString(), EffectColor.Green,
+                5, 60));
+        order.add(new SupplyOrder("Seaman", Propellant.toString(),
+                EffectColor.Green, 5, 100));
+        order.add(new SupplyOrder("Hawk", Propellant.toString(),
+                EffectColor.Red, 5, 100));
         //CHECKSTYLE:ON
 
         supplyTable.isEditable();
@@ -566,6 +585,21 @@ public class FireWorks extends Application {
     }
 
     /**
+     * This method will be invoked when the color of a material is changed.
+     *
+     * @param stCellEditEvent
+     *          The cell edit event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    public final void setColor(
+            final TableColumn.CellEditEvent<SupplyOrder, String>
+                    stCellEditEvent) {
+        stCellEditEvent.getTableView().getItems().get(
+                stCellEditEvent.getTablePosition().getRow()).setColor(
+                stCellEditEvent.getNewValue());
+    }
+
+    /**
      * This method will be invoked when a new quantity for a material is set.
      *
      * @param stCellEditEvent
@@ -771,5 +805,4 @@ public class FireWorks extends Application {
     public final void clearOrder(final ActionEvent actionEvent) {
         order.clear();
     }
-
 }

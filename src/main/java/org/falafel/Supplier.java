@@ -98,7 +98,8 @@ public class Supplier extends Thread {
                 newEntry = new Casing(materialId, orderSupplier, id);
             } else if (orderType.equals(effect)) {
                 defect = index >= functioningElements;
-                newEntry = new Effect(materialId, orderSupplier, id, defect);
+                newEntry = new Effect(materialId, orderSupplier, id, defect,
+                        order.getColor());
             } else if (orderType.equals(propellant)) {
                 newEntry = new Propellant(materialId, orderSupplier, id,
                         Propellant.CLOSED);

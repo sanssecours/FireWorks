@@ -18,10 +18,11 @@
                            <children>
                               <TableView fx:id="supplyTable" editable="true" layoutX="58.0" layoutY="-3.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0">
                                 <columns>
-                                  <TableColumn fx:id="supplierNameColumn" onEditCommit="#setSupplierName" prefWidth="278.0" text="Name" />
-                                  <TableColumn fx:id="orderedTypeColumn" onEditCommit="#setType" prefWidth="155.0" text="Type" />
-                                    <TableColumn fx:id="orderedQuantityColumn" onEditCommit="#setQuantity" prefWidth="89.0" text="Quantity" />
-                                    <TableColumn fx:id="orderedQualityColumn" onEditCommit="#setQuality" prefWidth="70.0" text="Quality" />
+                                  <TableColumn fx:id="supplierNameColumn" onEditCommit="#setSupplierName" prefWidth="216.0" text="Name" />
+                                  <TableColumn fx:id="orderedTypeColumn" onEditCommit="#setType" prefWidth="148.0" text="Type" />
+                                    <TableColumn fx:id="orderedColorColumn" onEditCommit="#setColor" prefWidth="82.0" text="Color" />
+                                    <TableColumn fx:id="orderedQuantityColumn" onEditCommit="#setQuantity" prefWidth="77.0" text="Quantity" />
+                                    <TableColumn fx:id="orderedQualityColumn" onEditCommit="#setQuality" prefWidth="69.0" text="Quality" />
                                 </columns>
                               </TableView>
                               <HBox layoutX="14.0" layoutY="397.0" spacing="272.0" AnchorPane.bottomAnchor="14.0">

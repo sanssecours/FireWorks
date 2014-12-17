@@ -7,6 +7,8 @@ public class Effect extends Material {
 
     /** Save if this effect is defect. */
     private boolean defect;
+    /** Save the color of the effect. */
+    private EffectColor color;
 
     /**
      * Create new effect with the given attributes.
@@ -19,11 +21,15 @@ public class Effect extends Material {
      *          A integer value that (uniquely) identifies the supplier.
      * @param defect
      *          A boolean value specifying if this effect is defect or not
+     * @param color
+     *          A value specifying the color of this effect
      */
     public Effect(final int identifier, final String supplierName,
-                  final int supplierId, final boolean defect) {
+                  final int supplierId, final boolean defect,
+                  final EffectColor color) {
         super(identifier, supplierName, supplierId);
         this.defect = defect;
+        this.color = color;
     }
 
     /**
@@ -36,11 +42,21 @@ public class Effect extends Material {
     }
 
     /**
+     * Getter for the color of th effect charge.
+     *
+     * @return the color of the effect charge
+     */
+    public final EffectColor getColor() {
+        return color;
+    }
+
+    /**
      * Return the string representation of the effect.
      *
      * @return A string containing properties of this effect charge
      */
     public final String toString() {
-        return "Effect: " + super.toString() + " -- Defect: " + defect;
+        return "Effect: " + super.toString() + " -- Color: " + color
+                + " -- Defect: " + defect;
     }
 }
