@@ -1,6 +1,8 @@
 package org.falafel;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +14,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URI;
+
+import static org.falafel.EffectColor.Blue;
+import static org.falafel.EffectColor.Green;
+import static org.falafel.EffectColor.Red;
 
 /**
  * This class represents a buyer of rockets.
@@ -26,22 +32,32 @@ public final class Buyer extends Application {
     /** The URI of the fireworks factory. */
     private static URI spaceUri;
 
+    /** The data stored in the table for new purchases. */
+    private static ObservableList<Purchase> purchases =
+            FXCollections.observableArrayList();
+
+    /** The tables for new and existing purchases. */
     @FXML
-    private TableView newPurchaseTableView;
+    private TableView<Purchase> purchaseTableView, newPurchaseTableView;
+
+    /** The columns for purchase properties that are numbers. */
     @FXML
-    private TableColumn<SupplyOrder, String> newQuantityPurchaseColumn,
-            newColor1PurchaseColumn, newColor2PurchaseColumn,
-            newColor3PurchaseColumn;
-    @FXML
-    private TableView purchaseTableView;
-    @FXML
-    private TableColumn<SupplyOrder, String> statusPurchaseColumn,
-            color1PurchaseColumn, color2PurchaseColumn,
-            color3PurchaseColumn;
-    @FXML
-    private TableColumn<SupplyOrder, Number> idPurchaseColumn,
+    private TableColumn<Purchase, Number>
+            newQuantityPurchaseColumn,
+            idPurchaseColumn,
             quantityPurchaseColumn;
 
+    /** The columns for purchase properties that can not be represented by
+     *  simple numbers. */
+    @FXML
+    private TableColumn<Purchase, String>
+            statusPurchaseColumn,
+            color1PurchaseColumn,
+            color2PurchaseColumn,
+            color3PurchaseColumn,
+            newColor1PurchaseColumn,
+            newColor2PurchaseColumn,
+            newColor3PurchaseColumn;
 
     /**
      * Start the buyer.
@@ -65,6 +81,28 @@ public final class Buyer extends Application {
         launch(arguments);
     }
 
+    /**
+     * Initialize the data for the graphical user interface.
+     */
+    @FXML
+    private void initialize() {
+        newQuantityPurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getNumberRocketsProperty());
+        newColor1PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getFirstColorProperty());
+        newColor2PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSecondColorProperty());
+        newColor3PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getThirdColorProperty());
+        //CHECKSTYLE:OFF
+        purchases.add(
+                new Purchase(1, 2, 10, Red, Green, Blue, URI.create("bla")));
+        //CHECKSTYLE:ON
+
+        newPurchaseTableView.setItems(purchases);
+
+    }
+
     @Override
     public void start(final Stage primaryStage) throws IOException {
 
@@ -81,15 +119,40 @@ public final class Buyer extends Application {
         primaryStage.show();
     }
 
+    /** Close resources handled by this buyer. */
     private void closeBuyer() {
     }
 
-    public void newPurchase(ActionEvent actionEvent) {
+    /**
+     * Create a new purchase in the table for new purchases.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    @SuppressWarnings("unused")
+    public void newPurchase(final ActionEvent actionEvent) {
     }
 
-    public void clearPurchase(ActionEvent actionEvent) {
+    /**
+     * Remove all purchases from the table for new purchases.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    @SuppressWarnings("unused")
+    public void clearPurchase(final ActionEvent actionEvent) {
     }
 
-    public void orderPurchase(ActionEvent actionEvent) {
+    /**
+     * Order all purchases currently stored in the table for new purchases.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    @SuppressWarnings("unused")
+    public void orderPurchase(final ActionEvent actionEvent) {
     }
 }

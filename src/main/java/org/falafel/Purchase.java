@@ -1,10 +1,14 @@
 package org.falafel;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class represents a purchase for one rocket.
@@ -26,7 +30,7 @@ public class Purchase implements Serializable {
     private int numberRockets;
     /** The colors of the three effects that should be part of the produced
      *  rocket for this purchase. */
-    private Set<EffectColor> effectColors;
+    private ArrayList<EffectColor> effectColors;
     /** The URI for the space of the buyer of this rocket. */
     private URI buyerURI;
 
@@ -39,20 +43,77 @@ public class Purchase implements Serializable {
      *          The identifier for this purchase
      * @param numberRockets
      *          The number of rockets which this purchase is a part of
-     * @param effectColors
-     *          The colors of the effect for the rocket that should be
+     * @param firstEffectColor
+     *          The color of the first effect for the rocket that should be
      *          produced according to this purchase
+     * @param secondEffectColor
+     *          The color of the second effect for the rocket
+     * @param thirdEffectColor
+     *          The color of the third effect for the rocket
      * @param buyerURI
      *          The space URI of the buyer of this rocket
      */
     Purchase(final int buyerId, final int purchaseId, final int numberRockets,
-             final Collection<EffectColor> effectColors, final URI buyerURI) {
+             final EffectColor firstEffectColor,
+             final EffectColor secondEffectColor,
+             final EffectColor thirdEffectColor,
+             final URI buyerURI) {
         this.buyerId = buyerId;
         this.purchaseId = purchaseId;
         this.numberRockets = numberRockets;
-        this.effectColors = new HashSet<>();
-        this.effectColors.addAll(effectColors);
+        this.effectColors = new ArrayList<>(
+                Arrays.asList(firstEffectColor, secondEffectColor,
+                        thirdEffectColor));
         this.buyerURI = buyerURI;
+    }
+
+    /**
+     * Return the number of rockets for the whole purchase.
+     *
+     * @return The number of rockets for the purchase.
+     */
+    public final IntegerProperty getNumberRocketsProperty() {
+        return new SimpleIntegerProperty(numberRockets);
+    }
+
+    /**
+     * Return the color of the first effect for this purchase.
+     *
+     * @return The color of the first effect.
+     */
+    public final StringProperty getFirstColorProperty() {
+        return new SimpleStringProperty(effectColors.get(0).toString());
+    }
+
+    /**
+     * Return the color of the second effect for this purchase.
+     *
+     * @return The color of the second effect.
+     */
+    public final StringProperty getSecondColorProperty() {
+        return new SimpleStringProperty(effectColors.get(1).toString());
+    }
+
+    /**
+     * Return the color of the third effect for this purchase.
+     *
+     * @return The color of the third effect.
+     *
+     */
+    public final StringProperty getThirdColorProperty() {
+        return new SimpleStringProperty(effectColors.get(2).toString());
+    }
+
+    /**
+     * Represent the purchase as a string.
+     *
+     * @return The string representation of this purchase.
+     */
+    public final String toString() {
+        return "(PURCHASE " + purchaseId + " — Buyer: " + buyerId + " "
+                + buyerURI + " Effects: " + effectColors.get(0) + " "
+                + effectColors.get(1) + " " + effectColors.get(2)
+                + " # Rockets: " + numberRockets + ")";
     }
 
 }
