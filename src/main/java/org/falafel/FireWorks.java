@@ -296,31 +296,26 @@ public class FireWorks extends Application {
         supplierNameColumn.setCellValueFactory(
                 cellData -> cellData.getValue().supplierNameProperty());
         supplierNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        supplierNameColumn.isEditable();
 
         orderedTypeColumn.setCellValueFactory(
                 cellData -> cellData.getValue().typeProperty());
         orderedTypeColumn.setCellFactory(
                 ComboBoxTableCell.forTableColumn(TYPES_CHOICE_LIST));
-        orderedTypeColumn.isEditable();
 
         orderedColorColumn.setCellValueFactory(
                 cellData -> cellData.getValue().colorProperty());
         orderedColorColumn.setCellFactory(
                 ComboBoxTableCell.forTableColumn(EFFECT_COLOR_CHOICE_LIST));
-        orderedColorColumn.isEditable();
 
         orderedQuantityColumn.setCellValueFactory(
                 cellData -> cellData.getValue().quantityProperty());
         orderedQuantityColumn.setCellFactory(
                 TextFieldTableCell.forTableColumn());
-        orderedQuantityColumn.isEditable();
 
         orderedQualityColumn.setCellValueFactory(
                 cellData -> cellData.getValue().qualityProperty());
         orderedQualityColumn.setCellFactory(
                 TextFieldTableCell.forTableColumn());
-        orderedQualityColumn.isEditable();
 
         //CHECKSTYLE:OFF
         order.add(new SupplyOrder("Hulk", Casing.toString(), EffectColor.Blue,
@@ -339,7 +334,6 @@ public class FireWorks extends Application {
                 EffectColor.Red, 5, 100));
         //CHECKSTYLE:ON
 
-        supplyTable.isEditable();
         supplyTable.setItems(order);
 
         rocketTable.setItems(rockets);
