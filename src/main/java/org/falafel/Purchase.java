@@ -68,6 +68,34 @@ public class Purchase implements Serializable {
     }
 
     /**
+     * Get the id of the purchase.
+     *
+     * @return The identifier for this purchase
+     */
+    public final IntegerProperty getPurchaseId() {
+        return new SimpleIntegerProperty(purchaseId);
+    }
+
+    /**
+     * Get the id of the buyer for the purchase.
+     *
+     * @return The identifier of the buyer
+     */
+    public final IntegerProperty getBuyerId() {
+        return new SimpleIntegerProperty(buyerId);
+    }
+
+    /**
+     * Get the space URI of the buyer for the purchase.
+     *
+     * @return
+     *          The URI of the buyer of this purchase
+     */
+    public final StringProperty getBuyerURI() {
+        return new SimpleStringProperty(buyerURI.toString());
+    }
+
+    /**
      * Return the number of rockets for the whole purchase.
      *
      * @return The number of rockets for the purchase.
