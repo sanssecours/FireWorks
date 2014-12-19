@@ -28,6 +28,9 @@ public class Purchase implements Serializable {
     /** The number of rockets for the whole order which this purchase is
      *  a part of. */
     private int numberRockets;
+    /** The number of rockets already ready for sale. */
+    private int numberFinishedRockets;
+
     /** The colors of the three effects that should be part of the produced
      *  rocket for this purchase. */
     private ArrayList<EffectColor> effectColors;
@@ -61,6 +64,7 @@ public class Purchase implements Serializable {
         this.buyerId = buyerId;
         this.purchaseId = purchaseId;
         this.numberRockets = numberRockets;
+        this.numberFinishedRockets = 0;
         this.effectColors = new ArrayList<>(
                 Arrays.asList(firstEffectColor, secondEffectColor,
                         thirdEffectColor));
@@ -102,6 +106,29 @@ public class Purchase implements Serializable {
      */
     public final IntegerProperty getNumberRocketsProperty() {
         return new SimpleIntegerProperty(numberRockets);
+    }
+
+    /**
+     * Return the number of rockets that are ready for sale for this purchase.
+     *
+     * @return The number of finished rockets
+     */
+    public final IntegerProperty getNumberFinishedRocketsProperty() {
+        return new SimpleIntegerProperty(numberFinishedRockets);
+    }
+
+    /**
+     * Return all effect color in a short form using only the initial letter
+     * of the colors.
+     *
+     * @return The colors of the effects stored in this purchase
+     */
+    public final StringProperty getEffectColors() {
+        String colors = "";
+        for (EffectColor color : effectColors) {
+            colors += colors.substring(0, 0);
+        }
+        return new SimpleStringProperty(colors);
     }
 
     /**
@@ -152,6 +179,17 @@ public class Purchase implements Serializable {
      */
     public final void setNumberRockets(final String quantity) {
         this.numberRockets = Integer.parseInt(quantity);
+    }
+
+    /**
+     * Increase the number of finished rockets for this purchase.
+     *
+     * @param numberAdditionalFinishedRockets
+     *          The quantity of newly finished rockets
+     */
+    public final void addFinishedRockets(
+            final int numberAdditionalFinishedRockets) {
+        this.numberFinishedRockets += numberAdditionalFinishedRockets;
     }
 
     /**
