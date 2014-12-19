@@ -130,7 +130,14 @@ public class Rocket implements Serializable {
         ArrayList<String> returnString = new ArrayList<>();
         for (Effect effect : effects) {
             returnString.add(Integer.toString(effect.getID()));
-            returnString.add(Boolean.toString(effect.getStatus()));
+            returnString.add(effect.getColor().toString());
+            if (testerId == 0) {
+                returnString.add("not tested");
+            } else if (effect.getStatus()) {
+                returnString.add("defect");
+            } else {
+                returnString.add("ok");
+            }
         }
         return new SimpleStringProperty(returnString.toString());
     }
