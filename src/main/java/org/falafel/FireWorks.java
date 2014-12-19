@@ -112,6 +112,19 @@ public class FireWorks extends Application {
             FXCollections.observableArrayList(EffectColor.Blue.toString(),
                     EffectColor.Green.toString(), EffectColor.Red.toString());
 
+    /** Table for the purchase orders. */
+    @FXML
+    private TableView<Purchase> purchaseTable;
+    /** Save data shown in the purchase table. */
+    @FXML
+    private TableColumn<Purchase, Number> purchaseBuyerIdColumn,
+            purchaseIdColumn, purchaseNumberOrderedColumn,
+            purchaseNumberProducedColumn;
+    /** Save data shown in the purchase table. */
+    @FXML
+    private TableColumn<Purchase, String> purchaseStatusColumn,
+            purchaseStorageAddressColumn, purchaseEffectColors;
+
     /** Save data shown in the rocket table. */
     @FXML
     private TableColumn<Rocket, String> effectIdColumn, propellantIdColumn,

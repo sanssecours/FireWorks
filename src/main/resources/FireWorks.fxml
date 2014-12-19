@@ -42,7 +42,20 @@
                                           </HBox>
                                        </children>
                                     </AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="464.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="464.0">
+                                       <children>
+                                          <TableView fx:id="purchaseTable" layoutX="29.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                              <TableColumn fx:id="purchaseBuyerIdColumn" prefWidth="75.0" text="Buyer Id" />
+                                              <TableColumn fx:id="purchaseIdColumn" prefWidth="75.0" text="Id" />
+                                                <TableColumn fx:id="purchaseStatusColumn" prefWidth="75.0" text="Status" />
+                                                <TableColumn fx:id="purchaseNumberProducedColumn" prefWidth="75.0" text="produced" />
+                                                <TableColumn fx:id="purchaseNumberOrderedColumn" prefWidth="75.0" text="ordered" />
+                                                <TableColumn fx:id="purchaseEffectColors" prefWidth="75.0" text="Colors" />
+                                                <TableColumn fx:id="purchaseStorageAddressColumn" prefWidth="75.0" text="Address" />
+                                            </columns>
+                                          </TableView>
+                                       </children></AnchorPane>
                                 </items>
                               </SplitPane>
                            </children>
