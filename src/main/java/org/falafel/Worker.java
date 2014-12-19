@@ -117,6 +117,8 @@ public final class Worker {
         while (!shutdown) {
             try {
                 RequestContext context = new RequestContext();
+                Purchase purchase = null;
+
                 try {
                     collectResourcesTransaction = capi.createTransaction(
                             TRANSACTION_TIMEOUT, spaceUri, context);
@@ -127,6 +129,57 @@ public final class Worker {
 
                 try {
                     containerReference = capi.lookupContainer(
+                            "purchase",
+                            spaceUri,
+                            RequestTimeout.TRY_ONCE,
+                            collectResourcesTransaction, null, context);
+                    purchase = (Purchase) capi.take(containerReference,
+                            null,
+                            RequestTimeout.TRY_ONCE,
+                            collectResourcesTransaction, null, context).get(0);
+                    System.out.println(purchase);
+                } catch (MzsTimeoutException toe) {
+                    LOGGER.debug("Can't finish in transaction time!");
+                    try {
+                        Thread.sleep(WAIT_TIME_WORKER_MS);
+                    } catch (InterruptedException e) {
+                        LOGGER.error("I was interrupted while trying to sleep. "
+                                + "How rude!");
+                    }
+                } catch (CountNotMetException e1) {
+                    LOGGER.info("No purchase order, create random rocket!");
+                } catch (MzsCoreException e) {
+                    LOGGER.error("Worker has problem with space!");
+                    System.exit(1);
+                }
+
+
+                try {
+                    effects.clear();
+                    // ToDo: worker takes effect for purchase
+                    if (purchase != null) {
+                        purchase = null;
+                    }
+
+                    if (purchase == null) {
+                        containerReference = capi.lookupContainer(
+                                MaterialType.Effect.toString(), spaceUri,
+                                RequestTimeout.TRY_ONCE,
+                                collectResourcesTransaction, null, context);
+                        int missingEffects = NUMBER_EFFECTS_NEEDED
+                                - effects.size();
+                        effects = capi.take(containerReference,
+                                Arrays.asList(AnyCoordinator.newSelector(
+                                        missingEffects)),
+                                RequestTimeout.TRY_ONCE,
+                                collectResourcesTransaction, null, context);
+                    }
+
+                    context.setProperty("color1", effects.get(0).getColor());
+                    context.setProperty("color2", effects.get(1).getColor());
+                    context.setProperty("color3", effects.get(2).getColor());
+
+                    containerReference = capi.lookupContainer(
                             MaterialType.Casing.toString(),
                             spaceUri,
                             RequestTimeout.TRY_ONCE,
@@ -135,22 +188,6 @@ public final class Worker {
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
-
-                    containerReference = capi.lookupContainer(
-                            MaterialType.Effect.toString(), spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-                    effects = capi.take(containerReference,
-                            Arrays.asList(LindaCoordinator.newSelector(
-                                    lindaBlueEffectColorTemplate,
-                                    NUMBER_EFFECTS_NEEDED)),
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-
-                    context.setProperty("color1", effects.get(0).getColor());
-                    context.setProperty("color2", effects.get(1).getColor());
-                    context.setProperty("color3", effects.get(2).getColor());
-
 
                     containerReference = capi.lookupContainer(
                             MaterialType.Wood.toString(), spaceUri,
@@ -248,10 +285,10 @@ public final class Worker {
                     continue;
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials!");
-                    // Wait some time until we try to get new material
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
+                        // Wait some time until we try to get new material
                         Thread.sleep(WAIT_TIME_WORKER_MS);
                         continue;
                     } catch (MzsCoreException e1) {

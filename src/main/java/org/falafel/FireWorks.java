@@ -27,6 +27,8 @@ import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.Entry;
+import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.aspects.ContainerAspect;
@@ -806,6 +808,13 @@ public class FireWorks extends Application {
                     Container.UNBOUNDED,
                     null);
 
+            // Add a Purchase to the Container
+            Purchase purchase = new Purchase(1, 2, 10, EffectColor.Red,
+                    EffectColor.Green, EffectColor.Blue, URI.create("bla"));
+            ContainerReference container = capi.lookupContainer("purchase",
+                    spaceURI, MzsConstants.RequestTimeout.TRY_ONCE, null);
+            capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE, null,
+                    new Entry(purchase));
         } catch (Exception e) {
             e.printStackTrace();
         }
