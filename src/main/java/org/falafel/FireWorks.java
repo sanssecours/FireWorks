@@ -451,18 +451,15 @@ public class FireWorks extends Application {
      *          and Wood counter in the GUI
      *
      */
-    public static void reduceCasingEffectWood(final int difference) {
+    public static void reduceCasingWood(final int difference) {
         Platform.runLater(() -> {
             casingsCounter = casingsCounter - difference;
             casingsCounterProperty.set(casingsCounter);
-     /*       effectCounter = effectCounter
-                    - difference - difference - difference;
-            effectCounterProperty.set(effectCounter);
-      */
             woodCounter = woodCounter - difference;
             woodCounterProperty.set(woodCounter);
         });
     }
+
 
     /**
      * Method to change the conter for the effect labels in the FireWorks GUI.

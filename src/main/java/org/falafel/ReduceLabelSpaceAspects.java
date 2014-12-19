@@ -6,6 +6,8 @@ import org.mozartspaces.core.aspects.AbstractSpaceAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.CommitTransactionRequest;
 
+import java.util.ArrayList;
+
 /**
  *  This class implements various aspects involving Materials.
  */
@@ -25,7 +27,14 @@ public class ReduceLabelSpaceAspects extends AbstractSpaceAspect {
         RequestContext context = request.getContext();
 
         if (context.containsProperty("gotMaterial")) {
-            FireWorks.reduceCasingEffectWood(1);
+            FireWorks.reduceCasingWood(1);
+
+            FireWorks.changeEffectLabels(
+                    (EffectColor) context.getProperty("color1") , -1);
+            FireWorks.changeEffectLabels(
+                    (EffectColor) context.getProperty("color2") , -1);
+            FireWorks.changeEffectLabels(
+                    (EffectColor) context.getProperty("color3") , -1);
 
             if (context.containsProperty("takenClosedPropellant")) {
                 FireWorks.changeClosedPropellantLabels(-1);

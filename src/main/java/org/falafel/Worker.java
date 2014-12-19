@@ -139,6 +139,11 @@ public final class Worker {
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
 
+                    context.setProperty("color1", effects.get(0).getColor());
+                    context.setProperty("color2", effects.get(1).getColor());
+                    context.setProperty("color3", effects.get(2).getColor());
+
+
                     containerReference = capi.lookupContainer(
                             MaterialType.Wood.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
