@@ -116,4 +116,44 @@ public class Purchase implements Serializable {
                 + " # Rockets: " + numberRockets + ")";
     }
 
+    /**
+     * Change the number of rockets for this purchase.
+     *
+     * @param quantity
+     *          The new effect color for the first effect.
+     */
+    public final void setNumberRockets(final String quantity) {
+        this.numberRockets = Integer.parseInt(quantity);
+    }
+
+    /**
+     * Change the color of the first effect.
+     *
+     * @param effectColor
+     *          The new effect color for the first effect.
+     */
+    public final void setFirstEffectColor(final String effectColor) {
+        this.effectColors.set(0, EffectColor.valueOf(effectColor));
+    }
+
+    /**
+     * Change the color of the second effect.
+     *
+     * @param effectColor
+     *
+     *          The new effect color for the second effect.
+     */
+    public final void setSecondEffectColor(final String effectColor) {
+        this.effectColors.set(1, EffectColor.valueOf(effectColor));
+    }
+    /**
+     * Change the color of the third effect.
+     *
+     * @param effectColor
+     *
+     *          The new effect color for the third effect.
+     */
+    public final void setThirdEffectColor(final String effectColor) {
+        this.effectColors.set(1, EffectColor.valueOf(effectColor));
+    }
 }
