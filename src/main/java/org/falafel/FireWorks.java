@@ -853,6 +853,12 @@ public class FireWorks extends Application {
         Parent root = FXMLLoader.load(
                 getClass().getResource("/FireWorks.fxml"));
 
+        final float minWidth = 1000;
+        final float minHeight = 900;
+        primaryStage.setMinWidth(minWidth);
+        primaryStage.setMinHeight(minHeight);
+
+
         primaryStage.setTitle("Fireworks Factory");
         primaryStage.setOnCloseRequest(event -> closeSpace());
         primaryStage.setScene(new Scene(root));
