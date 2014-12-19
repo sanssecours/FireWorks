@@ -77,6 +77,13 @@ public final class Worker {
         Propellant lindaTemplateOpened = new Propellant(null, null, null,
                 Propellant.OPENED);
 
+        Effect lindaBlueEffectColorTemplate = new Effect(null, null, null, null,
+                EffectColor.Blue);
+        Effect lindaGreenEffectColorTemplate = new Effect(null, null, null,
+                null, EffectColor.Green);
+        Effect lindaRedEffectColorTemplate = new Effect(null, null, null, null,
+                EffectColor.Red);
+
         Capi capi;
         URI spaceUri;
         TransactionReference collectResourcesTransaction = null;
@@ -134,8 +141,9 @@ public final class Worker {
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
                     effects = capi.take(containerReference,
-                            Arrays.asList(AnyCoordinator.newSelector(
-                                          NUMBER_EFFECTS_NEEDED)),
+                            Arrays.asList(LindaCoordinator.newSelector(
+                                    lindaBlueEffectColorTemplate,
+                                    NUMBER_EFFECTS_NEEDED)),
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
 

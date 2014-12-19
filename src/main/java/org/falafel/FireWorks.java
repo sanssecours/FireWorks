@@ -729,6 +729,8 @@ public class FireWorks extends Application {
                     Effect.toString(),
                     spaceURI,
                     Container.UNBOUNDED,
+                    asList(new LindaCoordinator(), new AnyCoordinator()),
+                    null,
                     null);
             capi.addContainerAspect(materialContainerAspect, effectContainer,
                     iPoints, null);

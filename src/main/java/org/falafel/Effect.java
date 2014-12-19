@@ -1,13 +1,18 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.Index;
+import org.mozartspaces.capi3.Queryable;
+
 /**
  * A class representing an effect charge.
  */
+@Queryable
 public class Effect extends Material {
 
     /** Save if this effect is defect. */
-    private boolean defect;
+    private Boolean defect;
     /** Save the color of the effect. */
+    @Index
     private EffectColor color;
 
     /**
@@ -24,8 +29,8 @@ public class Effect extends Material {
      * @param color
      *          A value specifying the color of this effect
      */
-    public Effect(final int identifier, final String supplierName,
-                  final int supplierId, final boolean defect,
+    public Effect(final Integer identifier, final String supplierName,
+                  final Integer supplierId, final Boolean defect,
                   final EffectColor color) {
         super(identifier, supplierName, supplierId);
         this.defect = defect;
