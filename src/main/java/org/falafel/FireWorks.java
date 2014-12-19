@@ -789,6 +789,21 @@ public class FireWorks extends Application {
                     null);
             capi.addContainerAspect(trashedRocketContainerAspect, wasteRockets,
                     iPoints, null);
+
+            // create the container where the purchases are stored
+            wasteRockets = capi.createContainer(
+                    "purchase",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    null);
+
+            // create the container where the ordered rockets are stored
+            wasteRockets = capi.createContainer(
+                    "orderedRockets",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    null);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
