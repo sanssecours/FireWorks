@@ -89,6 +89,9 @@ public class FireWorks extends Application {
     /**  The data as an observable list for SupplyOrder. */
     private static ObservableList<SupplyOrder> order =
             FXCollections.observableArrayList();
+    /**  The data as an observable list for purchases. */
+    private static ObservableList<Purchase> purchases =
+            FXCollections.observableArrayList();
 
     /**  The data as an observable list for rockets. */
     private static ObservableList<Rocket> rockets =
@@ -250,6 +253,23 @@ public class FireWorks extends Application {
      */
     @FXML
     private void initialize() {
+        // initialize purchase table
+        purchaseBuyerIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getBuyerId());
+        purchaseIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPurchaseId());
+        purchaseStatusColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getStatusProperty());
+        purchaseNumberProducedColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getNumberFinishedRocketsProperty());
+        purchaseNumberOrderedColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getNumberRocketsProperty());
+        purchaseEffectColors.setCellValueFactory(
+                cellData -> cellData.getValue().getEffectColors());
+        purchaseStorageAddressColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getBuyerURI());
+
+
         // initialize rocket table
         rocketIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getIdProperty());
@@ -351,6 +371,7 @@ public class FireWorks extends Application {
 
         rocketTable.setItems(rockets);
         numberRocketsProperty.set(rockets.size());
+        purchaseTable.setItems(purchases);
     }
 
     /**
@@ -822,6 +843,7 @@ public class FireWorks extends Application {
                     spaceURI, MzsConstants.RequestTimeout.TRY_ONCE, null);
             capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE, null,
                     new Entry(purchase));
+            purchases.add(purchase);
         } catch (Exception e) {
             e.printStackTrace();
         }

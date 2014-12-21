@@ -18,7 +18,8 @@ import java.util.Arrays;
  *
  */
 public class Purchase implements Serializable {
-
+    /** Different colors an effect can be. */
+    public enum PurchaseStatus { processing, finished, shipped }
     /** The unique identification of the buyer. */
     private int buyerId;
     /** The identifier for the purchase. This will be the same identifier
@@ -30,6 +31,8 @@ public class Purchase implements Serializable {
     private int numberRockets;
     /** The number of rockets already ready for sale. */
     private int numberFinishedRockets;
+    /** Status of the purchase (processing/finished/shipped). */
+    private PurchaseStatus status;
 
     /** The colors of the three effects that should be part of the produced
      *  rocket for this purchase. */
@@ -69,6 +72,7 @@ public class Purchase implements Serializable {
                 Arrays.asList(firstEffectColor, secondEffectColor,
                         thirdEffectColor));
         this.buyerURI = buyerURI;
+        status = PurchaseStatus.processing;
     }
 
     /**
@@ -126,7 +130,7 @@ public class Purchase implements Serializable {
     public final StringProperty getEffectColors() {
         String colors = "";
         for (EffectColor color : effectColors) {
-            colors += colors.substring(0, 0);
+            colors += color.toString().substring(0, 1);
         }
         return new SimpleStringProperty(colors);
     }
@@ -221,5 +225,27 @@ public class Purchase implements Serializable {
      */
     public final void setThirdEffectColor(final String effectColor) {
         this.effectColors.set(1, EffectColor.valueOf(effectColor));
+    }
+
+    /**
+     * Change the status of the purchase to finished.
+     */
+    public final void setStatusToFinished() {
+        status = PurchaseStatus.finished;
+    }
+    /**
+     * Change the status of the purchase to shipped.
+     */
+    public final void setStatusToShipped() {
+        status = PurchaseStatus.shipped;
+    }
+    /**
+     * Return the status of this purchase.
+     *
+     * @return The status of the purchase.
+     *
+     */
+    public final StringProperty getStatusProperty() {
+        return new SimpleStringProperty(status.toString());
     }
 }
