@@ -166,6 +166,7 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void clearPurchase(final ActionEvent actionEvent) {
+        purchases.clear();
     }
 
     /**
