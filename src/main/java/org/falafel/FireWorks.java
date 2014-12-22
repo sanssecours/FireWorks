@@ -838,7 +838,7 @@ public class FireWorks extends Application {
                     null);
 
             // Add a Purchase to the Container
-            Purchase purchase = new Purchase(1, 2, 10, EffectColor.Red,
+            Purchase purchase = new Purchase(1, 10, EffectColor.Red,
                     EffectColor.Green, EffectColor.Blue, URI.create("bla"));
             ContainerReference container = capi.lookupContainer("purchase",
                     spaceURI, MzsConstants.RequestTimeout.TRY_ONCE, null);

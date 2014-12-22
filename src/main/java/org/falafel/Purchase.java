@@ -29,6 +29,9 @@ public class Purchase implements Serializable {
     /** The different states a purchase can be in. */
     public enum PurchaseStatus { Processing, Finished, Shipped }
 
+    /** The purchase id for the next purchase. */
+    private static int nextPurchaseId = 0;
+
     /** The unique identification of the buyer. */
     private int buyerId;
     /** The identifier for the purchase. This will be the same identifier
@@ -54,8 +57,6 @@ public class Purchase implements Serializable {
      *
      * @param buyerId
      *          The identifier of the buyer
-     * @param purchaseId
-     *          The identifier for this purchase
      * @param numberRockets
      *          The number of rockets which this purchase is a part of
      * @param firstEffectColor
@@ -68,13 +69,13 @@ public class Purchase implements Serializable {
      * @param buyerURI
      *          The space URI of the buyer of this rocket
      */
-    Purchase(final int buyerId, final int purchaseId, final int numberRockets,
+    Purchase(final int buyerId, final int numberRockets,
              final EffectColor firstEffectColor,
              final EffectColor secondEffectColor,
              final EffectColor thirdEffectColor,
              final URI buyerURI) {
         this.buyerId = buyerId;
-        this.purchaseId = purchaseId;
+        this.purchaseId = nextPurchaseId++;
         this.numberRockets = numberRockets;
         this.numberFinishedRockets = 0;
         this.effectColors = new ArrayList<>(
@@ -91,8 +92,7 @@ public class Purchase implements Serializable {
      *          The identifier of the buyer
      */
     Purchase(final int buyerId) {
-        this(buyerId, 1, 1, Red, Green, Blue,
-                URI.create("xvsm://localhost:9876"));
+        this(buyerId, 1, Red, Green, Blue, URI.create("xvsm://localhost:9876"));
     }
 
     /**
