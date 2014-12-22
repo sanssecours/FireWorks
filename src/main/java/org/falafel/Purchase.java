@@ -10,6 +10,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.falafel.Purchase.PurchaseStatus.Processing;
+import static org.falafel.Purchase.PurchaseStatus.Finished;
+import static org.falafel.Purchase.PurchaseStatus.Shipped;
+
 /**
  * This class represents a purchase for one rocket.
  *
@@ -18,8 +22,9 @@ import java.util.Arrays;
  *
  */
 public class Purchase implements Serializable {
-    /** Different colors an effect can be. */
-    public enum PurchaseStatus { processing, finished, shipped }
+    /** The different states a purchase can be in. */
+    public enum PurchaseStatus { Processing, Finished, Shipped }
+
     /** The unique identification of the buyer. */
     private int buyerId;
     /** The identifier for the purchase. This will be the same identifier
@@ -31,7 +36,7 @@ public class Purchase implements Serializable {
     private int numberRockets;
     /** The number of rockets already ready for sale. */
     private int numberFinishedRockets;
-    /** Status of the purchase (processing/finished/shipped). */
+    /** The status of the purchase. */
     private PurchaseStatus status;
 
     /** The colors of the three effects that should be part of the produced
@@ -72,7 +77,7 @@ public class Purchase implements Serializable {
                 Arrays.asList(firstEffectColor, secondEffectColor,
                         thirdEffectColor));
         this.buyerURI = buyerURI;
-        status = PurchaseStatus.processing;
+        status = Processing;
     }
 
     /**
@@ -191,6 +196,7 @@ public class Purchase implements Serializable {
      * @param numberAdditionalFinishedRockets
      *          The quantity of newly finished rockets
      */
+    @SuppressWarnings("unused")
     public final void addFinishedRockets(
             final int numberAdditionalFinishedRockets) {
         this.numberFinishedRockets += numberAdditionalFinishedRockets;
@@ -216,6 +222,7 @@ public class Purchase implements Serializable {
     public final void setSecondEffectColor(final String effectColor) {
         this.effectColors.set(1, EffectColor.valueOf(effectColor));
     }
+
     /**
      * Change the color of the third effect.
      *
@@ -228,17 +235,21 @@ public class Purchase implements Serializable {
     }
 
     /**
-     * Change the status of the purchase to finished.
+     * Change the status of the purchase to Finished.
      */
+    @SuppressWarnings("unused")
     public final void setStatusToFinished() {
-        status = PurchaseStatus.finished;
+        status = Finished;
     }
+
     /**
-     * Change the status of the purchase to shipped.
+     * Change the status of the purchase to Shipped.
      */
+    @SuppressWarnings("unused")
     public final void setStatusToShipped() {
-        status = PurchaseStatus.shipped;
+        status = Shipped;
     }
+
     /**
      * Return the status of this purchase.
      *
