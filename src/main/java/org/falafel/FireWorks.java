@@ -272,7 +272,7 @@ public class FireWorks extends Application {
         purchaseNumberOrderedColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getNumberRocketsProperty());
         purchaseEffectColors.setCellValueFactory(
-                cellData -> cellData.getValue().getEffectColors());
+                cellData -> cellData.getValue().getEffectColorsProperty());
         purchaseStorageAddressColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getBuyerURI());
 

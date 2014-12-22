@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static org.falafel.Purchase.PurchaseStatus.Processing;
 import static org.falafel.Purchase.PurchaseStatus.Finished;
@@ -147,12 +148,22 @@ public class Purchase implements Serializable {
      *
      * @return The colors of the effects stored in this purchase
      */
-    public final StringProperty getEffectColors() {
+    public final StringProperty getEffectColorsProperty() {
         String colors = "";
         for (EffectColor color : effectColors) {
             colors += color.toString().substring(0, 1);
         }
         return new SimpleStringProperty(colors);
+    }
+
+    /**
+     * Return all effect color in a short form using only the initial letter
+     * of the colors.
+     *
+     * @return The colors of the effects stored in this purchase
+     */
+    public final Collection<EffectColor> getEffectColors() {
+        return effectColors;
     }
 
     /**

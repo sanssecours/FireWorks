@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -137,7 +138,6 @@ public final class Worker {
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
-                    System.out.println(purchase);
                 } catch (MzsTimeoutException toe) {
                     LOGGER.debug("Can't finish in transaction time!");
                     try {
@@ -156,16 +156,35 @@ public final class Worker {
 
                 try {
                     effects.clear();
+                    containerReference = capi.lookupContainer(
+                            MaterialType.Effect.toString(), spaceUri,
+                            RequestTimeout.TRY_ONCE,
+                            collectResourcesTransaction, null, context);
                     // ToDo: worker takes effect for purchase
                     if (purchase != null) {
-                        purchase = null;
+
+                        Collection<EffectColor> colors =
+                                purchase.getEffectColors();
+                        Effect effect;
+                        for (EffectColor color : colors) {
+                            try {
+                                effect = (Effect) capi.take(
+                                        containerReference,
+                                        Arrays.asList(AnyCoordinator.newSelector()),
+                                        RequestTimeout.TRY_ONCE,
+                                        collectResourcesTransaction,
+                                        null, context).get(0);
+                                effects.add(effect);
+                            } catch (CountNotMetException e) {
+                                LOGGER.error("Not enough effect charges of "
+                                        + "color: " + color.toString());
+                                purchase = null;
+                                break;
+                            }
+                        }
                     }
 
                     if (purchase == null) {
-                        containerReference = capi.lookupContainer(
-                                MaterialType.Effect.toString(), spaceUri,
-                                RequestTimeout.TRY_ONCE,
-                                collectResourcesTransaction, null, context);
                         int missingEffects = NUMBER_EFFECTS_NEEDED
                                 - effects.size();
                         effects = capi.take(containerReference,
