@@ -154,6 +154,7 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void newPurchase(final ActionEvent actionEvent) {
+        purchases.add(new Purchase());
     }
 
     /**

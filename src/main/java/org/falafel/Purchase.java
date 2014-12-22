@@ -14,6 +14,10 @@ import static org.falafel.Purchase.PurchaseStatus.Processing;
 import static org.falafel.Purchase.PurchaseStatus.Finished;
 import static org.falafel.Purchase.PurchaseStatus.Shipped;
 
+import static org.falafel.EffectColor.Blue;
+import static org.falafel.EffectColor.Green;
+import static org.falafel.EffectColor.Red;
+
 /**
  * This class represents a purchase for one rocket.
  *
@@ -78,6 +82,13 @@ public class Purchase implements Serializable {
                         thirdEffectColor));
         this.buyerURI = buyerURI;
         status = Processing;
+    }
+
+    /**
+     * Create a new purchase with default arguments.
+     */
+    Purchase() {
+        this(1, 1, 1, Red, Green, Blue, URI.create("xvsm://localhost:9876"));
     }
 
     /**
