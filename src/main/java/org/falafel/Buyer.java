@@ -15,6 +15,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.MzsCore;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,7 +36,12 @@ public final class Buyer extends Application {
     /** The unique identification of this buyer. */
     private static Integer buyerId;
     /** The URI of the fireworks factory. */
-    private static URI spaceUri;
+    private static URI fireWorksSpaceURI;
+
+    /** The space of the buyer. */
+    private static MzsCore space;
+    /** The port for the space of the buyer. */
+    private static int spacePort;
 
     /** The data stored in the table for new purchases. */
     private static ObservableList<Purchase> purchases =
@@ -78,18 +85,22 @@ public final class Buyer extends Application {
      */
     public static void main(final String[] arguments) {
 
-        if (arguments.length != 2) {
-            System.err.println("Usage: buyer <Id> <Space URI>");
+        final int numberArguments = 3;
+
+        if (arguments.length != numberArguments) {
+            System.err.println("Usage: buyer <Id> <Space URI> <Port>");
             return;
         }
         try {
             buyerId = Integer.parseInt(arguments[0]);
-            spaceUri = URI.create(arguments[1]);
+            fireWorksSpaceURI = URI.create(arguments[1]);
+            spacePort = Integer.parseInt(arguments[2]);
         } catch (Exception e) {
             System.err.println("Please supply valid command line arguments!");
             System.exit(1);
         }
 
+        initSpace();
         launch(arguments);
     }
 
@@ -98,6 +109,8 @@ public final class Buyer extends Application {
      */
     @FXML
     private void initialize() {
+        URI buyerSpaceURI = space.getConfig().getSpaceUri();
+
         newQuantityPurchaseColumn.setCellValueFactory(
                 cellData -> Bindings.convert(
                         cellData.getValue().getNumberRocketsProperty()));
@@ -134,8 +147,7 @@ public final class Buyer extends Application {
 
         //CHECKSTYLE:OFF
         purchases.add(
-                new Purchase(buyerId, 10, Red, Green, Blue,
-                        URI.create("xvsm://localhost:9876")));
+                new Purchase(buyerId, 10, Red, Green, Blue, buyerSpaceURI));
         //CHECKSTYLE:ON
 
         newPurchaseTableView.setItems(purchases);
@@ -153,14 +165,23 @@ public final class Buyer extends Application {
         primaryStage.setMinHeight(minHeight);
 
         Parent root = FXMLLoader.load(getClass().getResource("/Buyer.fxml"));
-        primaryStage.setTitle("Buyer " + buyerId + "— " + spaceUri);
+        primaryStage.setTitle("Buyer " + buyerId + "— "
+                + space.getConfig().getSpaceUri() + "— " + fireWorksSpaceURI);
         primaryStage.setOnCloseRequest(event -> closeBuyer());
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
+    /**
+     * Initialize the space.
+     */
+    private static void initSpace() {
+        space = DefaultMzsCore.newInstance(spacePort);
+    }
+
     /** Close resources handled by this buyer. */
     private void closeBuyer() {
+        space.shutdown(true);
     }
 
     /**

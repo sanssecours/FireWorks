@@ -16,6 +16,7 @@
         <tester.id>2001</tester.id>
         <logistic.id>3001</logistic.id>
         <buyer.id>4001</buyer.id>
+        <buyer.port>4001</buyer.port>
         <space.uri>xvsm://localhost:9876</space.uri>
     </properties>
 
@@ -172,6 +173,7 @@
                             <arguments>
                                 <argument>${buyer.id}</argument>
                                 <argument>${space.uri}</argument>
+                                <argument>${buyer.port}</argument>
                             </arguments>
                             <classpathScope>runtime</classpathScope>
                         </configuration>
