@@ -18,16 +18,20 @@ import javafx.stage.Stage;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.RequestContext;
 
 import java.io.IOException;
 import java.net.URI;
 
+import static java.util.Arrays.asList;
 import static org.falafel.EffectColor.Blue;
 import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 
 /**
  * This class represents a buyer of rockets.
@@ -39,6 +43,7 @@ public final class Buyer extends Application {
 
     /** The unique identification of this buyer. */
     private static Integer buyerId;
+
     /** The URI of the fireworks factory. */
     private static URI fireWorksSpaceURI;
 
@@ -47,7 +52,7 @@ public final class Buyer extends Application {
     /** The port for the space of the buyer. */
     private static int spacePort;
     /** Reference to the API for the buyer space. */
-    private static Capi capiSpace;
+    private static Capi spaceCapi;
     /** The container for the local purchases of this buyer. */
     private static ContainerReference purchaseContainer;
 
@@ -185,11 +190,11 @@ public final class Buyer extends Application {
      */
     private static void initSpace() {
         space = DefaultMzsCore.newInstance(spacePort);
-        capiSpace = new Capi(space);
+        spaceCapi = new Capi(space);
 
         try {
-            purchaseContainer = capiSpace.createContainer(
-                    "Purchases",
+            purchaseContainer = spaceCapi.createContainer(
+                    "purchase",
                     space.getConfig().getSpaceUri(),
                     MzsConstants.Container.UNBOUNDED,
                     null);
@@ -201,7 +206,7 @@ public final class Buyer extends Application {
     /** Close resources handled by this buyer. */
     private void closeBuyer() {
         try {
-            capiSpace.destroyContainer(purchaseContainer, null);
+            spaceCapi.destroyContainer(purchaseContainer, null);
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
@@ -242,6 +247,28 @@ public final class Buyer extends Application {
     @SuppressWarnings("unused")
     public void orderPurchase(final ActionEvent actionEvent) {
         purchased.addAll(purchases);
+
+        /* The spaces of the fireworks factory. */
+        MzsCore fireWorksSpace = DefaultMzsCore.newInstanceWithoutSpace();
+        /* Reference to the API for the space of the fireworks factory. */
+        Capi fireWorksCapi = new Capi(fireWorksSpace);
+
+        RequestContext context = new RequestContext();
+        context.setProperty("newPurchase", 1);
+
+        try {
+            ContainerReference container =
+                    fireWorksCapi.lookupContainer("purchase", fireWorksSpaceURI,
+                            TRY_ONCE, null);
+
+            for (Purchase purchase : purchases) {
+                fireWorksCapi.write(asList(new Entry(purchase)),
+                        container, TRY_ONCE, null, null, context);
+            }
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
+
         purchases.clear();
     }
 
