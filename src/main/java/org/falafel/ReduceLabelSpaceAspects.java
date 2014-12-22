@@ -6,8 +6,6 @@ import org.mozartspaces.core.aspects.AbstractSpaceAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.CommitTransactionRequest;
 
-import java.util.ArrayList;
-
 /**
  *  This class implements various aspects involving Materials.
  */
