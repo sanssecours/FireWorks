@@ -39,6 +39,9 @@ public final class Buyer extends Application {
     /** The data stored in the table for new purchases. */
     private static ObservableList<Purchase> purchases =
             FXCollections.observableArrayList();
+    /** The data stored in the table for purchased items. */
+    private static ObservableList<Purchase> purchased =
+            FXCollections.observableArrayList();
 
     /** Specify the different effect colors a buyer can purchase. */
     private static final ObservableList<String> EFFECT_CHOICES =
@@ -116,6 +119,19 @@ public final class Buyer extends Application {
         newColor3PurchaseColumn.setCellFactory(
                 ComboBoxTableCell.forTableColumn(EFFECT_CHOICES));
 
+        statusPurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getStatusProperty());
+        color1PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getFirstColorProperty());
+        color2PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getSecondColorProperty());
+        color3PurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getThirdColorProperty());
+        idPurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPurchaseId());
+        quantityPurchaseColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getNumberRocketsProperty());
+
         //CHECKSTYLE:OFF
         purchases.add(
                 new Purchase(buyerId, 2, 10, Red, Green, Blue,
@@ -123,6 +139,7 @@ public final class Buyer extends Application {
         //CHECKSTYLE:ON
 
         newPurchaseTableView.setItems(purchases);
+        purchaseTableView.setItems(purchased);
 
     }
 
@@ -179,6 +196,8 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void orderPurchase(final ActionEvent actionEvent) {
+        purchased.addAll(purchases);
+        purchases.clear();
     }
 
     /**
