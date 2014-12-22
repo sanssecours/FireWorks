@@ -16,6 +16,8 @@ import java.util.TreeSet;
  */
 public class Rocket implements Serializable {
 
+    /** The different classes of the rocket. */
+    public enum QualityClass { A, B, NotSet }
     /** The identification of this rocket. */
     private Integer id;
     /** The id of the package that contains this rocket. */
@@ -39,6 +41,11 @@ public class Rocket implements Serializable {
     private Integer packerId = 0;
     /** This value specifies if this rocket is defect or not. */
     private Boolean testResult = false;
+    /** The id of the purchase order. */
+    private Purchase purchase = null;
+    /** The class of the rocket. */
+    private QualityClass qualityClass = QualityClass.NotSet;
+
 
     /**
      * Create a new rocket with the given arguments.
@@ -59,12 +66,12 @@ public class Rocket implements Serializable {
      *          The id of the worker that created the new rocket
      */
     public Rocket(final Integer rocketId,
-                  final Wood wood,
-                  final Casing casing,
-                  final ArrayList<Effect> effects,
-                  final HashMap<Propellant, Integer> propellants,
-                  final Integer propellantQuantity,
-                  final Integer workerId) {
+                    final Wood wood,
+                    final Casing casing,
+                    final ArrayList<Effect> effects,
+                    final HashMap<Propellant, Integer> propellants,
+                    final Integer propellantQuantity,
+                    final Integer workerId) {
         id = rocketId;
         this.wood = wood;
         this.casing = casing;
@@ -72,6 +79,39 @@ public class Rocket implements Serializable {
         this.propellants = propellants;
         this.propellantQuantity = propellantQuantity;
         this.workerId = workerId;
+    }
+
+    /**
+     * Create a new rocket with the given arguments.
+     *
+     * @param rocketId
+     *          The identifier for the rocket
+     * @param wood
+     *          The wood used to construct the new rocket
+     * @param casing
+     *          The casing used to construct the new rocket
+     * @param effects
+     *          A list of effects used to create the new rocket
+     * @param propellants
+     *          The propellants used to create the new rocket
+     * @param propellantQuantity
+     *          The amount of propellant contained in the new rocket
+     * @param workerId
+     *          The id of the worker that created the new rocket
+     * @param purchase
+     *          The purchase for which the rockets is produced
+     */
+    public Rocket(final Integer rocketId,
+                  final Wood wood,
+                  final Casing casing,
+                  final ArrayList<Effect> effects,
+                  final HashMap<Propellant, Integer> propellants,
+                  final Integer propellantQuantity,
+                  final Integer workerId,
+                  final Purchase purchase) {
+        this(rocketId, wood, casing, effects, propellants, propellantQuantity,
+                workerId);
+        this.purchase = purchase;
     }
     /**
      * Returns the id of the rocket.
@@ -296,6 +336,35 @@ public class Rocket implements Serializable {
      */
     public final void setPackageId(final Integer id) {
         packageId = id;
+    }
+
+    /**
+     * Get the IntegerProperty of the purchase order or 0 if its a random
+     * rocket.
+     *
+     * @return purchase id if the rocket is part of a purchase
+     */
+    public final IntegerProperty getPurchaseIdProperty() {
+        if (purchase == null) {
+            return new SimpleIntegerProperty(0);
+        } else {
+            return purchase.getPurchaseId();
+
+        }
+    }
+    /**
+     * Get the IntegerProperty of the purchase order or 0 if its a random
+     * rocket.
+     *
+     * @return purchase id if the rocket is part of a purchase
+     */
+    public final IntegerProperty getPurchaseBuyerIdProperty() {
+        if (purchase == null) {
+            return new SimpleIntegerProperty(0);
+        } else {
+            return purchase.getBuyerId();
+
+        }
     }
     /**
      * Return the string representation of the rocket.
