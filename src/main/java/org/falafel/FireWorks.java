@@ -31,6 +31,7 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
+import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.aspects.ContainerAspect;
 import org.mozartspaces.core.aspects.ContainerIPoint;
 import org.mozartspaces.core.aspects.SpaceAspect;
@@ -81,6 +82,10 @@ public class FireWorks extends Application {
     private static ContainerReference packedRockets;
     /** The container for storing the thrown out rockets. */
     private static ContainerReference wasteRockets;
+    /** The container for storing the purchases. */
+    private static ContainerReference purchaseContainer;
+    /** The container for storing the finished ordered rockets. */
+    private static ContainerReference orderedRocketsContainer;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
     /** The running id for the materials. */
@@ -114,6 +119,7 @@ public class FireWorks extends Application {
     private static final ObservableList<String> EFFECT_COLOR_CHOICE_LIST =
             FXCollections.observableArrayList(EffectColor.Blue.toString(),
                     EffectColor.Green.toString(), EffectColor.Red.toString());
+    private static URI spaceURI;
 
     /** Table for the purchase orders. */
     @FXML
@@ -366,6 +372,26 @@ public class FireWorks extends Application {
                 EffectColor.Green, 5, 100));
         order.add(new SupplyOrder("Hawk", Propellant.toString(),
                 EffectColor.Red, 5, 100));
+
+        // Add a Purchase to the Container
+        //CHECKSTYLE:OFF
+        Purchase purchase = new Purchase(1, 10, EffectColor.Red,
+                EffectColor.Green, EffectColor.Blue, URI.create("bla"));
+        //CHECKSTYLE:ON
+        RequestContext context = new RequestContext();
+        context.setProperty("newPurchase", 1);
+
+        try {
+        ContainerReference containerReference = capi.lookupContainer(
+                "purchase",
+                spaceURI,
+                MzsConstants.RequestTimeout.TRY_ONCE,
+                null, null, context);
+            capi.write(asList(new Entry(purchase)), containerReference,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null, null, context);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
         //CHECKSTYLE:ON
 
         supplyTable.setItems(order);
@@ -547,6 +573,17 @@ public class FireWorks extends Application {
                 woodCounter = woodCounter + difference;
                 woodCounterProperty.set(woodCounter);
             }
+        });
+    }
+    /**
+     * Add a new purchase order to the Table in the GUI.
+     *
+     * @param purchase
+     *          the new purchase order which is to be included in the table
+     */
+    public static void addPurchaseToTable(final Purchase purchase) {
+        Platform.runLater(() -> {
+           purchases.add(purchase);
         });
     }
 
@@ -732,7 +769,8 @@ public class FireWorks extends Application {
                 new FinishedRocketAspects();
         ContainerAspect trashedRocketContainerAspect =
                 new TrashedRocketAspects();
-        URI spaceURI = mozartSpace.getConfig().getSpaceUri();
+        ContainerAspect writePurchasesToContainer = new PurchaseAspects();
+        spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> iPoints = new HashSet<>();
         iPoints.add(ContainerIPoint.POST_WRITE);
 
@@ -824,29 +862,20 @@ public class FireWorks extends Application {
                     iPoints, null);
 
             // create the container where the purchases are stored
-            wasteRockets = capi.createContainer(
+            purchaseContainer = capi.createContainer(
                     "purchase",
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(writePurchasesToContainer,
+                    purchaseContainer, iPoints, null);
 
             // create the container where the ordered rockets are stored
-            wasteRockets = capi.createContainer(
+            orderedRocketsContainer = capi.createContainer(
                     "orderedRockets",
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
-
-            // Add a Purchase to the Container
-            //CHECKSTYLE:OFF
-            Purchase purchase = new Purchase(1, 10, EffectColor.Red,
-                    EffectColor.Green, EffectColor.Blue, URI.create("bla"));
-            //CHECKSTYLE:ON
-            ContainerReference container = capi.lookupContainer("purchase",
-                    spaceURI, MzsConstants.RequestTimeout.TRY_ONCE, null);
-            capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE, null,
-                    new Entry(purchase));
-            purchases.add(purchase);
         } catch (Exception e) {
             e.printStackTrace();
         }
