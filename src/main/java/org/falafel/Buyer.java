@@ -118,7 +118,8 @@ public final class Buyer extends Application {
 
         //CHECKSTYLE:OFF
         purchases.add(
-                new Purchase(1, 2, 10, Red, Green, Blue, URI.create("bla")));
+                new Purchase(buyerId, 2, 10, Red, Green, Blue,
+                        URI.create("xvsm://localhost:9876")));
         //CHECKSTYLE:ON
 
         newPurchaseTableView.setItems(purchases);
@@ -154,7 +155,7 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void newPurchase(final ActionEvent actionEvent) {
-        purchases.add(new Purchase());
+        purchases.add(new Purchase(buyerId));
     }
 
     /**

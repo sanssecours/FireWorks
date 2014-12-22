@@ -86,9 +86,13 @@ public class Purchase implements Serializable {
 
     /**
      * Create a new purchase with default arguments.
+     *
+     * @param buyerId
+     *          The identifier of the buyer
      */
-    Purchase() {
-        this(1, 1, 1, Red, Green, Blue, URI.create("xvsm://localhost:9876"));
+    Purchase(final int buyerId) {
+        this(buyerId, 1, 1, Red, Green, Blue,
+                URI.create("xvsm://localhost:9876"));
     }
 
     /**
