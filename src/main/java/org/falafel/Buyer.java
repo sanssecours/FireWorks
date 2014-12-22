@@ -15,8 +15,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
+import org.mozartspaces.core.MzsCoreException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,6 +46,10 @@ public final class Buyer extends Application {
     private static MzsCore space;
     /** The port for the space of the buyer. */
     private static int spacePort;
+    /** Reference to the API for the buyer space. */
+    private static Capi capiSpace;
+    /** The container for the local purchases of this buyer. */
+    private static ContainerReference purchaseContainer;
 
     /** The data stored in the table for new purchases. */
     private static ObservableList<Purchase> purchases =
@@ -177,10 +185,26 @@ public final class Buyer extends Application {
      */
     private static void initSpace() {
         space = DefaultMzsCore.newInstance(spacePort);
+        capiSpace = new Capi(space);
+
+        try {
+            purchaseContainer = capiSpace.createContainer(
+                    "Purchases",
+                    space.getConfig().getSpaceUri(),
+                    MzsConstants.Container.UNBOUNDED,
+                    null);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Close resources handled by this buyer. */
     private void closeBuyer() {
+        try {
+            capiSpace.destroyContainer(purchaseContainer, null);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
         space.shutdown(true);
     }
 
