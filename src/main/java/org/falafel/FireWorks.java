@@ -493,7 +493,7 @@ public class FireWorks extends Application {
 
 
     /**
-     * Method to change the conter for the effect labels in the FireWorks GUI.
+     * Method to change the counter for the effect labels in the FireWorks GUI.
      *
      * @param effectColor
      *          color of the counter which changes
