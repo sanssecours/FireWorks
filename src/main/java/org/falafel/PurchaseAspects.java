@@ -47,8 +47,8 @@ public class PurchaseAspects extends AbstractContainerAspect {
         if (context != null) {
             if (context.containsProperty("newPurchase")) {
                 // Start thread to write the purchases in the container
-                WritePurchasesToContainer writer = new WritePurchasesToContainer(
-                        spaceUri, purchase);
+                WritePurchasesToContainer writer
+                        = new WritePurchasesToContainer(spaceUri, purchase);
                 writer.start();
 
                 FireWorks.addPurchaseToTable(purchase);

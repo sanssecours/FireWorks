@@ -119,6 +119,7 @@ public class FireWorks extends Application {
     private static final ObservableList<String> EFFECT_COLOR_CHOICE_LIST =
             FXCollections.observableArrayList(EffectColor.Blue.toString(),
                     EffectColor.Green.toString(), EffectColor.Red.toString());
+    /** The URI for the space of the fireworks factory. */
     private static URI spaceURI;
 
     /** Table for the purchase orders. */
@@ -582,9 +583,7 @@ public class FireWorks extends Application {
      *          the new purchase order which is to be included in the table
      */
     public static void addPurchaseToTable(final Purchase purchase) {
-        Platform.runLater(() -> {
-           purchases.add(purchase);
-        });
+        Platform.runLater(() -> purchases.add(purchase));
     }
 
     /**

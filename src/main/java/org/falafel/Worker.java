@@ -16,11 +16,11 @@ import org.slf4j.Logger;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
+import static java.util.Arrays.asList;
 import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -170,7 +170,7 @@ public final class Worker {
                             try {
                                 effect = (Effect) capi.take(
                                         containerReference,
-                                        Arrays.asList(AnyCoordinator.newSelector()),
+                                        asList(AnyCoordinator.newSelector()),
                                         RequestTimeout.TRY_ONCE,
                                         collectResourcesTransaction,
                                         null, context).get(0);
@@ -188,7 +188,7 @@ public final class Worker {
                         int missingEffects = NUMBER_EFFECTS_NEEDED
                                 - effects.size();
                         effects = capi.take(containerReference,
-                                Arrays.asList(AnyCoordinator.newSelector(
+                                asList(AnyCoordinator.newSelector(
                                         missingEffects)),
                                 RequestTimeout.TRY_ONCE,
                                 collectResourcesTransaction, null, context);
@@ -235,7 +235,7 @@ public final class Worker {
                         try {
                             Propellant propellant = (Propellant) capi.take(
                                     containerReference,
-                                    Arrays.asList(LindaCoordinator.newSelector(
+                                    asList(LindaCoordinator.newSelector(
                                             lindaTemplateOpened)),
                                     RequestTimeout.TRY_ONCE,
                                     collectResourcesTransaction, null,
@@ -268,7 +268,7 @@ public final class Worker {
                             // No open propellant available
                             Propellant propellant = (Propellant) capi.take(
                                     containerReference,
-                                    Arrays.asList(LindaCoordinator.newSelector(
+                                    asList(LindaCoordinator.newSelector(
                                             lindaTemplateClosed)),
                                     RequestTimeout.TRY_ONCE,
                                     collectResourcesTransaction,
