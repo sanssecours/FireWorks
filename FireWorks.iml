@@ -26,6 +26,8 @@
     <orderEntry type="library" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-classic:1.0.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-core:1.0.9" level="project" />
+    <orderEntry type="library" name="Maven: org.mozartspaces:mozartspaces-capi3-berkeleydb:2.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.sleepycat:je:5.0.34" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.2" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">

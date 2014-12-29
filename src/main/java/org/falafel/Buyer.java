@@ -15,14 +15,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.mozartspaces.capi3.javanative.persistence.PersistenceContext;
 import org.mozartspaces.core.Capi;
+import org.mozartspaces.core.CapiUtil;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
-import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.RequestContext;
+import org.mozartspaces.core.config.Configuration;
+import org.mozartspaces.core.config.TcpSocketConfiguration;
 
 import java.io.IOException;
 import java.net.URI;
@@ -189,15 +192,20 @@ public final class Buyer extends Application {
      * Initialize the space.
      */
     private static void initSpace() {
-        space = DefaultMzsCore.newInstance(spacePort);
+        Configuration configuration = new Configuration();
+        configuration.getPersistenceConfiguration().setPersistenceProfile(
+                PersistenceContext.TRANSACTIONAL_BERKELEY);
+        ((TcpSocketConfiguration)
+                configuration.getTransportConfigurations().get(
+                        "xvsm")).setReceiverPort(spacePort);
+
+        space = DefaultMzsCore.newInstance(configuration);
+
         spaceCapi = new Capi(space);
 
         try {
-            purchaseContainer = spaceCapi.createContainer(
-                    "purchase",
-                    space.getConfig().getSpaceUri(),
-                    MzsConstants.Container.UNBOUNDED,
-                    null);
+            purchaseContainer = CapiUtil.lookupOrCreateContainer("purchase",
+                    space.getConfig().getSpaceUri(), null, null, spaceCapi);
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
