@@ -174,8 +174,8 @@ public final class Buyer extends Application {
     @Override
     public void start(final Stage primaryStage) throws IOException {
 
-        final float minWidth = 300;
-        final float minHeight = 200;
+        final float minWidth = 620;
+        final float minHeight = 112;
 
         primaryStage.setMinWidth(minWidth);
         primaryStage.setMinHeight(minHeight);
