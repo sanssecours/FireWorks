@@ -281,6 +281,17 @@ public final class Buyer extends Application {
     }
 
     /**
+     * Try to get the outstanding orders from the fireworks factory.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFX when the user interface
+     *          element for this method is invoked.
+     */
+    @SuppressWarnings("unused")
+    public void getOrders(final ActionEvent actionEvent) {
+    }
+
+    /**
      * This method will be invoked when the quantity for a purchase is changed.
      *
      * @param stCellEditEvent
