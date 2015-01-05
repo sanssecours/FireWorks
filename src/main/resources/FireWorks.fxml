@@ -287,6 +287,8 @@
                               <TableColumn fx:id="supplierCasingIdColumn" prefWidth="95.0" text="Supplier Casing" />
                               <TableColumn fx:id="supplierPropellantIdColumn" prefWidth="117.0" text="Supplier Propellant" />
                               <TableColumn fx:id="supplierEffectIdColumn" prefWidth="91.0" text="Supplier Effect" />
+                              <TableColumn fx:id="purchaseIdRocketColumn" prefWidth="75.0" text="Purchase Id" />
+                              <TableColumn fx:id="buyerIdColumn" prefWidth="75.0" text="Buyer Id" />
                           </columns>
                         </TableView>
                      </children>

@@ -145,7 +145,9 @@ public class FireWorks extends Application {
     private TableColumn<Rocket, Number> rocketIdColumn, casingIdColumn,
             packageIdColumn, woodIdColumn, propellantQuantityColumn,
             workerIdColumn, testerIdColumn, supplierWoodIdColumn,
-            supplierCasingIdColumn, packerIdColumn;
+            supplierCasingIdColumn, packerIdColumn, purchaseIdRocketColumn,
+            buyerIdColumn;
+
     /** Save handler of the rocket table. */
     @FXML
     private TableView<Rocket> rocketTable = new TableView<>();
@@ -312,6 +314,10 @@ public class FireWorks extends Application {
                      -> cellData.getValue().getSupplierPropellantIdProperty());
         supplierEffectIdColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getSupplierEffectIdProperty());
+        buyerIdColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPurchaseBuyerIdProperty());
+        purchaseIdRocketColumn.setCellValueFactory(
+                cellData -> cellData.getValue().getPurchaseIdProperty());
 
         // initialize current warehouse labels
         casingsCounterLabel.textProperty().bind(

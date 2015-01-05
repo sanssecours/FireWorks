@@ -70,6 +70,7 @@ public final class Worker {
         Worker.addShutdownHook();
         System.out.println("Leave the factory with Ctrl + C");
         int workerId;
+        boolean gotPurchase;
         Random randomGenerator = new Random();
         int propellantQuantity = 0;
 
@@ -77,13 +78,6 @@ public final class Worker {
                 Propellant.CLOSED);
         Propellant lindaTemplateOpened = new Propellant(null, null, null,
                 Propellant.OPENED);
-
-        Effect lindaBlueEffectColorTemplate = new Effect(null, null, null, null,
-                EffectColor.Blue);
-        Effect lindaGreenEffectColorTemplate = new Effect(null, null, null,
-                null, EffectColor.Green);
-        Effect lindaRedEffectColorTemplate = new Effect(null, null, null, null,
-                EffectColor.Red);
 
         Capi capi;
         URI spaceUri;
@@ -119,6 +113,7 @@ public final class Worker {
             try {
                 RequestContext context = new RequestContext();
                 Purchase purchase = null;
+                gotPurchase = false;
 
                 try {
                     collectResourcesTransaction = capi.createTransaction(
@@ -138,6 +133,7 @@ public final class Worker {
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
+                    gotPurchase = true;
                 } catch (MzsTimeoutException toe) {
                     LOGGER.debug("Can't finish in transaction time!");
                     try {
@@ -148,6 +144,7 @@ public final class Worker {
                     }
                 } catch (CountNotMetException e1) {
                     LOGGER.info("No purchase order, create random rocket!");
+                    gotPurchase = false;
                 } catch (MzsCoreException e) {
                     LOGGER.error("Worker has problem with space!");
                     System.exit(1);
@@ -160,17 +157,22 @@ public final class Worker {
                             MaterialType.Effect.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
-                    // ToDo: worker takes effect for purchase
-                    if (purchase != null) {
 
+                    if (gotPurchase) {
                         Collection<EffectColor> colors =
                                 purchase.getEffectColors();
                         Effect effect;
                         for (EffectColor color : colors) {
+                            Effect lindaEffectColorTemplate =
+                                    new Effect(null, null, null, null,
+                                    color);
                             try {
                                 effect = (Effect) capi.take(
                                         containerReference,
-                                        asList(AnyCoordinator.newSelector()),
+                                        asList(
+                                                LindaCoordinator.newSelector(
+                                                        lindaEffectColorTemplate
+                                                )),
                                         RequestTimeout.TRY_ONCE,
                                         collectResourcesTransaction,
                                         null, context).get(0);
@@ -178,20 +180,24 @@ public final class Worker {
                             } catch (CountNotMetException e) {
                                 LOGGER.error("Not enough effect charges of "
                                         + "color: " + color.toString());
-                                purchase = null;
+                                gotPurchase = false;
                                 break;
                             }
                         }
                     }
-
-                    if (purchase == null) {
+                    // if not enough effect charges of the colors needed for the
+                    // purchase are available, make a new random rocket by
+                    // filling the missing effect charges with random colors
+                    if (!gotPurchase) {
                         int missingEffects = NUMBER_EFFECTS_NEEDED
                                 - effects.size();
-                        effects = capi.take(containerReference,
+                        ArrayList<Effect> tempEffects;
+                        tempEffects = capi.take(containerReference,
                                 asList(AnyCoordinator.newSelector(
                                         missingEffects)),
                                 RequestTimeout.TRY_ONCE,
                                 collectResourcesTransaction, null, context);
+                        effects.addAll(tempEffects);
                     }
 
                     context.setProperty("color1", effects.get(0).getColor());
@@ -316,15 +322,33 @@ public final class Worker {
                     }
                 }
 
+                // if we got a purchase but created a Random rocket we write the
+                // purchase back in the container
+                if (!gotPurchase && purchase != null) {
+                    containerReference = capi.lookupContainer(
+                            "purchase",
+                            spaceUri,
+                            RequestTimeout.TRY_ONCE,
+                            null, null, context);
+                    capi.write(containerReference, RequestTimeout.TRY_ONCE,
+                            null, new Entry(purchase));
+                }
+
                 // Waiting time during worker produces Rocket
                 int waitingTime = randomGenerator.nextInt(
                         UPPERBOUND - LOWERBOUND) + LOWERBOUND;
                 Thread.sleep(waitingTime);
-
+                Rocket producedRocket;
                 // Worker produces rocket
-                Rocket producedRocket = new Rocket(1, wood, casing, effects,
-                        propellantsWithQuantity, propellantQuantity ,
-                        workerId);
+                if (gotPurchase) {
+                    producedRocket = new Rocket(1, wood, casing, effects,
+                            propellantsWithQuantity, propellantQuantity,
+                            workerId, purchase);
+                } else {
+                    producedRocket = new Rocket(1, wood, casing, effects,
+                            propellantsWithQuantity, propellantQuantity,
+                            workerId);
+                }
 
                 wood = null;
 
@@ -353,7 +377,6 @@ public final class Worker {
                                         newCoordinationData()));
                     }
                 }
-
             } catch (InterruptedException e) {
                 System.out.println("I'm going home.");
                 core.shutdown(true);

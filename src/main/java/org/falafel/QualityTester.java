@@ -120,6 +120,12 @@ public final class QualityTester {
                         defectCount++;
                     }
                 }
+                // more than 1 defect effect the rocket is trashed
+                // less than the minimum propellant (120g) the rocket is trashed
+                // no defect effect and no less than 130g propellant and the
+                // rocket is of quality A
+                // every other rocket is quality B
+
                 if (defectCount > 1 || rocket.getPropellantQuantity()
                                                         < MINIMAL_PROPELLANT) {
                     rocket.setTestResult(true);
