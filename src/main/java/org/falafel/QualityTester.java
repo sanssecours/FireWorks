@@ -44,6 +44,7 @@ public final class QualityTester {
      * Get the Logger for the current class.
      */
     private static final Logger LOGGER = getLogger(QualityTester.class);
+    private static final Integer MINIMAL_PROP_CLASS_A = 130;
     /** The mozart spaces core. */
     private static MzsCore core;
     /** Flag to tell if the program is shutdown. */
@@ -128,9 +129,12 @@ public final class QualityTester {
 
                 if (defectCount > 1 || rocket.getPropellantQuantity()
                                                         < MINIMAL_PROPELLANT) {
-                    rocket.setTestResult(true);
+                    rocket.setQualityClassBad();
+                } else if (defectCount == 0 && rocket.getPropellantQuantity()
+                                                    >= MINIMAL_PROP_CLASS_A) {
+                    rocket.setQualityClassA();
                 } else {
-                    rocket.setTestResult(false);
+                    rocket.setQualityClassB();
                 }
 
                 rocket.setTester(testerId);

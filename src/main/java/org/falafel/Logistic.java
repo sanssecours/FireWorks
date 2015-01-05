@@ -110,8 +110,8 @@ public final class Logistic {
 
                 rocket = rockets.get(0);
                 rocket.setPackerId(packerId);
-
-                if (rocket.getTestResult()) {
+/*
+                if (rocket.getTestResult() ) {
                     capi.write(trashContainer,
                             MzsConstants.RequestTimeout.TRY_ONCE,
                             null, new Entry(rocket));
@@ -125,7 +125,7 @@ public final class Logistic {
                             null, new Entry(functioningRockets,
                                     FifoCoordinator.newCoordinationData()));
                     functioningRockets.clear();
-                }
+                }*/
 
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get all 5 rockets in time!");

@@ -17,7 +17,7 @@ import java.util.TreeSet;
 public class Rocket implements Serializable {
 
     /** The different classes of the rocket. */
-    public enum QualityClass { A, B, NotSet }
+    public enum QualityClass { A, B, NotSet, Bad }
     /** The identification of this rocket. */
     private Integer id;
     /** The id of the package that contains this rocket. */
@@ -40,7 +40,7 @@ public class Rocket implements Serializable {
     /** The id of the logistician that boxed this rocket. */
     private Integer packerId = 0;
     /** This value specifies if this rocket is defect or not. */
-    private Boolean testResult = false;
+    //private Boolean testResult = false;
     /** The id of the purchase order. */
     private Purchase purchase = null;
     /** The class of the rocket. */
@@ -195,7 +195,7 @@ public class Rocket implements Serializable {
      * @return Returns the test result of the quality test as StringProperty.
      */
     public final StringProperty getTestResultProperty() {
-        return new SimpleStringProperty(Boolean.toString(testResult));
+        return new SimpleStringProperty(qualityClass.toString());
     }
     /**
      * Returns the the id of the worker who built the rocket.
@@ -290,12 +290,22 @@ public class Rocket implements Serializable {
         return effects;
     }
     /**
-     * Set the result of quality test.
-     *
-     * @param result of the quality test as boolean
+     * Set the result of quality test to class A.
      */
-    public final void setTestResult(final boolean result) {
-        testResult = result;
+    public final void setQualityClassA() {
+        qualityClass = QualityClass.A;
+    }
+    /**
+     * Set the result of quality test to class B.
+     */
+    public final void setQualityClassB() {
+        qualityClass = QualityClass.B;
+    }
+    /**
+     * Set the result of quality test to class B.
+     */
+    public final void setQualityClassBad() {
+        qualityClass = QualityClass.Bad;
     }
     /**
      * Return the quantity of the propellant charges of the rocket.
@@ -310,8 +320,8 @@ public class Rocket implements Serializable {
      *
      * @return boolean value of the test result
      */
-    public final Boolean getTestResult() {
-        return testResult;
+    public final QualityClass getTestResult() {
+        return qualityClass;
     }
     /**
      * sets the id of the quality tester who tested the rocket.
