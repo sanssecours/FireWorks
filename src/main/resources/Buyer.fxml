@@ -50,9 +50,9 @@
             </TableView>
         </center>
         <bottom>
-            <Button mnemonicParsing="false" onAction="#getOrders" text="Get Orders" BorderPane.alignment="CENTER">
+            <Button mnemonicParsing="false" onAction="#removePurchases" text="Remove Orders" BorderPane.alignment="CENTER">
                 <tooltip>
-                    <Tooltip text="Try to get outstanding orders from factory"/>
+                    <Tooltip text="Remove all finished and outstanding orders"/>
                 </tooltip>
                 <BorderPane.margin>
                     <Insets bottom="5.0" top="5.0"/>

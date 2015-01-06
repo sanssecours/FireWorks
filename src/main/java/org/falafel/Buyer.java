@@ -37,6 +37,7 @@ import static org.falafel.EffectColor.Blue;
 import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.mozartspaces.core.MzsConstants.Container.UNBOUNDED;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 
 /**
@@ -291,14 +292,22 @@ public final class Buyer extends Application {
     }
 
     /**
-     * Try to get the outstanding orders from the fireworks factory.
+     * Remove all current purchases from the space of the buyer.
      *
      * @param actionEvent
      *          The action event sent by JavaFX when the user interface
      *          element for this method is invoked.
      */
     @SuppressWarnings("unused")
-    public void getOrders(final ActionEvent actionEvent) {
+    public void removePurchases(final ActionEvent actionEvent) {
+        try {
+            spaceCapi.destroyContainer(purchaseContainer, null);
+            purchaseContainer = spaceCapi.createContainer("purchase",
+                    space.getConfig().getSpaceUri(), UNBOUNDED, null);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
+        purchased.clear();
     }
 
     /**
