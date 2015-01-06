@@ -36,8 +36,8 @@ import static java.util.Arrays.asList;
 import static org.falafel.EffectColor.Blue;
 import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
-import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 
 /**
  * This class represents a buyer of rockets.
@@ -52,6 +52,10 @@ public final class Buyer extends Application {
 
     /** The URI of the fireworks factory. */
     private static URI fireWorksSpaceURI;
+    /** The space of the fireworks factory. */
+    private static MzsCore fireWorksSpace;
+    /** Reference to the API for fireworks factory. */
+    private static Capi fireWorksCapi;
 
     /** The space of the buyer. */
     private static MzsCore space;
@@ -206,9 +210,11 @@ public final class Buyer extends Application {
                 configuration.getTransportConfigurations().get(
                         "xvsm")).setReceiverPort(spacePort);
 
+        fireWorksSpace = DefaultMzsCore.newInstanceWithoutSpace();
         space = DefaultMzsCore.newInstance(configuration);
 
         spaceCapi = new Capi(space);
+        fireWorksCapi = new Capi(fireWorksSpace);
 
         try {
             purchaseContainer = CapiUtil.lookupOrCreateContainer("purchase",
@@ -226,6 +232,7 @@ public final class Buyer extends Application {
     /** Close resources handled by this buyer. */
     private void closeBuyer() {
         space.shutdown(true);
+        fireWorksSpace.shutdown(true);
     }
 
     /**
@@ -262,11 +269,6 @@ public final class Buyer extends Application {
     @SuppressWarnings("unused")
     public void orderPurchase(final ActionEvent actionEvent) {
         purchased.addAll(purchases);
-
-        /* The spaces of the fireworks factory. */
-        MzsCore fireWorksSpace = DefaultMzsCore.newInstanceWithoutSpace();
-        /* Reference to the API for the space of the fireworks factory. */
-        Capi fireWorksCapi = new Capi(fireWorksSpace);
 
         RequestContext context = new RequestContext();
         context.setProperty("newPurchase", 1);
