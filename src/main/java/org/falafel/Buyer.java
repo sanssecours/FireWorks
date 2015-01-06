@@ -15,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.javanative.persistence.PersistenceContext;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.CapiUtil;
@@ -29,12 +30,14 @@ import org.mozartspaces.core.config.TcpSocketConfiguration;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 import static org.falafel.EffectColor.Blue;
 import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 
 /**
  * This class represents a buyer of rockets.
@@ -192,7 +195,11 @@ public final class Buyer extends Application {
      * Initialize the space.
      */
     private static void initSpace() {
-        Configuration configuration = new Configuration();
+
+        Configuration configuration;
+        ArrayList<Purchase> oldPurchases;
+
+        configuration = new Configuration();
         configuration.getPersistenceConfiguration().setPersistenceProfile(
                 PersistenceContext.TRANSACTIONAL_BERKELEY);
         ((TcpSocketConfiguration)
@@ -206,6 +213,11 @@ public final class Buyer extends Application {
         try {
             purchaseContainer = CapiUtil.lookupOrCreateContainer("purchase",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
+            /* Move old purchases into GUI */
+            oldPurchases = spaceCapi.read(purchaseContainer,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            purchased.addAll(oldPurchases);
+
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
@@ -213,11 +225,6 @@ public final class Buyer extends Application {
 
     /** Close resources handled by this buyer. */
     private void closeBuyer() {
-        try {
-            spaceCapi.destroyContainer(purchaseContainer, null);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-        }
         space.shutdown(true);
     }
 
@@ -272,6 +279,7 @@ public final class Buyer extends Application {
             for (Purchase purchase : purchases) {
                 fireWorksCapi.write(asList(new Entry(purchase)),
                         container, TRY_ONCE, null, null, context);
+                spaceCapi.write(new Entry(purchase), purchaseContainer);
             }
         } catch (MzsCoreException e) {
             e.printStackTrace();
