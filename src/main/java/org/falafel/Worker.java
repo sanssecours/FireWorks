@@ -178,7 +178,7 @@ public final class Worker {
                                         null, context).get(0);
                                 effects.add(effect);
                             } catch (CountNotMetException e) {
-                                LOGGER.error("Not enough effect charges of "
+                                LOGGER.info("Not enough effect charges of "
                                         + "color: " + color.toString());
                                 gotPurchase = false;
                                 break;
@@ -329,7 +329,7 @@ public final class Worker {
                             "purchase",
                             spaceUri,
                             RequestTimeout.TRY_ONCE,
-                            null, null, context);
+                            null);
                     capi.write(containerReference, RequestTimeout.TRY_ONCE,
                             null, new Entry(purchase));
                 }
