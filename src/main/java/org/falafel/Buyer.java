@@ -1,6 +1,7 @@
 package org.falafel;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -258,6 +259,22 @@ public final class Buyer extends Application {
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
+    }
+
+    /** Set the status of the given purchase to finished.
+     *
+     *  @param purchaseId
+     *          The id of the purchase for which the status should be set
+     */
+    public static void setPurchaseStatusToFinished(final int purchaseId) {
+        Platform.runLater(() -> {
+            for (Purchase purchase : purchased) {
+                if (purchase.getPurchaseId().intValue() == purchaseId) {
+                    purchase.setStatusToFinished();
+                    break;
+                }
+            }
+        });
     }
 
     /** Close resources handled by this buyer. */
