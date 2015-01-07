@@ -366,19 +366,19 @@ public class FireWorks extends Application {
 
         //CHECKSTYLE:OFF
         order.add(new SupplyOrder("Hulk", Casing.toString(), EffectColor.Blue,
-                5, 100));
+                50, 100));
         order.add(new SupplyOrder("Iron Man", Wood.toString(), EffectColor.Blue,
-                5, 100));
+                50, 100));
         order.add(new SupplyOrder("Captain America", Effect.toString(),
-                EffectColor.Blue, 5, 100));
+                EffectColor.Blue, 50, 100));
         order.add(new SupplyOrder("Batman", Effect.toString(), EffectColor.Red,
-                5, 60));
+                50, 60));
         order.add(new SupplyOrder("Thor", Effect.toString(), EffectColor.Green,
-                5, 60));
+                50, 60));
         order.add(new SupplyOrder("Seaman", Propellant.toString(),
-                EffectColor.Green, 5, 100));
+                EffectColor.Green, 50, 100));
         order.add(new SupplyOrder("Hawk", Propellant.toString(),
-                EffectColor.Red, 5, 100));
+                EffectColor.Red, 50, 100));
 
         // Add a Purchase to the Container
         //CHECKSTYLE:OFF
@@ -775,6 +775,8 @@ public class FireWorks extends Application {
         ContainerAspect trashedRocketContainerAspect =
                 new TrashedRocketAspects();
         ContainerAspect writePurchasesToContainer = new PurchaseAspects();
+        ContainerAspect orderedRocketsContainerAspect =
+                new OrderedRocketsAspects();
         spaceURI = mozartSpace.getConfig().getSpaceUri();
         Set<ContainerIPoint> iPoints = new HashSet<>();
         iPoints.add(ContainerIPoint.POST_WRITE);
@@ -881,6 +883,8 @@ public class FireWorks extends Application {
                     spaceURI,
                     Container.UNBOUNDED,
                     null);
+            capi.addContainerAspect(orderedRocketsContainerAspect,
+                    orderedRocketsContainer, iPoints, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -900,8 +904,11 @@ public class FireWorks extends Application {
             capi.destroyContainer(testedRockets, null);
             capi.destroyContainer(packedRockets, null);
             capi.destroyContainer(wasteRockets, null);
+            capi.destroyContainer(purchaseContainer, null);
+            capi.destroyContainer(orderedRocketsContainer, null);
         } catch (MzsCoreException e) {
-            e.printStackTrace();
+            LOGGER.error("Problems with destroying the containers "
+                    + "in the space");
         }
         mozartSpace.shutdown(true);
         LOGGER.info("Closed space");
@@ -924,12 +931,6 @@ public class FireWorks extends Application {
 
         Parent root = FXMLLoader.load(
                 getClass().getResource("/FireWorks.fxml"));
-
-        final float minWidth = 1000;
-        final float minHeight = 900;
-        primaryStage.setMinWidth(minWidth);
-        primaryStage.setMinHeight(minHeight);
-
 
         primaryStage.setTitle("Fireworks Factory");
         primaryStage.setOnCloseRequest(event -> closeSpace());

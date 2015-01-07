@@ -290,6 +290,9 @@
                               <TableColumn fx:id="purchaseIdRocketColumn" prefWidth="75.0" text="Purchase Id" />
                               <TableColumn fx:id="buyerIdColumn" prefWidth="75.0" text="Buyer Id" />
                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                      </children>
                   </VBox>

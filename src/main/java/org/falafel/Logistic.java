@@ -1,5 +1,6 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.core.Capi;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 
 /**
  * This class represents a logistic worker.
@@ -35,6 +37,8 @@ public final class Logistic {
     private static final Logger LOGGER = getLogger(Logistic.class);
     /** The mozart spaces core. */
     private static MzsCore core;
+    /** The mozart spaces core capi. */
+    private static Capi capi;
     /** Flag to tell if the program is shutdown. */
     private static boolean shutdown = false;
 
@@ -56,7 +60,6 @@ public final class Logistic {
         ArrayList<Rocket> rocketsClassA = new ArrayList<>();
         ArrayList<Rocket> rocketsClassB = new ArrayList<>();
         Rocket rocket;
-        Capi capi;
         URI spaceUri;
         Purchase purchase;
 
@@ -174,34 +177,9 @@ public final class Logistic {
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get enough rockets for a package!");
 
-                for (Rocket returnRocket : rocketsClassA) {
-                    returnRocket.setPackerId(0);
-                    try {
-                        capi.write(rocketContainer,
-                                MzsConstants.RequestTimeout.TRY_ONCE,
-                                null, new Entry(returnRocket,
-                                        FifoCoordinator.newCoordinationData()));
-                    } catch (MzsCoreException e) {
-                        LOGGER.error("Logistician can't return rockets to "
-                                + "tested container!");
-                        System.exit(1);
-                    }
-                }
+                sendRocketsToContainer(rocketContainer, rocketsClassA);
                 rocketsClassA.clear();
-
-                for (Rocket returnRocket : rocketsClassB) {
-                    returnRocket.setPackerId(0);
-                    try {
-                        capi.write(rocketContainer,
-                                MzsConstants.RequestTimeout.TRY_ONCE,
-                                null, new Entry(returnRocket,
-                                        FifoCoordinator.newCoordinationData()));
-                    } catch (MzsCoreException e) {
-                        LOGGER.error("Logistician can't return rockets to "
-                                + "tested container!");
-                        System.exit(1);
-                    }
-                }
+                sendRocketsToContainer(rocketContainer, rocketsClassB);
                 rocketsClassB.clear();
 
                 try {
@@ -212,6 +190,36 @@ public final class Logistic {
                 }
             } catch (MzsCoreException e) {
                 LOGGER.error("Logistician has problem with space!");
+                System.exit(1);
+            }
+        }
+        sendRocketsToContainer(rocketContainer, rocketsClassA);
+        rocketsClassA.clear();
+        sendRocketsToContainer(rocketContainer, rocketsClassB);
+        rocketsClassB.clear();
+    }
+
+    /**
+     * Sends a rocket list to the container.
+     *
+     * @param container
+     *          ContainerReference to which the rockets are written.
+     * @param rockets
+     *          ArrayList of rockets to write in a container
+     */
+    private static void sendRocketsToContainer(
+                                final ContainerReference container,
+                                final ArrayList<Rocket> rockets) {
+        for (Rocket returnRocket : rockets) {
+            returnRocket.setPackerId(0);
+            try {
+                capi.write(container,
+                        MzsConstants.RequestTimeout.TRY_ONCE,
+                        null, new Entry(returnRocket,
+                                FifoCoordinator.newCoordinationData()));
+            } catch (MzsCoreException e) {
+                LOGGER.error("Logistician can't return rockets to "
+                        + "tested container!");
                 System.exit(1);
             }
         }
