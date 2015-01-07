@@ -239,12 +239,11 @@ public final class Buyer extends Application {
             spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
                     rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
 
-
             /* Move old purchases into GUI */
             for (Serializable purchase : spaceCapi.read(purchaseContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
                 oldPurchases.put(
-                        ((Purchase) purchase).getBuyerId().intValue(),
+                        ((Purchase) purchase).getPurchaseId().intValue(),
                         (Purchase) purchase);
 
             }
