@@ -27,6 +27,7 @@ import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.config.Configuration;
 import org.mozartspaces.core.config.TcpSocketConfiguration;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,6 +40,7 @@ import static org.falafel.EffectColor.Red;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.Container.UNBOUNDED;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * This class represents a buyer of rockets.
@@ -47,6 +49,9 @@ import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
  * the rockets were produced.
  */
 public final class Buyer extends Application {
+
+    /** Get the Logger for the current class. */
+    private static final Logger LOGGER = getLogger(Buyer.class);
 
     /** The unique identification of this buyer. */
     private static Integer buyerId;
@@ -269,12 +274,10 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void orderPurchase(final ActionEvent actionEvent) {
-        purchased.addAll(purchases);
-
-        RequestContext context = new RequestContext();
-        context.setProperty("newPurchase", 1);
-
         try {
+            RequestContext context = new RequestContext();
+            context.setProperty("newPurchase", 1);
+
             ContainerReference container =
                     fireWorksCapi.lookupContainer("purchase", fireWorksSpaceURI,
                             TRY_ONCE, null);
@@ -284,11 +287,13 @@ public final class Buyer extends Application {
                         container, TRY_ONCE, null, null, context);
                 spaceCapi.write(new Entry(purchase), purchaseContainer);
             }
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-        }
+            purchased.addAll(purchases);
+            purchases.clear();
 
-        purchases.clear();
+        } catch (MzsCoreException e) {
+            LOGGER.error("Could not order rockets! Most likely the fireworks "
+                    + "factory is not online.");
+        }
     }
 
     /**
