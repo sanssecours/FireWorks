@@ -30,8 +30,11 @@ import org.mozartspaces.core.config.TcpSocketConfiguration;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.falafel.EffectColor.Blue;
@@ -207,7 +210,10 @@ public final class Buyer extends Application {
     private static void initSpace() {
 
         Configuration configuration;
-        ArrayList<Purchase> oldPurchases;
+        ContainerReference rocketContainer;
+        /* Save purchases using their id as key */
+        Map<Integer, Purchase> oldPurchases = new HashMap<>();
+        ArrayList<Rocket> rockets;
 
         configuration = new Configuration();
         configuration.getPersistenceConfiguration().setPersistenceProfile(
@@ -225,10 +231,24 @@ public final class Buyer extends Application {
         try {
             purchaseContainer = CapiUtil.lookupOrCreateContainer("purchase",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
+            rocketContainer = CapiUtil.lookupOrCreateContainer("rockets",
+                    space.getConfig().getSpaceUri(), null, null, spaceCapi);
+
             /* Move old purchases into GUI */
-            oldPurchases = spaceCapi.read(purchaseContainer,
+            for (Serializable purchase : spaceCapi.read(purchaseContainer,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
+                oldPurchases.put(
+                        ((Purchase) purchase).getBuyerId().intValue(),
+                        (Purchase) purchase);
+
+            }
+            rockets = spaceCapi.read(rocketContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
-            purchased.addAll(oldPurchases);
+            for (Rocket rocket: rockets) {
+                oldPurchases.get(rocket.getPurchaseIdProperty().intValue()).
+                        setStatusToFinished();
+            }
+            purchased.addAll(oldPurchases.values());
 
         } catch (MzsCoreException e) {
             e.printStackTrace();
