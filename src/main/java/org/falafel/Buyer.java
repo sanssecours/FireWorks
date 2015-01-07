@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
@@ -43,6 +44,7 @@ import static org.falafel.EffectColor.Red;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.Container.UNBOUNDED;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
+import static org.mozartspaces.core.aspects.ContainerIPoint.POST_WRITE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -233,6 +235,9 @@ public final class Buyer extends Application {
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
             rocketContainer = CapiUtil.lookupOrCreateContainer("rockets",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
+            spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
+                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
+
 
             /* Move old purchases into GUI */
             for (Serializable purchase : spaceCapi.read(purchaseContainer,
