@@ -28,8 +28,6 @@ public final class Logistic {
     private static final int PACKAGE_SIZE = 5;
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
-    /** Collected functioning rockets. */
-    private static ArrayList<Rocket> functioningRockets = new ArrayList<>();
 
     /**
      * Get the Logger for the current class.
@@ -55,10 +53,12 @@ public final class Logistic {
         Logistic.addShutdownHook();
         System.out.println("Leave the factory with Ctrl + C");
         int packerId;
-        ArrayList<Rocket> rockets;
+        ArrayList<Rocket> rocketsClassA = new ArrayList<>();
+        ArrayList<Rocket> rocketsClassB = new ArrayList<>();
         Rocket rocket;
         Capi capi;
         URI spaceUri;
+        Purchase purchase;
 
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
@@ -77,6 +77,8 @@ public final class Logistic {
         ContainerReference rocketContainer;
         ContainerReference trashContainer;
         ContainerReference shippingContainer;
+        ContainerReference orderedRocketsContainer;
+        ContainerReference purchaseContainer;
 
 
         core = DefaultMzsCore.newInstanceWithoutSpace();
@@ -94,6 +96,14 @@ public final class Logistic {
                     spaceUri,
                     MzsConstants.RequestTimeout.TRY_ONCE,
                     null);
+            orderedRocketsContainer = capi.lookupContainer("orderedRockets",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE,
+                    null);
+            purchaseContainer = capi.lookupContainer("purchase",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE,
+                    null);
         } catch (MzsCoreException e) {
             LOGGER.error("Logistician can't find container!");
             return;
@@ -103,34 +113,68 @@ public final class Logistic {
         while (!shutdown) {
             try {
 
-                rockets = capi.take(rocketContainer,
+                rocket = (Rocket) capi.take(rocketContainer,
                         FifoCoordinator.newSelector(1),
                         MzsConstants.RequestTimeout.TRY_ONCE,
-                        null);
+                        null).get(0);
 
-                rocket = rockets.get(0);
                 rocket.setPackerId(packerId);
-/*
-                if (rocket.getTestResult() ) {
-                    capi.write(trashContainer,
-                            MzsConstants.RequestTimeout.TRY_ONCE,
-                            null, new Entry(rocket));
-                } else {
-                    functioningRockets.add(rocket);
+                purchase = rocket.getPurchase();
+
+                switch (rocket.getTestResult()) {
+                    case A:
+                        if (purchase == null) {
+                            rocketsClassA.add(rocket);
+                        } else {
+                            capi.write(orderedRocketsContainer,
+                                    MzsConstants.RequestTimeout.TRY_ONCE,
+                                    null, new Entry(rocket));
+                        }
+                        break;
+                    case B:
+                        if (purchase != null) {
+                            rocket.setPurchase(null);
+                        }
+                        rocketsClassB.add(rocket);
+                        break;
+                    case Bad:
+                        if (purchase != null) {
+                            rocket.setPurchase(null);
+                        }
+                        capi.write(trashContainer,
+                                MzsConstants.RequestTimeout.TRY_ONCE,
+                                null, new Entry(rocket));
+                        break;
+                    default:
+                        LOGGER.error("Logistician has found wrong "
+                                        + "quality class!");
+                        System.exit(1);
                 }
 
-                if (functioningRockets.size() == PACKAGE_SIZE) {
+                if (rocket.getPurchase() == null && purchase != null) {
+                    capi.write(purchaseContainer,
+                            MzsConstants.RequestTimeout.TRY_ONCE,
+                            null, new Entry(purchase));
+                }
+
+                if (rocketsClassA.size() == PACKAGE_SIZE) {
                     capi.write(shippingContainer,
                             MzsConstants.RequestTimeout.TRY_ONCE,
-                            null, new Entry(functioningRockets,
+                            null, new Entry(rocketsClassA,
                                     FifoCoordinator.newCoordinationData()));
-                    functioningRockets.clear();
-                }*/
-
+                    rocketsClassA.clear();
+                }
+                if (rocketsClassB.size() == PACKAGE_SIZE) {
+                    capi.write(shippingContainer,
+                            MzsConstants.RequestTimeout.TRY_ONCE,
+                            null, new Entry(rocketsClassB,
+                                    FifoCoordinator.newCoordinationData()));
+                    rocketsClassB.clear();
+                }
             } catch (CountNotMetException e1) {
-                LOGGER.info("Could not get all 5 rockets in time!");
+                LOGGER.info("Could not get enough rockets for a package!");
 
-                for (Rocket returnRocket : functioningRockets) {
+                for (Rocket returnRocket : rocketsClassA) {
                     returnRocket.setPackerId(0);
                     try {
                         capi.write(rocketContainer,
@@ -143,7 +187,23 @@ public final class Logistic {
                         System.exit(1);
                     }
                 }
-                functioningRockets.clear();
+                rocketsClassA.clear();
+
+                for (Rocket returnRocket : rocketsClassB) {
+                    returnRocket.setPackerId(0);
+                    try {
+                        capi.write(rocketContainer,
+                                MzsConstants.RequestTimeout.TRY_ONCE,
+                                null, new Entry(returnRocket,
+                                        FifoCoordinator.newCoordinationData()));
+                    } catch (MzsCoreException e) {
+                        LOGGER.error("Logistician can't return rockets to "
+                                + "tested container!");
+                        System.exit(1);
+                    }
+                }
+                rocketsClassB.clear();
+
                 try {
                     Thread.sleep(WAIT_TIME_LOGISTIC_MS);
                 } catch (InterruptedException e) {

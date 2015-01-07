@@ -46,7 +46,6 @@ public class Rocket implements Serializable {
     /** The class of the rocket. */
     private QualityClass qualityClass = QualityClass.NotSet;
 
-
     /**
      * Create a new rocket with the given arguments.
      *
@@ -376,6 +375,26 @@ public class Rocket implements Serializable {
 
         }
     }
+
+    /**
+     * Get the purchase of the rocket.
+     *
+     * @return the purchase or null if the rocket was not built for a purchase
+     */
+    public final Purchase getPurchase() {
+        return purchase;
+    }
+
+    /**
+     * Set the purchase of the rocket.
+     *
+     * @param purchase
+     *          the new purchase of the rocket.
+     */
+    public final void setPurchase(final Purchase purchase) {
+        this.purchase = purchase;
+    }
+
     /**
      * Return the string representation of the rocket.
      *
