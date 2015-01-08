@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderedRocketsAspects extends AbstractContainerAspect {
 
     /** The rocket counters for the different purchases. */
-    private static HashMap<Integer, HashMap<Integer, Integer>> purchaseCounters
+    private static HashMap<Integer, HashMap<Integer, Purchase>> purchaseCounters
             = new HashMap<>();
     /**
      * This aspect will be called after an entry is written to an container.
@@ -45,19 +45,32 @@ public class OrderedRocketsAspects extends AbstractContainerAspect {
         Purchase purchase = rocket.getPurchase();
         Integer buyerId = purchase.getBuyerId().intValue();
         Integer purchaseId = purchase.getPurchaseId().intValue();
+        // if new purchase order the
+        purchase.addFinishedRockets(1);
 
         if (purchaseCounters.containsKey(buyerId)) {
             if (purchaseCounters.get(buyerId).containsKey(purchaseId)) {
-                Integer counter = purchaseCounters.get(buyerId).get(purchaseId);
-                purchaseCounters.get(buyerId).put(purchaseId, counter + 1);
+                purchaseCounters.get(buyerId).get(
+                                            purchaseId).addFinishedRockets(1);
             } else {
-                purchaseCounters.get(buyerId).put(purchaseId, 1);
+                purchase.addFinishedRockets(1);
+                purchaseCounters.get(buyerId).put(purchaseId, purchase);
             }
         } else {
-            HashMap<Integer, Integer> newBuyersPurchase = new HashMap<>();
-            newBuyersPurchase.put(purchaseId, 1);
+            HashMap<Integer, Purchase> newBuyersPurchase = new HashMap<>();
+            newBuyersPurchase.put(purchaseId, purchase);
             purchaseCounters.put(buyerId, newBuyersPurchase);
         }
+
+        purchase =  purchaseCounters.get(buyerId).get(purchaseId);
+        if (purchase.getNumberFinishedRocketsProperty().intValue()
+                == purchase.getNumberRocketsProperty().intValue()) {
+            purchase.setStatusToFinished();
+        }
+
+        FireWorks.updateOfARocketInRocketsTable(rocket);
+        FireWorks.updatePurchaseTable(purchaseCounters.get(buyerId).get(
+                purchaseId));
 
         System.out.println("current counter" + purchaseCounters);
         return AspectResult.OK;
