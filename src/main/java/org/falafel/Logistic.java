@@ -3,6 +3,7 @@ package org.falafel;
 import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.capi3.FifoCoordinator;
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -131,7 +132,8 @@ public final class Logistic {
                         } else {
                             capi.write(orderedRocketsContainer,
                                     MzsConstants.RequestTimeout.TRY_ONCE,
-                                    null, new Entry(rocket));
+                                    null, new Entry(rocket,
+                                            LindaCoordinator.newCoordinationData()));
                         }
                         break;
                     case B:

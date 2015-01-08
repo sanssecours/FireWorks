@@ -4,6 +4,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.mozartspaces.capi3.Index;
+import org.mozartspaces.capi3.Queryable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.TreeSet;
 /**
  * .
  */
+@Queryable
 public class Rocket implements Serializable {
 
     /** The different classes of the rocket. */
@@ -42,6 +45,7 @@ public class Rocket implements Serializable {
     /** This value specifies if this rocket is defect or not. */
     //private Boolean testResult = false;
     /** The id of the purchase order. */
+    @Index
     private Purchase purchase = null;
     /** The class of the rocket. */
     private QualityClass qualityClass = QualityClass.NotSet;

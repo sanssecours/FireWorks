@@ -4,6 +4,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.mozartspaces.capi3.Index;
+import org.mozartspaces.capi3.Queryable;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -26,6 +28,7 @@ import static org.falafel.EffectColor.Red;
  * purchases.
  *
  */
+@Queryable
 public class Purchase implements Serializable {
     /** The different states a purchase can be in. */
     public enum PurchaseStatus { Processing, Finished, Shipped }
@@ -34,16 +37,18 @@ public class Purchase implements Serializable {
     private static int nextPurchaseId = 0;
 
     /** The unique identification of the buyer. */
-    private int buyerId;
+    @Index
+    private Integer buyerId;
     /** The identifier for the purchase. This will be the same identifier
      *  for a certain number of purchases, which are all part of a certain
      *  order of a certain buyer. */
-    private int purchaseId;
+    @Index
+    private Integer purchaseId;
     /** The number of rockets for the whole order which this purchase is
      *  a part of. */
-    private int numberRockets;
+    private Integer numberRockets;
     /** The number of rockets already ready for sale. */
-    private int numberFinishedRockets;
+    private Integer numberFinishedRockets;
     /** The status of the purchase. */
     private PurchaseStatus status;
 
@@ -77,6 +82,42 @@ public class Purchase implements Serializable {
              final URI buyerURI) {
         this.buyerId = buyerId;
         this.purchaseId = nextPurchaseId++;
+        this.numberRockets = numberRockets;
+        this.numberFinishedRockets = 0;
+        this.effectColors = new ArrayList<>(
+                Arrays.asList(firstEffectColor, secondEffectColor,
+                        thirdEffectColor));
+        this.buyerURI = buyerURI;
+        status = Processing;
+    }
+
+    /**
+     * Create a new purchase with the given arguments.
+     *
+     * @param buyerId
+     *          The identifier of the buyer
+     * @param purchaseId
+     *          The identifier of the purchase
+     * @param numberRockets
+     *          The number of rockets which this purchase is a part of
+     * @param firstEffectColor
+     *          The color of the first effect for the rocket that should be
+     *          produced according to this purchase
+     * @param secondEffectColor
+     *          The color of the second effect for the rocket
+     * @param thirdEffectColor
+     *          The color of the third effect for the rocket
+     * @param buyerURI
+     *          The space URI of the buyer of this rocket
+     */
+    Purchase(final int buyerId, final int purchaseId,
+             final Integer numberRockets,
+             final EffectColor firstEffectColor,
+             final EffectColor secondEffectColor,
+             final EffectColor thirdEffectColor,
+             final URI buyerURI) {
+        this.buyerId = buyerId;
+        this.purchaseId = purchaseId;
         this.numberRockets = numberRockets;
         this.numberFinishedRockets = 0;
         this.effectColors = new ArrayList<>(

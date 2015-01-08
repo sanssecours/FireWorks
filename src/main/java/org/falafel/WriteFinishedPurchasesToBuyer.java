@@ -1,5 +1,6 @@
 package org.falafel;
 
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -10,8 +11,11 @@ import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
 import java.net.URI;
+import java.util.ArrayList;
 
+import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 
 
 /**
@@ -54,16 +58,22 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
 
+        Purchase purchaseTemplate = new Purchase(
+                purchase.getBuyerId().intValue(),
+                purchase.getPurchaseId().intValue(),
+                null, null, null, null, null);
+        Rocket rocketTemplate = new Rocket(null, null, null, null, null,
+                null, null, purchaseTemplate);
 
         ContainerReference buyerContainer = null;
         ContainerReference fireWorksContainer = null;
-        try {
+       /* try {
             buyerContainer = capi.lookupContainer("rockets",
                     buyerSpaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
         } catch (MzsCoreException e) {
             LOGGER.info("Can not find buyer space!");
             return;
-        }
+        }*/
         try {
             fireWorksContainer = capi.lookupContainer("orderedRockets",
                     fireWorksSpaceUri, MzsConstants.RequestTimeout.TRY_ONCE,
@@ -73,8 +83,19 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
                     + "FireWorks space!");
             return;
         }
-
         System.out.println("Shipping to buyer starts!");
+
+        try {
+            ArrayList<Rocket> rockets = capi.take(
+                    fireWorksContainer,
+                    asList(LindaCoordinator.newSelector(rocketTemplate,
+                            COUNT_ALL)),
+                    MzsConstants.RequestTimeout.TRY_ONCE,
+                    null, null, null);
+            System.out.println(rockets);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
 /*
         try {
             for (int index = 1;
