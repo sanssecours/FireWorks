@@ -54,7 +54,6 @@ public class OrderedRocketsAspects extends AbstractContainerAspect {
                 purchaseCounters.get(buyerId).get(
                                             purchaseId).addFinishedRockets(1);
             } else {
-                purchase.addFinishedRockets(1);
                 purchaseCounters.get(buyerId).put(purchaseId, purchase);
             }
         } else {
