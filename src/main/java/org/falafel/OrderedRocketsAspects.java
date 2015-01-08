@@ -8,6 +8,7 @@ import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,13 +67,16 @@ public class OrderedRocketsAspects extends AbstractContainerAspect {
         if (purchase.getNumberFinishedRocketsProperty().intValue()
                 == purchase.getNumberRocketsProperty().intValue()) {
             purchase.setStatusToFinished();
+            URI spaceUri = request.getContainer().getSpace();
+            WriteFinishedPurchasesToBuyer sender = new
+                    WriteFinishedPurchasesToBuyer(spaceUri, purchase);
+            sender.start();
         }
 
         FireWorks.updateOfARocketInRocketsTable(rocket);
         FireWorks.updatePurchaseTable(purchaseCounters.get(buyerId).get(
                 purchaseId));
 
-        System.out.println("current counter" + purchaseCounters);
         return AspectResult.OK;
     }
 }
