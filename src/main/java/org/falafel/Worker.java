@@ -35,11 +35,6 @@ public final class Worker {
     private static final int TRANSACTION_TIMEOUT = 5000;
     /** Specifies how long a worker waits until he tries to get new material
      *  after he failed the last time. */
-    private static final int WAIT_TIME_WORKER_MS = 2000;
-    /** Constant for the lower bound of the working time per element. */
-    private static final int LOWERBOUND = 1000;
-    /** Constant for the upper bound of the working time per element. */
-    private static final int UPPERBOUND = 2000;
     /** Constant for the lower bound of the propellant quantity. */
     private static final int LOWERQUANTITY = 115;
     /** Constant for the upper bound of the propellant quantity. */
@@ -136,12 +131,6 @@ public final class Worker {
                     gotPurchase = true;
                 } catch (MzsTimeoutException toe) {
                     LOGGER.debug("Can't finish in transaction time!");
-                    try {
-                        Thread.sleep(WAIT_TIME_WORKER_MS);
-                    } catch (InterruptedException e) {
-                        LOGGER.error("I was interrupted while trying to sleep. "
-                                + "How rude!");
-                    }
                 } catch (CountNotMetException e1) {
                     LOGGER.info("No purchase order, create random rocket!");
                     gotPurchase = false;
@@ -306,15 +295,12 @@ public final class Worker {
                             + propellantsWithQuantity.keySet());
                 } catch (MzsTimeoutException toe) {
                     LOGGER.debug("Can't get materials in transaction time!");
-                    Thread.sleep(WAIT_TIME_WORKER_MS);
                     continue;
                 } catch (MzsCoreException e) {
                     LOGGER.info("Could not get all materials!");
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
-                        // Wait some time until we try to get new material
-                        Thread.sleep(WAIT_TIME_WORKER_MS);
                         continue;
                     } catch (MzsCoreException e1) {
                         LOGGER.error("Can't rollback transaction!");
@@ -334,10 +320,6 @@ public final class Worker {
                             null, new Entry(purchase));
                 }
 
-                // Waiting time during worker produces Rocket
-                int waitingTime = randomGenerator.nextInt(
-                        UPPERBOUND - LOWERBOUND) + LOWERBOUND;
-                Thread.sleep(waitingTime);
                 Rocket producedRocket;
                 // Worker produces rocket
                 if (gotPurchase) {
@@ -377,9 +359,6 @@ public final class Worker {
                                         newCoordinationData()));
                     }
                 }
-            } catch (InterruptedException e) {
-                System.out.println("I'm going home.");
-                core.shutdown(true);
             } catch (MzsCoreException e) {
                 //e.printStackTrace();
                 LOGGER.error("Worker has s space problem");
