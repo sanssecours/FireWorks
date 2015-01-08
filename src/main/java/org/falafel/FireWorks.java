@@ -27,11 +27,8 @@ import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.Entry;
-import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
-import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.aspects.ContainerAspect;
 import org.mozartspaces.core.aspects.ContainerIPoint;
 import org.mozartspaces.core.aspects.SpaceAspect;
@@ -86,6 +83,8 @@ public class FireWorks extends Application {
     private static ContainerReference purchaseContainer;
     /** The container for storing the finished ordered rockets. */
     private static ContainerReference orderedRocketsContainer;
+    /** The container for starting and finishing the benchmark test. */
+    private static ContainerReference benchmarkContainer;
     /** The running id for the suppliers. */
     private static int supplierId = 1;
     /** The running id for the materials. */
@@ -629,8 +628,7 @@ public class FireWorks extends Application {
      */
     @FXML
     private void startBenchmark(final ActionEvent actionEvent) {
-        BenchmarkTest test = new
-                BenchmarkTest(mozartSpace.getConfig().getSpaceUri());
+        BenchmarkTest test = new BenchmarkTest(spaceURI);
         test.start();
     }
 
@@ -902,6 +900,12 @@ public class FireWorks extends Application {
                     null);
             capi.addContainerAspect(orderedRocketsContainerAspect,
                     orderedRocketsContainer, iPoints, null);
+            // create the container for the benchmark
+            benchmarkContainer = capi.createContainer(
+                    "benchmark",
+                    spaceURI,
+                    Container.UNBOUNDED,
+                    null);
         } catch (Exception e) {
             e.printStackTrace();
         }
