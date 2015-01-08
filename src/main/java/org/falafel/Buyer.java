@@ -212,6 +212,9 @@ public final class Buyer extends Application {
      */
     private static void initSpace() {
 
+        int maxPurchaseId = 0;
+        int purchaseId;
+
         Configuration configuration;
         ContainerReference rocketContainer;
         /* Save purchases using their id as key */
@@ -242,11 +245,14 @@ public final class Buyer extends Application {
             /* Move old purchases into GUI */
             for (Serializable purchase : spaceCapi.read(purchaseContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
-                oldPurchases.put(
-                        ((Purchase) purchase).getPurchaseId().intValue(),
-                        (Purchase) purchase);
+                purchaseId = ((Purchase) purchase).getPurchaseId().intValue();
 
+                oldPurchases.put(purchaseId, (Purchase) purchase);
+                if (purchaseId > maxPurchaseId) {
+                    maxPurchaseId = purchaseId;
+                }
             }
+            Purchase.setNextPurchaseId(maxPurchaseId + 1);
             rockets = spaceCapi.read(rocketContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
             for (Rocket rocket: rockets) {

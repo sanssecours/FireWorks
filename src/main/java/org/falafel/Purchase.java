@@ -97,6 +97,19 @@ public class Purchase implements Serializable {
     }
 
     /**
+     * Set the value of the next purchase id.
+     *
+     * This method can be used to start with an initial purchase id that is
+     * different from 0.
+     *
+     * @param purchaseId
+     *          The id that should be used for the next purchase.
+     */
+    public static void setNextPurchaseId(final int purchaseId) {
+        nextPurchaseId = purchaseId;
+    }
+
+    /**
      * Get the id of the purchase.
      *
      * @return The identifier for this purchase
