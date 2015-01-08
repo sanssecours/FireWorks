@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**
@@ -72,13 +72,13 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
         System.out.println("Shipping to buyer: "
                 + purchase.getBuyerId().intValue() + " purchase: "
                 + purchase.getPurchaseId().intValue() + " starts!");
-      /*  try {
+        try {
             buyerContainer = capi.lookupContainer("rockets",
                     buyerSpaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
         } catch (MzsCoreException e) {
             LOGGER.info("Can not find buyer space!");
             return;
-        }*/
+        }
         try {
             fireWorksContainer = capi.lookupContainer("orderedRockets",
                     fireWorksSpaceUri, MzsConstants.RequestTimeout.TRY_ONCE,
@@ -101,17 +101,15 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
             LOGGER.error("Can not get the rockets of the purchase!");
             return;
         }
-/*
+
         try {
-            for (int index = 1;
-                 index < rockets.size();
-                 index++) {
+            for (Rocket rocket : rockets) {
                 capi.write(buyerContainer, MzsConstants.RequestTimeout.TRY_ONCE,
-                        null, new Entry(rockets.get(index)));
+                        null, new Entry(rocket));
             }
         } catch (MzsCoreException e) {
                 LOGGER.error("Can't write to buyer space!");
-        }*/
+        }
         purchase.setStatusToShipped();
         FireWorks.updatePurchaseTable(purchase);
         core.shutdown(true);
