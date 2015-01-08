@@ -13,9 +13,11 @@ import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 
@@ -24,9 +26,6 @@ import static org.mozartspaces.capi3.Selector.COUNT_ALL;
  */
 public final class Logistic {
 
-    /** Specifies how long a logistic worker waits until he tries to get
-     *  new rockets after he was unable to get them the last time. */
-    private static final int WAIT_TIME_LOGISTIC_MS = 2000;
     /** Constant for how many rockets are in one package. */
     private static final int PACKAGE_SIZE = 5;
     /** Constant for how long the shutdown hook is waiting. */
@@ -113,8 +112,41 @@ public final class Logistic {
             return;
         }
 
+        ContainerReference benchmarkContainer;
+        try {
+            benchmarkContainer = capi.lookupContainer("benchmark", spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+        } catch (MzsCoreException e) {
+            LOGGER.error("Logistician can't find the benchmark container!");
+            return;
+        }
+        ArrayList<Serializable> entry = new ArrayList<>();
+        while (entry.isEmpty()) {
+            try {
+                entry = capi.read(benchmarkContainer,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            } catch (MzsCoreException e) {
+                LOGGER.error("Waiting for start");
+            }
+        }
 
+        LOGGER.error("Logistician " + packerId + ": Starts the Benchmark");
         while (!shutdown) {
+            entry.clear();
+            try {
+                entry = capi.read(benchmarkContainer,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE,
+                        null);
+            } catch (MzsCoreException e) {
+                LOGGER.error("Waiting for stop problem");
+            }
+            if (entry.isEmpty()) {
+                LOGGER.error("Logistician " + packerId
+                        + ": Benchmark stopped!");
+                shutdown = true;
+                break;
+            }
+
             try {
 
                 rocket = (Rocket) capi.take(rocketContainer,
@@ -182,13 +214,6 @@ public final class Logistic {
                 rocketsClassA.clear();
                 sendRocketsToContainer(rocketContainer, rocketsClassB);
                 rocketsClassB.clear();
-
-                try {
-                    Thread.sleep(WAIT_TIME_LOGISTIC_MS);
-                } catch (InterruptedException e) {
-                    LOGGER.error("I was interrupted while trying to sleep. "
-                            + "How rude!");
-                }
             } catch (MzsCoreException e) {
                 LOGGER.error("Logistician has problem with space!");
                 System.exit(1);
@@ -198,6 +223,7 @@ public final class Logistic {
         rocketsClassA.clear();
         sendRocketsToContainer(rocketContainer, rocketsClassB);
         rocketsClassB.clear();
+        System.exit(0);
     }
 
     /**
