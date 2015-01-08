@@ -253,6 +253,7 @@
                                     </VBox>
                                  </children>
                               </HBox>
+                              <Button layoutX="978.0" layoutY="29.0" mnemonicParsing="false" onAction="#startBenchmark" text="Benchmark" AnchorPane.rightAnchor="10.0" />
                            </children>
                         </AnchorPane>
                     </items>

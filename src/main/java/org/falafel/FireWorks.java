@@ -366,44 +366,19 @@ public class FireWorks extends Application {
 
         //CHECKSTYLE:OFF
         order.add(new SupplyOrder("Hulk", Casing.toString(), EffectColor.Blue,
-                50, 100));
+                1500, 100));
         order.add(new SupplyOrder("Iron Man", Wood.toString(), EffectColor.Blue,
-                50, 100));
+                1500, 100));
         order.add(new SupplyOrder("Captain America", Effect.toString(),
-                EffectColor.Blue, 50, 100));
+                EffectColor.Blue, 1500, 5));
         order.add(new SupplyOrder("Batman", Effect.toString(), EffectColor.Red,
-                50, 100));
+                1500, 5));
         order.add(new SupplyOrder("Thor", Effect.toString(), EffectColor.Green,
-                50, 100));
+                1500, 5));
         order.add(new SupplyOrder("Seaman", Propellant.toString(),
-                EffectColor.Green, 50, 100));
-        order.add(new SupplyOrder("Hawk", Propellant.toString(),
-                EffectColor.Red, 50, 100));
-
-        // Add a Purchase to the Container
-        //CHECKSTYLE:OFF
-        Purchase purchase = new Purchase(1, 1, 5, EffectColor.Red,
-                EffectColor.Green, EffectColor.Blue, URI.create("xvsm://localhost:9876"));
-        Purchase purchase2 = new Purchase(3, 1, 6, EffectColor.Red,
-                EffectColor.Green, EffectColor.Blue, URI.create("xvsm://localhost:9876"));
+                EffectColor.Green, 500, 100));
         //CHECKSTYLE:ON
-        RequestContext context = new RequestContext();
-        context.setProperty("newPurchase", 1);
 
-        try {
-        ContainerReference containerReference = capi.lookupContainer(
-                "purchase",
-                spaceURI,
-                MzsConstants.RequestTimeout.TRY_ONCE,
-                null, null, context);
-            capi.write(asList(new Entry(purchase)), containerReference,
-                    MzsConstants.RequestTimeout.TRY_ONCE, null, null, context);
-            capi.write(asList(new Entry(purchase2)), containerReference,
-                    MzsConstants.RequestTimeout.TRY_ONCE, null, null, context);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-        }
-        //CHECKSTYLE:ON
 
         supplyTable.setItems(order);
 
@@ -643,6 +618,20 @@ public class FireWorks extends Application {
         }
 
         System.out.println("No new order!");
+    }
+
+    /**
+     * Starts the benchmark test.
+     *
+     * @param actionEvent
+     *          The action event sent by JavaFx when the user interface
+     *          element for this method is invoked.
+     */
+    @FXML
+    private void startBenchmark(final ActionEvent actionEvent) {
+        BenchmarkTest test = new
+                BenchmarkTest(mozartSpace.getConfig().getSpaceUri());
+        test.start();
     }
 
     /**
