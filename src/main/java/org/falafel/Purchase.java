@@ -215,7 +215,8 @@ public class Purchase implements Serializable {
     public final String toString() {
         return "(PURCHASE " + purchaseId + " — Buyer: " + buyerId + " "
                 + buyerURI + " Effects: " + getEffectColors()
-                + " # Rockets: " + numberRockets + ")";
+                + " # Ordered rockets: " + numberRockets
+                + " # Finished Rockets: " + numberFinishedRockets + ")";
     }
 
     /**
