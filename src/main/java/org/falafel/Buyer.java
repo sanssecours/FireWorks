@@ -344,7 +344,7 @@ public final class Buyer extends Application {
             /* We need to set the purchase in the ObservableArrayList.
                If we just change the status of the purchase in the list, then
                the GUI will not show the updated value. */
-            for (int purchase = 0; purchaseId < purchased.size(); purchase++) {
+            for (int purchase = 0; purchase < purchased.size(); purchase++) {
                 if (purchased.get(purchase).getPurchaseId().intValue()
                         == purchaseId) {
                     purchaseToUpdateIndex = purchase;
