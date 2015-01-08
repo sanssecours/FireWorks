@@ -27,7 +27,6 @@ import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
-import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
@@ -380,13 +379,6 @@ public class FireWorks extends Application {
         order.add(new SupplyOrder("Hawk", Propellant.toString(),
                 EffectColor.Red, 50, 100));
 
-        // Add a Purchase to the Container
-        //CHECKSTYLE:OFF
-        Purchase purchase = new Purchase(1, 1, 5, EffectColor.Red,
-                EffectColor.Green, EffectColor.Blue, URI.create("xvsm://localhost:9876"));
-        Purchase purchase2 = new Purchase(3, 1, 6, EffectColor.Red,
-                EffectColor.Green, EffectColor.Blue, URI.create("xvsm://localhost:9876"));
-        //CHECKSTYLE:ON
         RequestContext context = new RequestContext();
         context.setProperty("newPurchase", 1);
 
@@ -396,10 +388,6 @@ public class FireWorks extends Application {
                 spaceURI,
                 MzsConstants.RequestTimeout.TRY_ONCE,
                 null, null, context);
-            capi.write(asList(new Entry(purchase)), containerReference,
-                    MzsConstants.RequestTimeout.TRY_ONCE, null, null, context);
-            capi.write(asList(new Entry(purchase2)), containerReference,
-                    MzsConstants.RequestTimeout.TRY_ONCE, null, null, context);
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
