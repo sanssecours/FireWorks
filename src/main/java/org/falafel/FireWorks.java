@@ -593,6 +593,28 @@ public class FireWorks extends Application {
     }
 
     /**
+     * Update the purchase in the GUI table.
+     *
+     * @param updatedPurchase
+     *          Purchase with the updated values to replace the old purchase
+     */
+    public static void updatePurchaseTable(final Purchase updatedPurchase) {
+        Platform.runLater(() -> {
+            for (int index = 0; index < purchases.size(); index++) {
+                Purchase purchase = purchases.get(index);
+                int buyerId = purchase.getBuyerId().intValue();
+                int purchaseId = purchase.getPurchaseId().intValue();
+                int newBuyerId = updatedPurchase.getBuyerId().intValue();
+                int newPurchaseId = updatedPurchase.getPurchaseId().intValue();
+                if (buyerId == newBuyerId && purchaseId == newPurchaseId) {
+                    purchases.set(index, updatedPurchase);
+                    break;
+                }
+            }
+        });
+    }
+
+    /**
      * Start suppliers to fill the containers with Material.
      *
      * @param event
