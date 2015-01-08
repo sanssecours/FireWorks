@@ -14,9 +14,12 @@ import org.mozartspaces.core.MzsTimeoutException;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -31,9 +34,6 @@ public final class QualityTester {
      * Constant for the transaction timeout time.
      */
     private static final int TRANSACTION_TIMEOUT = 3000;
-    /** Specifies how long a tester waits until he tries to get a new rocket
-     *  after he was unable to get one the last time. */
-    private static final int WAIT_TIME_TESTER_MS = 2000;
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
     /**
@@ -44,6 +44,7 @@ public final class QualityTester {
      * Get the Logger for the current class.
      */
     private static final Logger LOGGER = getLogger(QualityTester.class);
+    /** Constant for the minimum propellant to be class A. */
     private static final Integer MINIMAL_PROP_CLASS_A = 130;
     /** The mozart spaces core. */
     private static MzsCore core;
@@ -93,7 +94,41 @@ public final class QualityTester {
         capi = new Capi(core);
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
+        ContainerReference benchmarkContainer;
+        try {
+            benchmarkContainer = capi.lookupContainer("benchmark", spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+        } catch (MzsCoreException e) {
+            LOGGER.error("Tester can't find the benchmark container!");
+            return;
+        }
+        ArrayList<Serializable> entry = new ArrayList<>();
+        while (entry.isEmpty()) {
+            try {
+                entry = capi.read(benchmarkContainer,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            } catch (MzsCoreException e) {
+                LOGGER.error("Waiting for start");
+            }
+        }
+
+        LOGGER.error("Tester " + testerId + ": Starts the Benchmark");
+
         while (!shutdown) {
+            entry.clear();
+            try {
+                entry = capi.read(benchmarkContainer,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE,
+                        null);
+            } catch (MzsCoreException e) {
+                LOGGER.error("Waiting for stop problem");
+            }
+            if (entry.isEmpty()) {
+                LOGGER.error("Tester " + testerId + ": Benchmark stopped!");
+                shutdown = true;
+                break;
+            }
+
             try {
                 getRocketsTransaction = capi.createTransaction(
                         TRANSACTION_TIMEOUT, spaceUri);
@@ -149,12 +184,6 @@ public final class QualityTester {
                 capi.commitTransaction(getRocketsTransaction);
             } catch (MzsTimeoutException toe) {
                 LOGGER.debug("Can't finish in transaction time!");
-                try {
-                    Thread.sleep(WAIT_TIME_TESTER_MS);
-                } catch (InterruptedException e) {
-                    LOGGER.error("I was interrupted while trying to sleep. "
-                            + "How rude!");
-                }
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get a rocket!");
                 try {
@@ -163,17 +192,12 @@ public final class QualityTester {
                     LOGGER.error("Can't rollback transaction!");
                     System.exit(1);
                 }
-                try {
-                    Thread.sleep(WAIT_TIME_TESTER_MS);
-                } catch (InterruptedException e) {
-                    LOGGER.error("I was interrupted while trying to sleep. "
-                            + "How rude!");
-                }
             } catch (MzsCoreException e) {
                 LOGGER.error("Tester has problem with space!");
                 System.exit(1);
             }
         }
+        System.exit(0);
     }
 
     /**
