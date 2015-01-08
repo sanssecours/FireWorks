@@ -10,8 +10,6 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
-import org.mozartspaces.core.MzsTimeoutException;
-import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
@@ -30,10 +28,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class QualityTester {
 
-    /**
-     * Constant for the transaction timeout time.
-     */
-    private static final int TRANSACTION_TIMEOUT = 3000;
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
     /**
