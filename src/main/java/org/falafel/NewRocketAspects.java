@@ -7,8 +7,11 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
+import org.slf4j.Logger;
 
 import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *  This class implements various aspects involving Materials.
@@ -17,6 +20,13 @@ public class NewRocketAspects extends AbstractContainerAspect {
 
     /** The id for the next rocket. */
     private static Integer id = 1;
+    /** The counts how many rockets have been produced. */
+    private static int benchmarkCounter = 0;
+    /** Constant for how many rockets in the benchmark can be maximal produced.
+    */
+    private static final int MAX_NUMBER_BENCHMARK = 1500;
+     /** Get the Logger for the current class. */
+    private static final Logger LOGGER = getLogger(NewRocketAspects.class);
 
     /**
      * This aspect will be called after an entry is written to an container.
@@ -41,6 +51,7 @@ public class NewRocketAspects extends AbstractContainerAspect {
 
         List<Entry> entries = request.getEntries();
 
+        benchmarkCounter += 1;
 
         if (entries.get(0).getValue() instanceof Rocket) {
             for (Entry entry : entries) {
@@ -50,6 +61,9 @@ public class NewRocketAspects extends AbstractContainerAspect {
                 FireWorks.addNewRocketToTable(request.getContainer().getId(),
                         rocket);
             }
+        }
+        if (benchmarkCounter == MAX_NUMBER_BENCHMARK) {
+            LOGGER.error("1500 rockets produced by the Workers!!");
         }
         return AspectResult.OK;
     }
