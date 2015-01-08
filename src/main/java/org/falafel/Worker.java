@@ -127,7 +127,7 @@ public final class Worker {
             }
         }
 
-        LOGGER.error("Start the Benchmark");
+        LOGGER.error("Worker " + workerId + ": Starts the Benchmark");
         while (!shutdown) {
             try {
                 entry.clear();
@@ -139,7 +139,7 @@ public final class Worker {
                     LOGGER.error("Waiting for stop problem");
                 }
                 if (entry.isEmpty()) {
-                    LOGGER.error("Worker: Benchmark stopped!");
+                    LOGGER.error("Worker " + workerId + ": Benchmark stopped!");
                     shutdown = true;
                     break;
                 }
