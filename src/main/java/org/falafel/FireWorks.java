@@ -383,7 +383,7 @@ public class FireWorks extends Application {
         // Add a Purchase to the Container
         //CHECKSTYLE:OFF
         Purchase purchase = new Purchase(1, 10, EffectColor.Red,
-                EffectColor.Green, EffectColor.Blue, URI.create("bla"));
+                EffectColor.Green, EffectColor.Blue, URI.create("xvsm://localhost:9876"));
         //CHECKSTYLE:ON
         RequestContext context = new RequestContext();
         context.setProperty("newPurchase", 1);
