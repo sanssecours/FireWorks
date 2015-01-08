@@ -17,12 +17,15 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.CountNotMetException;
+import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.capi3.javanative.persistence.PersistenceContext;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.CapiUtil;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
+import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.RequestContext;
@@ -37,11 +40,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.falafel.EffectColor.Blue;
 import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
+import static org.falafel.Purchase.PurchaseStatus.Shipped;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.Container.UNBOUNDED;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
@@ -77,6 +82,8 @@ public final class Buyer extends Application {
     private static Capi spaceCapi;
     /** The container for the local purchases of this buyer. */
     private static ContainerReference purchaseContainer;
+    /** The container for all rockets already shipped to this buyer. */
+    private static ContainerReference rocketContainer;
 
     /** The data stored in the table for new purchases. */
     private static ObservableList<Purchase> purchases =
@@ -214,12 +221,16 @@ public final class Buyer extends Application {
 
         int maxPurchaseId = 0;
         int purchaseId;
+        int purchaseSize;
 
         Configuration configuration;
-        ContainerReference rocketContainer;
+        Rocket rocketTemplate;
         /* Save purchases using their id as key */
         Map<Integer, Purchase> oldPurchases = new HashMap<>();
+        ArrayList<Purchase> outstandingPurchases = new ArrayList<>();
         ArrayList<Rocket> rockets;
+        ArrayList<Rocket> rocketsFromFireWorksFactory = new ArrayList<>();
+        ArrayList<Entry> entries = new ArrayList<>();
 
         configuration = new Configuration();
         configuration.getPersistenceConfiguration().setPersistenceProfile(
@@ -234,15 +245,13 @@ public final class Buyer extends Application {
         spaceCapi = new Capi(space);
         fireWorksCapi = new Capi(fireWorksSpace);
 
+        /* Read local containers */
         try {
             purchaseContainer = CapiUtil.lookupOrCreateContainer("purchase",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
             rocketContainer = CapiUtil.lookupOrCreateContainer("rockets",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
-            spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
-                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
 
-            /* Move old purchases into GUI */
             for (Serializable purchase : spaceCapi.read(purchaseContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
                 purchaseId = ((Purchase) purchase).getPurchaseId().intValue();
@@ -255,15 +264,77 @@ public final class Buyer extends Application {
             Purchase.setNextPurchaseId(maxPurchaseId + 1);
             rockets = spaceCapi.read(rocketContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
-            for (Rocket rocket: rockets) {
+            for (Rocket rocket : rockets) {
                 oldPurchases.get(rocket.getPurchaseIdProperty().intValue()).
-                        setStatusToFinished();
+                        setStatusToShipped();
             }
-            purchased.addAll(oldPurchases.values());
+            outstandingPurchases.addAll(oldPurchases.values().stream().filter(
+                    purchase -> purchase.getStatus() != Shipped).collect(
+                    Collectors.toList()));
 
         } catch (MzsCoreException e) {
             e.printStackTrace();
+            System.exit(1);
         }
+
+        /* Read container from fireworks factory */
+        try {
+            ContainerReference container =
+                    fireWorksCapi.lookupContainer("orderedRockets",
+                            fireWorksSpaceURI, TRY_ONCE, null);
+
+            /* Try to get the rockets for each outstanding purchase. */
+            for (Purchase purchase : outstandingPurchases) {
+                purchaseId = purchase.getPurchaseId().intValue();
+                purchaseSize = purchase.getNumberRocketsProperty().intValue();
+
+                rocketTemplate = new Rocket(null, null, null, null, null, null,
+                        null, new Purchase(buyerId, purchaseId));
+                try {
+                    rockets = fireWorksCapi.read(container,
+                            asList(LindaCoordinator.newSelector(rocketTemplate,
+                                    COUNT_ALL)),
+                            MzsConstants.RequestTimeout.TRY_ONCE,
+                            null, null, null);
+                } catch (CountNotMetException e) {
+                    continue;
+                }
+                if (rockets.size() == purchaseSize) {
+                    rocketsFromFireWorksFactory.addAll(
+                            fireWorksCapi.take(container,
+                                    asList(LindaCoordinator.newSelector(
+                                            rocketTemplate,
+                                            COUNT_ALL)),
+                                    MzsConstants.RequestTimeout.TRY_ONCE,
+                                    null, null, null));
+                    oldPurchases.get(purchaseId).setStatusToFinished();
+                }
+            }
+        } catch (MzsCoreException e) {
+            LOGGER.error("Could not get rockets from the fireworks factory! "
+                    + "Most likely the fireworks factory is not online.");
+        }
+
+        /* Write rockets from fireworks factory into local container */
+        entries.addAll(rocketsFromFireWorksFactory.stream().map(
+                Entry::new).collect(Collectors.toList()));
+        try {
+            spaceCapi.write(entries, rocketContainer);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
+
+        /* Update GUI */
+        purchased.addAll(oldPurchases.values());
+
+        /* Add container aspect for fireworks factory */
+        try {
+            spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
+                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
+        } catch (MzsCoreException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /** Set the status of the given purchase to finished.
@@ -355,6 +426,10 @@ public final class Buyer extends Application {
         try {
             spaceCapi.destroyContainer(purchaseContainer, null);
             purchaseContainer = spaceCapi.createContainer("purchase",
+                    space.getConfig().getSpaceUri(), UNBOUNDED, null);
+
+            spaceCapi.destroyContainer(rocketContainer, null);
+            rocketContainer = spaceCapi.createContainer("rockets",
                     space.getConfig().getSpaceUri(), UNBOUNDED, null);
         } catch (MzsCoreException e) {
             e.printStackTrace();

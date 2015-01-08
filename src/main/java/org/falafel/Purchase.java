@@ -128,6 +128,24 @@ public class Purchase implements Serializable {
     }
 
     /**
+     * Create a new purchase with the given arguments.
+     *
+     * @param buyerId
+     *          The identifier of the buyer
+     * @param purchaseId
+     *          The identifier of the purchase
+     */
+    Purchase(final int buyerId, final int purchaseId) {
+        this.buyerId = buyerId;
+        this.purchaseId = purchaseId;
+        this.numberRockets = null;
+        this.numberFinishedRockets = null;
+        this.effectColors = null;
+        this.buyerURI = null;
+        status = null;
+    }
+
+    /**
      * Create a new purchase with default arguments.
      *
      * @param buyerId
@@ -338,5 +356,14 @@ public class Purchase implements Serializable {
      */
     public final StringProperty getStatusProperty() {
         return new SimpleStringProperty(status.toString());
+    }
+
+    /**
+     * Return the current status of the purchase.
+     *
+     * @return The status of the purchase.
+     */
+    public final PurchaseStatus getStatus() {
+        return status;
     }
 }
