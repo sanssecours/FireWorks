@@ -57,6 +57,7 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
 
         MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
         Capi capi = new Capi(core);
+        ArrayList<Rocket> rockets;
 
         Purchase purchaseTemplate = new Purchase(
                 purchase.getBuyerId().intValue(),
@@ -65,9 +66,13 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
         Rocket rocketTemplate = new Rocket(null, null, null, null, null,
                 null, null, purchaseTemplate);
 
-        ContainerReference buyerContainer = null;
-        ContainerReference fireWorksContainer = null;
-       /* try {
+        ContainerReference buyerContainer;
+        ContainerReference fireWorksContainer;
+
+        System.out.println("Shipping to buyer: "
+                + purchase.getBuyerId().intValue() + " purchase: "
+                + purchase.getPurchaseId().intValue() + " starts!");
+      /*  try {
             buyerContainer = capi.lookupContainer("rockets",
                     buyerSpaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
         } catch (MzsCoreException e) {
@@ -83,10 +88,9 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
                     + "FireWorks space!");
             return;
         }
-        System.out.println("Shipping to buyer starts!");
 
         try {
-            ArrayList<Rocket> rockets = capi.take(
+            rockets = capi.take(
                     fireWorksContainer,
                     asList(LindaCoordinator.newSelector(rocketTemplate,
                             COUNT_ALL)),
@@ -94,20 +98,22 @@ public class WriteFinishedPurchasesToBuyer extends Thread {
                     null, null, null);
             System.out.println(rockets);
         } catch (MzsCoreException e) {
-            e.printStackTrace();
+            LOGGER.error("Can not get the rockets of the purchase!");
+            return;
         }
 /*
         try {
             for (int index = 1;
-                 index < purchase.getNumberRocketsProperty().intValue();
+                 index < rockets.size();
                  index++) {
-                capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
-                        null, new Entry(purchase));
+                capi.write(buyerContainer, MzsConstants.RequestTimeout.TRY_ONCE,
+                        null, new Entry(rockets.get(index)));
             }
         } catch (MzsCoreException e) {
                 LOGGER.error("Can't write to buyer space!");
         }*/
-
+        purchase.setStatusToShipped();
+        FireWorks.updatePurchaseTable(purchase);
         core.shutdown(true);
     }
 }
