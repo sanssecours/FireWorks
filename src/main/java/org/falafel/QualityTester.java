@@ -72,7 +72,6 @@ public final class QualityTester {
 
         Capi capi;
         URI spaceUri;
-        TransactionReference getRocketsTransaction = null;
 
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
@@ -130,21 +129,13 @@ public final class QualityTester {
             }
 
             try {
-                getRocketsTransaction = capi.createTransaction(
-                        TRANSACTION_TIMEOUT, spaceUri);
-            } catch (MzsCoreException e) {
-                LOGGER.error("Can't create transaction!");
-                System.exit(1);
-            }
-
-            try {
                 container = capi.lookupContainer("createdRockets", spaceUri,
                         MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction);
+                        null);
                 rockets = capi.take(container,
                         AnyCoordinator.newSelector(1),
                         MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction);
+                        null);
 
                 rocket = rockets.get(0);
 
@@ -176,22 +167,12 @@ public final class QualityTester {
 
                 container = capi.lookupContainer("testedRockets", spaceUri,
                         MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction);
+                        null);
                 capi.write(container, MzsConstants.RequestTimeout.TRY_ONCE,
-                        getRocketsTransaction, new Entry(rocket,
+                        null, new Entry(rocket,
                                 FifoCoordinator.newCoordinationData()));
-
-                capi.commitTransaction(getRocketsTransaction);
-            } catch (MzsTimeoutException toe) {
-                LOGGER.debug("Can't finish in transaction time!");
             } catch (CountNotMetException e1) {
                 LOGGER.info("Could not get a rocket!");
-                try {
-                    capi.rollbackTransaction(getRocketsTransaction);
-                } catch (MzsCoreException e2) {
-                    LOGGER.error("Can't rollback transaction!");
-                    System.exit(1);
-                }
             } catch (MzsCoreException e) {
                 LOGGER.error("Tester has problem with space!");
                 System.exit(1);
