@@ -105,15 +105,6 @@ public class Supplier extends Thread {
                 newEntry = new Wood(materialId, orderSupplier, id);
             }
 
-            int waitingTime = randomGenerator.nextInt(
-                    UPPERBOUND - LOWERBOUND) + LOWERBOUND;
-            try {
-                Thread.sleep(waitingTime);
-            } catch (InterruptedException e) {
-                LOGGER.error("I was interrupted while trying to sleep. "
-                        + "How rude!");
-            }
-
             try {
                 supplyTransaction = capi.createTransaction(
                         TRANSACTIONTIMEOUT, spaceUri);
