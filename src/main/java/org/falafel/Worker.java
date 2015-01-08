@@ -7,6 +7,7 @@ import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
 import org.mozartspaces.core.Entry;
+import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.MzsTimeoutException;
@@ -14,6 +15,7 @@ import org.mozartspaces.core.RequestContext;
 import org.mozartspaces.core.TransactionReference;
 import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +24,9 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -99,13 +103,47 @@ public final class Worker {
         LOGGER.info("Worker " + workerId + " ready to work!");
 
         ContainerReference containerReference;
+        ContainerReference benchmarkContainer;
 
         core = DefaultMzsCore.newInstanceWithoutSpace();
         capi = new Capi(core);
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
+        try {
+            benchmarkContainer = capi.lookupContainer("benchmark", spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+        } catch (MzsCoreException e) {
+            LOGGER.error("Worker can't find the benchmark container!");
+            return;
+        }
+
+        ArrayList<Serializable> entry = new ArrayList<>();
+        while (entry.isEmpty()) {
+            try {
+                entry = capi.read(benchmarkContainer,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            } catch (MzsCoreException e) {
+                LOGGER.error("Waiting for start");
+            }
+        }
+
+        LOGGER.error("Start the Benchmark");
         while (!shutdown) {
             try {
+                entry.clear();
+                try {
+                    entry = capi.read(benchmarkContainer,
+                            AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE,
+                            null);
+                } catch (MzsCoreException e) {
+                    LOGGER.error("Waiting for stop problem");
+                }
+                if (entry.isEmpty()) {
+                    LOGGER.error("Worker: Benchmark stopped!");
+                    shutdown = true;
+                    break;
+                }
+
                 RequestContext context = new RequestContext();
                 Purchase purchase = null;
                 gotPurchase = false;
@@ -297,7 +335,8 @@ public final class Worker {
                     LOGGER.debug("Can't get materials in transaction time!");
                     continue;
                 } catch (MzsCoreException e) {
-                    LOGGER.info("Could not get all materials!");
+                    LOGGER.info("Worker " + workerId
+                            + ": Could not get all materials!");
                     try {
                         capi.rollbackTransaction(collectResourcesTransaction);
                         propellantsWithQuantity.clear();
@@ -365,7 +404,7 @@ public final class Worker {
                 System.exit(1);
             }
         }
-
+        System.exit(0);
     }
 
     /**
