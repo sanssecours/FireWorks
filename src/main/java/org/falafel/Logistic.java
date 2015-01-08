@@ -132,8 +132,7 @@ public final class Logistic {
                         } else {
                             capi.write(orderedRocketsContainer,
                                     MzsConstants.RequestTimeout.TRY_ONCE,
-                                    null, new Entry(rocket,
-                                            LindaCoordinator.newCoordinationData()));
+                                    null, new Entry(rocket));
                         }
                         break;
                     case B:
