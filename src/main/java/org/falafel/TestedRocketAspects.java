@@ -7,13 +7,23 @@ import org.mozartspaces.core.Entry;
 import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
+import org.slf4j.Logger;
 
 import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *  This class implements various aspects involving Materials.
  */
 public class TestedRocketAspects extends AbstractContainerAspect {
+    /** The counts how many rockets have been tested. */
+    private static int benchmarkCounter = 0;
+    /** Constant for how many rockets in the benchmark can be maximal tested.
+     */
+    private static final int MAX_NUMBER_BENCHMARK = 1500;
+    /** Get the Logger for the current class. */
+    private static final Logger LOGGER = getLogger(NewRocketAspects.class);
 
     /**
      * This aspect will be called after an entry is written to an container.
@@ -44,6 +54,11 @@ public class TestedRocketAspects extends AbstractContainerAspect {
                 FireWorks.updateOfARocketInRocketsTable(rocket);
             }
         }
+        benchmarkCounter += 1;
+        if (benchmarkCounter == MAX_NUMBER_BENCHMARK) {
+            LOGGER.error("1500 rockets tested by the Tester!!");
+        }
+
         return AspectResult.OK;
     }
 }
