@@ -44,7 +44,7 @@ public class BuyerRocketsDeliveredAspect extends AbstractContainerAspect {
         int purchaseId = rocket.getPurchase().getPurchaseId().intValue();
 
         if (!purchases.contains(purchaseId)) {
-            Buyer.setPurchaseStatusToFinished(purchaseId);
+            Buyer.setPurchaseStatusToShipped(purchaseId);
             purchases.add(purchaseId);
         }
 

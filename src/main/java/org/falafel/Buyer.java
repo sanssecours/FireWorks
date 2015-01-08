@@ -189,7 +189,9 @@ public final class Buyer extends Application {
 
         //CHECKSTYLE:OFF
         purchases.add(
-                new Purchase(buyerId, 10, Red, Green, Blue, buyerSpaceURI));
+                new Purchase(buyerId, 1, Red, Green, Blue, buyerSpaceURI));
+        purchases.add(
+                new Purchase(buyerId, 1, Green, Green, Green, buyerSpaceURI));
         //CHECKSTYLE:ON
 
         newPurchaseTableView.setItems(purchases);
@@ -238,6 +240,7 @@ public final class Buyer extends Application {
         ((TcpSocketConfiguration)
                 configuration.getTransportConfigurations().get(
                         "xvsm")).setReceiverPort(spacePort);
+        configuration.setSpaceUri(URI.create("xvsm://localhost:" + spacePort));
 
         fireWorksSpace = DefaultMzsCore.newInstanceWithoutSpace();
         space = DefaultMzsCore.newInstance(configuration);
@@ -251,6 +254,8 @@ public final class Buyer extends Application {
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
             rocketContainer = CapiUtil.lookupOrCreateContainer("rockets",
                     space.getConfig().getSpaceUri(), null, null, spaceCapi);
+            spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
+                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
 
             for (Serializable purchase : spaceCapi.read(purchaseContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
@@ -318,22 +323,16 @@ public final class Buyer extends Application {
         /* Write rockets from fireworks factory into local container */
         entries.addAll(rocketsFromFireWorksFactory.stream().map(
                 Entry::new).collect(Collectors.toList()));
-        try {
-            spaceCapi.write(entries, rocketContainer);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
+        if (!entries.isEmpty()) {
+            try {
+                spaceCapi.write(entries, rocketContainer);
+            } catch (MzsCoreException e) {
+                e.printStackTrace();
+            }
         }
 
         /* Update GUI */
         purchased.addAll(oldPurchases.values());
-
-        /* Add container aspect for fireworks factory */
-        try {
-            spaceCapi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
-                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
-        } catch (MzsCoreException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -342,13 +341,26 @@ public final class Buyer extends Application {
      *  @param purchaseId
      *          The id of the purchase for which the status should be set
      */
-    public static void setPurchaseStatusToFinished(final int purchaseId) {
+    public static void setPurchaseStatusToShipped(final int purchaseId) {
         Platform.runLater(() -> {
-            for (Purchase purchase : purchased) {
-                if (purchase.getPurchaseId().intValue() == purchaseId) {
-                    purchase.setStatusToFinished();
+            int purchaseToUpdateIndex = 0;
+            Purchase purchaseToUpdate = null;
+
+            /* We need to set the purchase in the ObservableArrayList.
+               If we just change the status of the purchase in the list, then
+               the GUI will not show the updated value. */
+            for (int purchase = 0; purchaseId < purchased.size(); purchase++) {
+                if (purchased.get(purchase).getPurchaseId().intValue()
+                        == purchaseId) {
+                    purchaseToUpdateIndex = purchase;
+                    purchaseToUpdate = purchased.get(purchase);
                     break;
                 }
+            }
+
+            if (purchaseToUpdate != null) {
+                purchaseToUpdate.setStatusToShipped();
+                purchased.set(purchaseToUpdateIndex, purchaseToUpdate);
             }
         });
     }
