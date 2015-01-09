@@ -33,6 +33,7 @@ import org.mozartspaces.core.config.Configuration;
 import org.mozartspaces.core.config.TcpSocketConfiguration;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
@@ -234,6 +235,10 @@ public final class Buyer extends Application {
         configuration = new Configuration();
         configuration.getPersistenceConfiguration().setPersistenceProfile(
                 PersistenceContext.TRANSACTIONAL_BERKELEY);
+        configuration.getPersistenceConfiguration().getPersistenceProperties().
+                setProperty("berkeley-location",
+                        System.getProperty("java.io.tmpdir") + File.separator
+                                + "xvsm" + spacePort);
         ((TcpSocketConfiguration)
                 configuration.getTransportConfigurations().get(
                         "xvsm")).setReceiverPort(spacePort);
