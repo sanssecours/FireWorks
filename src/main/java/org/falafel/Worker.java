@@ -1,6 +1,7 @@
 package org.falafel;
 
 import org.mozartspaces.capi3.AnyCoordinator;
+import org.mozartspaces.capi3.ContainerLockedException;
 import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
-import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
@@ -45,6 +45,9 @@ public final class Worker {
     private static final int UPPERQUANTITY = 145;
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
+    /** The time a worker waits after he could not lock the propellant
+     * container. */
+    private static final int RETRY_LOCK_TIME = 50;
 
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(Worker.class);
@@ -383,19 +386,42 @@ public final class Worker {
                 capi.write(container, RequestTimeout.TRY_ONCE, null,
                         new Entry(producedRocket));
 
-                // write the used propellant package back if it still contains
-                // propellant
-                container = capi.lookupContainer(
-                        MaterialType.Propellant.toString(),
-                        spaceUri,
-                        RequestTimeout.TRY_ONCE,
-                        null);
+                boolean locked = true;
+                while (locked) {
+                    try {
+                        // write the used propellant package back if it still
+                        // contains propellant
+                        container = capi.lookupContainer(
+                                MaterialType.Propellant.toString(),
+                                spaceUri,
+                                RequestTimeout.TRY_ONCE,
+                                null);
 
-                for (Propellant propellant : propellantsWithQuantity.keySet()) {
-                    if (propellant.getQuantity() > 0) {
-                        capi.write(container, RequestTimeout.TRY_ONCE, null,
-                                new Entry(propellant,
-                                        newCoordinationData()));
+                        TransactionReference transactionReference
+                                = capi.createTransaction(TRANSACTION_TIMEOUT,
+                                spaceUri);
+                        capi.lockContainer(container, transactionReference);
+                        for (Propellant propellant
+                                : propellantsWithQuantity.keySet()) {
+
+                            if (propellant.getQuantity() > 0) {
+                                capi.write(
+                                        new Entry(propellant,
+                                                LindaCoordinator.
+                                                        newCoordinationData()),
+                                        container,
+                                        TRY_ONCE, transactionReference);
+                            }
+                        }
+                        capi.commitTransaction(transactionReference);
+                        locked = false;
+                    } catch (ContainerLockedException e) {
+                        LOGGER.error("Could not lock container");
+                        try {
+                            Thread.sleep(RETRY_LOCK_TIME);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                 }
             } catch (MzsCoreException e) {
