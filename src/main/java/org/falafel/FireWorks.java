@@ -8,6 +8,7 @@ import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
+import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.aspects.ContainerAspect;
@@ -16,6 +17,7 @@ import org.mozartspaces.core.aspects.SpaceAspect;
 import org.mozartspaces.core.aspects.SpaceIPoint;
 import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +28,9 @@ import static org.falafel.MaterialType.Casing;
 import static org.falafel.MaterialType.Effect;
 import static org.falafel.MaterialType.Propellant;
 import static org.falafel.MaterialType.Wood;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.Container;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /* -- Class ---------------------------------------------------------------- */
@@ -298,11 +302,49 @@ public class FireWorks {
     public static void main(final String[] arguments) {
         initSpace();
         initializeTest();
+
+        ContainerReference cont;
+        ArrayList<Rocket> rockets;
+        ArrayList<Serializable> entries;
+        int materials = 0;
+
         try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
+
+            while (materials < 8000) {
+                materials = 0;
+                cont = capi.lookupContainer(Casing.toString(),
+                        spaceURI,
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                entries = capi.read(cont,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+                materials += entries.size();
+
+                cont = capi.lookupContainer(Wood.toString(),
+                        spaceURI,
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                entries = capi.read(cont,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+                materials += entries.size();
+
+                cont = capi.lookupContainer(Propellant.toString(),
+                        spaceURI,
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                entries = capi.read(cont,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+                materials += entries.size();
+
+                cont = capi.lookupContainer(Effect.toString(),
+                        spaceURI,
+                        MzsConstants.RequestTimeout.TRY_ONCE, null);
+                entries = capi.read(cont,
+                        AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+                materials += entries.size();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         startBenchmark();
     }
 
