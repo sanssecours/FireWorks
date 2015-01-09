@@ -42,15 +42,12 @@ public class NewRocketAspects extends AbstractContainerAspect {
         List<Entry> entries = request.getEntries();
 
 
-        if (entries.get(0).getValue() instanceof Rocket) {
-            for (Entry entry : entries) {
-                Rocket rocket = (Rocket) entry.getValue();
-                rocket.setNewRocketId(id);
-                id++;
-                FireWorks.addNewRocketToTable(request.getContainer().getId(),
-                        rocket);
-            }
-        }
+        Rocket rocket = (Rocket) entries.get(0).getValue();
+        rocket.setNewRocketId(id);
+        id++;
+        FireWorks.addNewRocketToTable(request.getContainer().getId(),
+                rocket);
+
         return AspectResult.OK;
     }
 }
