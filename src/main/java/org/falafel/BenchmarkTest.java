@@ -123,8 +123,8 @@ public class BenchmarkTest extends Thread {
                     MzsConstants.RequestTimeout.TRY_ONCE, null);
             rockets = capi.read(cont,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
-            System.out.println("Finished Rockets: " + rockets.size());
-            numberRockets += rockets.size();
+            System.out.println("Finished Rockets: " + 5 * rockets.size());
+            numberRockets += 5 * rockets.size();
 
             cont = capi.lookupContainer("orderedRockets",
                     spaceUri,
