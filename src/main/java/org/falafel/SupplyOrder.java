@@ -1,23 +1,20 @@
 package org.falafel;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 /**
  *  Class to save the orders.
  */
 public class SupplyOrder {
 
     /** Defines the name of the supplier. */
-    private StringProperty supplierName;
+    private String supplierName;
     /** Defines the type of the material the supplier provides. */
-    private StringProperty type;
+    private String type;
     /** Defines how much material the supplier provides. */
-    private StringProperty quantityStringProperty;
+    private String quantityStringProperty;
     /** Defines how much mof the supplied material is broken. */
-    private StringProperty qualityStringProperty;
+    private String qualityStringProperty;
     /** Defines which color the supplied material is. */
-    private StringProperty colorStringProperty;
+    private String colorStringProperty;
 
     /** The quantity of the current material. */
     private Integer quantity;
@@ -43,16 +40,14 @@ public class SupplyOrder {
     public SupplyOrder(final String name, final String type,
                        final EffectColor color, final int quantity,
                        final int quality) {
-        supplierName = new SimpleStringProperty(name);
-        this.type = new SimpleStringProperty(type);
+        supplierName = name;
+        this.type = type;
         this.quantity = quantity;
-        this.quantityStringProperty =
-                new SimpleStringProperty(Integer.toString(quantity));
+        this.quantityStringProperty = Integer.toString(quantity);
         this.quality = quality;
-        this.qualityStringProperty =
-                new SimpleStringProperty(Integer.toString(quality));
+        this.qualityStringProperty = Integer.toString(quality);
         this.color = color;
-        this.colorStringProperty = new SimpleStringProperty(color.toString());
+        this.colorStringProperty = color.toString();
     }
 
     //CHECKSTYLE:OFF
@@ -68,7 +63,7 @@ public class SupplyOrder {
      * @return A string containing the name of the supplier.
      */
     public final String getSupplierName() {
-        return supplierName.get();
+        return supplierName;
     }
 
     /**
@@ -78,26 +73,9 @@ public class SupplyOrder {
      *          The name which should be used for the supplier.
      */
     public final void setSupplierName(final String name) {
-        this.supplierName.set(name);
+        this.supplierName = name;
     }
 
-    /**
-     * Get the supplier name.
-     *
-     * @return Returns the string property of the supplier.
-     */
-    public final StringProperty supplierNameProperty() {
-        return supplierName;
-    }
-
-    /**
-     * Get the type of material provided by the supplier.
-     *
-     * @return The string property for the type
-     */
-    public final StringProperty typeProperty() {
-        return type;
-    }
 
     /**
      * Get the material for the order.
@@ -105,7 +83,7 @@ public class SupplyOrder {
      * @return A string containing the type of the supplied material
      */
     public final String getType() {
-        return type.get();
+        return type;
     }
 
     /**
@@ -115,18 +93,9 @@ public class SupplyOrder {
      *          The type which should be used for the order
      */
     public final void setType(final String type) {
-        this.type.set(type);
+        this.type = type;
     }
 
-    /**
-     * Get the quantity of the material in this order as string property.
-     *
-     * @return A string property representing the quantity of material for this
-     *         order.
-     */
-    public final StringProperty quantityProperty() {
-        return quantityStringProperty;
-    }
 
     /**
      * Get the quantity of the material in this order.
@@ -139,53 +108,12 @@ public class SupplyOrder {
     }
 
     /**
-     * Set the quantity of the material.
-     *
-     * @param quantity
-     *          The quantity of the specified material
-     */
-    public final void setQuantity(final int quantity) {
-        this.quantity = quantity;
-        this.quantityStringProperty.set(this.quantity.toString());
-    }
-
-    /**
-     * Get the quality of the material as string property.
-     *
-     * @return The quality of the material
-     */
-    public final StringProperty qualityProperty() {
-        return qualityStringProperty;
-    }
-
-    /**
-     * Get the color of the material as string property.
-     *
-     * @return The color of the material
-     */
-    public final StringProperty colorProperty() {
-        return colorStringProperty;
-    }
-
-    /**
      * Get the quality of the material.
      *
      * @return The quality of the current material
      */
     public final int getQuality() {
         return quality;
-    }
-
-    /**
-     * Set the quality of the material for the order.
-     *
-     * @param quality
-     *          The quality for the material
-     *
-     */
-    public final void setQuality(final int quality) {
-        this.quality = quality;
-        this.qualityStringProperty.set(this.quality.toString());
     }
 
     /**
@@ -203,7 +131,7 @@ public class SupplyOrder {
      * @param newColor the new color of the order
      */
     public final void setColor(final String newColor) {
-        colorStringProperty.set(newColor);
+        colorStringProperty = newColor;
         if (newColor.equals(EffectColor.Blue.toString())) {
             color = EffectColor.Blue;
         } else if (newColor.equals(EffectColor.Green.toString())) {
@@ -218,8 +146,8 @@ public class SupplyOrder {
      * @return A string representing the order
      */
     public final String toString() {
-        return "Order: Supplier: " +  supplierName.get() + " -- Type: "
-                + type.get() + " -- Color: " + getColor()
+        return "Order: Supplier: " +  supplierName + " -- Type: "
+                + type + " -- Color: " + getColor()
                 + " -- Quantity: " + getQuantity()
                 + " -- Quality: " + getQuality();
     }

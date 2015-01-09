@@ -40,14 +40,6 @@ public class BuyerRocketsDeliveredAspect extends AbstractContainerAspect {
                                         final Capi3AspectPort capi3,
                                         final int executionCount) {
 
-        Rocket rocket = (Rocket) request.getEntries().get(0).getValue();
-        int purchaseId = rocket.getPurchase().getPurchaseId().intValue();
-
-        if (!purchases.contains(purchaseId)) {
-            Buyer.setPurchaseStatusToFinished(purchaseId);
-            purchases.add(purchaseId);
-        }
-
         return AspectResult.OK;
     }
 }

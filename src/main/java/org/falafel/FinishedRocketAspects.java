@@ -48,11 +48,8 @@ public class FinishedRocketAspects extends AbstractContainerAspect {
 
         for (Rocket rocket : rockets) {
             rocket.setPackageId(id);
-            FireWorks.updateOfARocketInRocketsTable(rocket);
         }
         id++;
-
-        FireWorks.addRocketsToFinishedContainer(rockets);
 
         return AspectResult.OK;
     }

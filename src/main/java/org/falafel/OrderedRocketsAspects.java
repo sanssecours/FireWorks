@@ -8,8 +8,6 @@ import org.mozartspaces.core.aspects.AbstractContainerAspect;
 import org.mozartspaces.core.aspects.AspectResult;
 import org.mozartspaces.core.requests.WriteEntriesRequest;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,9 +15,6 @@ import java.util.List;
  */
 public class OrderedRocketsAspects extends AbstractContainerAspect {
 
-    /** The rocket counters for the different purchases. */
-    private static HashMap<Integer, HashMap<Integer, Purchase>> purchaseCounters
-            = new HashMap<>();
     /**
      * This aspect will be called after an entry is written to an container.
      *
@@ -42,40 +37,6 @@ public class OrderedRocketsAspects extends AbstractContainerAspect {
                                         final int executionCount) {
 
         List<Entry> entries = request.getEntries();
-        Rocket rocket = (Rocket) entries.get(0).getValue();
-        Purchase purchase = rocket.getPurchase();
-        Integer buyerId = purchase.getBuyerId().intValue();
-        Integer purchaseId = purchase.getPurchaseId().intValue();
-        // if new purchase order the
-        purchase.addFinishedRockets(1);
-
-        if (purchaseCounters.containsKey(buyerId)) {
-            if (purchaseCounters.get(buyerId).containsKey(purchaseId)) {
-                purchaseCounters.get(buyerId).get(
-                                            purchaseId).addFinishedRockets(1);
-            } else {
-                purchase.addFinishedRockets(1);
-                purchaseCounters.get(buyerId).put(purchaseId, purchase);
-            }
-        } else {
-            HashMap<Integer, Purchase> newBuyersPurchase = new HashMap<>();
-            newBuyersPurchase.put(purchaseId, purchase);
-            purchaseCounters.put(buyerId, newBuyersPurchase);
-        }
-
-        purchase =  purchaseCounters.get(buyerId).get(purchaseId);
-        if (purchase.getNumberFinishedRocketsProperty().intValue()
-                == purchase.getNumberRocketsProperty().intValue()) {
-            purchase.setStatusToFinished();
-            URI spaceUri = request.getContainer().getSpace();
-            WriteFinishedPurchasesToBuyer sender = new
-                    WriteFinishedPurchasesToBuyer(spaceUri, purchase);
-            sender.start();
-        }
-
-        FireWorks.updateOfARocketInRocketsTable(rocket);
-        FireWorks.updatePurchaseTable(purchaseCounters.get(buyerId).get(
-                purchaseId));
 
         return AspectResult.OK;
     }

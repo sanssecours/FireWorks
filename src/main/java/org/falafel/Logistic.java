@@ -3,7 +3,6 @@ package org.falafel;
 import org.mozartspaces.capi3.AnyCoordinator;
 import org.mozartspaces.capi3.CountNotMetException;
 import org.mozartspaces.capi3.FifoCoordinator;
-import org.mozartspaces.capi3.LindaCoordinator;
 import org.mozartspaces.core.Capi;
 import org.mozartspaces.core.ContainerReference;
 import org.mozartspaces.core.DefaultMzsCore;
@@ -17,9 +16,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 
 /**
  * This class represents a logistic worker.
@@ -61,7 +60,6 @@ public final class Logistic {
         ArrayList<Rocket> rocketsClassB = new ArrayList<>();
         Rocket rocket;
         URI spaceUri;
-        Purchase purchase;
 
         if (arguments.length != 2) {
             System.err.println("Usage: QualityTester <Id> <Space URI>!");
@@ -80,9 +78,6 @@ public final class Logistic {
         ContainerReference rocketContainer;
         ContainerReference trashContainer;
         ContainerReference shippingContainer;
-        ContainerReference orderedRocketsContainer;
-        ContainerReference purchaseContainer;
-
 
         core = DefaultMzsCore.newInstanceWithoutSpace();
         capi = new Capi(core);
@@ -96,14 +91,6 @@ public final class Logistic {
                     MzsConstants.RequestTimeout.TRY_ONCE,
                     null);
             shippingContainer = capi.lookupContainer("finishedRockets",
-                    spaceUri,
-                    MzsConstants.RequestTimeout.TRY_ONCE,
-                    null);
-            orderedRocketsContainer = capi.lookupContainer("orderedRockets",
-                    spaceUri,
-                    MzsConstants.RequestTimeout.TRY_ONCE,
-                    null);
-            purchaseContainer = capi.lookupContainer("purchase",
                     spaceUri,
                     MzsConstants.RequestTimeout.TRY_ONCE,
                     null);
@@ -155,28 +142,15 @@ public final class Logistic {
                         null).get(0);
 
                 rocket.setPackerId(packerId);
-                purchase = rocket.getPurchase();
 
                 switch (rocket.getTestResult()) {
                     case A:
-                        if (purchase == null) {
-                            rocketsClassA.add(rocket);
-                        } else {
-                            capi.write(orderedRocketsContainer,
-                                    MzsConstants.RequestTimeout.TRY_ONCE,
-                                    null, new Entry(rocket));
-                        }
+                        rocketsClassA.add(rocket);
                         break;
                     case B:
-                        if (purchase != null) {
-                            rocket.setPurchase(null);
-                        }
                         rocketsClassB.add(rocket);
                         break;
                     case Bad:
-                        if (purchase != null) {
-                            rocket.setPurchase(null);
-                        }
                         capi.write(trashContainer,
                                 MzsConstants.RequestTimeout.TRY_ONCE,
                                 null, new Entry(rocket));
@@ -187,20 +161,14 @@ public final class Logistic {
                         System.exit(1);
                 }
 
-                if (rocket.getPurchase() == null && purchase != null) {
-                    capi.write(purchaseContainer,
-                            MzsConstants.RequestTimeout.TRY_ONCE,
-                            null, new Entry(purchase));
-                }
-
-                if (rocketsClassA.size() == PACKAGE_SIZE) {
+                if (rocketsClassA.size() >= PACKAGE_SIZE) {
                     capi.write(shippingContainer,
                             MzsConstants.RequestTimeout.TRY_ONCE,
                             null, new Entry(rocketsClassA,
                                     FifoCoordinator.newCoordinationData()));
                     rocketsClassA.clear();
                 }
-                if (rocketsClassB.size() == PACKAGE_SIZE) {
+                if (rocketsClassB.size() >= PACKAGE_SIZE) {
                     capi.write(shippingContainer,
                             MzsConstants.RequestTimeout.TRY_ONCE,
                             null, new Entry(rocketsClassB,

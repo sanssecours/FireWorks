@@ -10,9 +10,17 @@ import org.mozartspaces.core.MzsCore;
 import org.mozartspaces.core.MzsCoreException;
 import org.slf4j.Logger;
 
+import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 
+import static org.falafel.MaterialType.Casing;
+import static org.mozartspaces.capi3.Selector.COUNT_ALL;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.falafel.MaterialType.Effect;
+import static org.falafel.MaterialType.Propellant;
+import static org.falafel.MaterialType.Wood;
 
 /**
  * Thread to control the benchmark test.
@@ -76,5 +84,88 @@ public class BenchmarkTest extends Thread {
         }
 
         LOGGER.error("End of the Benchmark!");
+
+        ContainerReference cont;
+        ArrayList<Rocket> rockets;
+        ArrayList<Serializable> entries;
+
+        int numberRockets = 0;
+
+        try {
+            Thread.sleep(10000);
+
+            cont = capi.lookupContainer("createdRockets",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            rockets = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Created Rockets: " + rockets.size());
+            numberRockets += rockets.size();
+
+            cont = capi.lookupContainer("testedRockets",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            rockets = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Tested Rockets: " + rockets.size());
+            numberRockets += rockets.size();
+
+            cont = capi.lookupContainer("trashedRockets",
+                   spaceUri,
+                   MzsConstants.RequestTimeout.TRY_ONCE, null);
+            rockets = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Trashed Rockets: " + rockets.size());
+            numberRockets += rockets.size();
+
+            cont = capi.lookupContainer("finishedRockets",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            rockets = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Finished Rockets: " + rockets.size());
+            numberRockets += rockets.size();
+
+            cont = capi.lookupContainer("orderedRockets",
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            rockets = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Ordered Rockets: " + rockets.size());
+            numberRockets += rockets.size();
+
+            System.out.println("All rockets: " + numberRockets);
+
+            cont = capi.lookupContainer(Casing.toString(),
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            entries = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Casings: " + entries.size());
+
+            cont = capi.lookupContainer(Wood.toString(),
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            entries = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Wood: " + entries.size());
+
+            cont = capi.lookupContainer(Propellant.toString(),
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            entries = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Propellants: " + entries.size());
+
+            cont = capi.lookupContainer(Effect.toString(),
+                    spaceUri,
+                    MzsConstants.RequestTimeout.TRY_ONCE, null);
+            entries = capi.read(cont,
+                    AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
+            System.out.println("Effects: " + entries.size());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

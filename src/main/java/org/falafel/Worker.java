@@ -18,12 +18,10 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
-import static org.mozartspaces.capi3.LindaCoordinator.newCoordinationData;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
@@ -145,7 +143,6 @@ public final class Worker {
                 }
 
                 RequestContext context = new RequestContext();
-                Purchase purchase = null;
                 gotPurchase = false;
 
                 try {
@@ -157,61 +154,12 @@ public final class Worker {
                 }
 
                 try {
-                    containerReference = capi.lookupContainer(
-                            "purchase",
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-                    purchase = (Purchase) capi.take(containerReference,
-                            null,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context).get(0);
-                    gotPurchase = true;
-                } catch (MzsTimeoutException toe) {
-                    LOGGER.debug("Can't finish in transaction time!");
-                } catch (CountNotMetException e1) {
-                    LOGGER.info("No purchase order, create random rocket!");
-                    gotPurchase = false;
-                } catch (MzsCoreException e) {
-                    LOGGER.error("Worker has problem with space!");
-                    System.exit(1);
-                }
-
-
-                try {
                     effects.clear();
                     containerReference = capi.lookupContainer(
                             MaterialType.Effect.toString(), spaceUri,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context);
 
-                    if (gotPurchase) {
-                        Collection<EffectColor> colors =
-                                purchase.getEffectColors();
-                        Effect effect;
-                        for (EffectColor color : colors) {
-                            Effect lindaEffectColorTemplate =
-                                    new Effect(null, null, null, null,
-                                    color);
-                            try {
-                                effect = (Effect) capi.take(
-                                        containerReference,
-                                        asList(
-                                                LindaCoordinator.newSelector(
-                                                        lindaEffectColorTemplate
-                                                )),
-                                        RequestTimeout.TRY_ONCE,
-                                        collectResourcesTransaction,
-                                        null, context).get(0);
-                                effects.add(effect);
-                            } catch (CountNotMetException e) {
-                                LOGGER.info("Not enough effect charges of "
-                                        + "color: " + color.toString());
-                                gotPurchase = false;
-                                break;
-                            }
-                        }
-                    }
                     // if not enough effect charges of the colors needed for the
                     // purchase are available, make a new random rocket by
                     // filling the missing effect charges with random colors
@@ -347,24 +295,12 @@ public final class Worker {
                     }
                 }
 
-                // if we got a purchase but created a Random rocket we write the
-                // purchase back in the container
-                if (!gotPurchase && purchase != null) {
-                    containerReference = capi.lookupContainer(
-                            "purchase",
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            null);
-                    capi.write(containerReference, RequestTimeout.TRY_ONCE,
-                            null, new Entry(purchase));
-                }
-
                 Rocket producedRocket;
                 // Worker produces rocket
                 if (gotPurchase) {
                     producedRocket = new Rocket(1, wood, casing, effects,
                             propellantsWithQuantity, propellantQuantity,
-                            workerId, purchase);
+                            workerId);
                 } else {
                     producedRocket = new Rocket(1, wood, casing, effects,
                             propellantsWithQuantity, propellantQuantity,
@@ -394,8 +330,7 @@ public final class Worker {
                 for (Propellant propellant : propellantsWithQuantity.keySet()) {
                     if (propellant.getQuantity() > 0) {
                         capi.write(container, RequestTimeout.TRY_ONCE, null,
-                                new Entry(propellant,
-                                        newCoordinationData()));
+                                new Entry(propellant));
                     }
                 }
             } catch (MzsCoreException e) {

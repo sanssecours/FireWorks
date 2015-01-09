@@ -1,17 +1,10 @@
 package org.falafel;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import org.mozartspaces.capi3.Index;
 import org.mozartspaces.capi3.Queryable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeSet;
 
 /**
  * .
@@ -45,8 +38,6 @@ public class Rocket implements Serializable {
     /** This value specifies if this rocket is defect or not. */
     //private Boolean testResult = false;
     /** The id of the purchase order. */
-    @Index
-    private Purchase purchase = null;
     /** The class of the rocket. */
     private QualityClass qualityClass = QualityClass.NotSet;
 
@@ -84,190 +75,6 @@ public class Rocket implements Serializable {
         this.workerId = workerId;
     }
 
-    /**
-     * Create a new rocket with the given arguments.
-     *
-     * @param rocketId
-     *          The identifier for the rocket
-     * @param wood
-     *          The wood used to construct the new rocket
-     * @param casing
-     *          The casing used to construct the new rocket
-     * @param effects
-     *          A list of effects used to create the new rocket
-     * @param propellants
-     *          The propellants used to create the new rocket
-     * @param propellantQuantity
-     *          The amount of propellant contained in the new rocket
-     * @param workerId
-     *          The id of the worker that created the new rocket
-     * @param purchase
-     *          The purchase for which the rockets is produced
-     */
-    public Rocket(final Integer rocketId,
-                  final Wood wood,
-                  final Casing casing,
-                  final ArrayList<Effect> effects,
-                  final HashMap<Propellant, Integer> propellants,
-                  final Integer propellantQuantity,
-                  final Integer workerId,
-                  final Purchase purchase) {
-        this(rocketId, wood, casing, effects, propellants, propellantQuantity,
-                workerId);
-        this.purchase = purchase;
-    }
-    /**
-     * Returns the id of the rocket.
-     *
-     * @return Returns the ids of the rocket as IntegerProperty.
-     */
-    public final IntegerProperty getIdProperty() {
-        return new SimpleIntegerProperty(id);
-    }
-    /**
-     * Returns the id of the package in which the rocket is placed.
-     *
-     * @return Returns the ids of the package as IntegerProperty.
-     */
-    public final IntegerProperty getPackageIdProperty() {
-        return new SimpleIntegerProperty(packageId);
-    }
-    /**
-     * Returns the id of the built in casing.
-     *
-     * @return Returns the id of the casing as a IntegerProperty.
-     */
-    public final IntegerProperty getCasingIdProperty() {
-        return new SimpleIntegerProperty(casing.getID());
-    }
-    /**
-     * Returns the id of the built in packages as a string containing the used
-     * ids.
-     *
-     * @return Returns the ids of the used propellant packages as
-     *          StringProperty.
-     */
-    public final StringProperty getPropellantPackageIdProperty() {
-        ArrayList<String> returnString = new ArrayList<>();
-        for (Propellant propellant : propellants.keySet()) {
-            returnString.add(Integer.toString(propellant.getID()));
-            returnString.add(Integer.toString(propellants.get(propellant)));
-        }
-        return new SimpleStringProperty(returnString.toString());
-    }
-    /**
-     * Returns the id of the built in wood.
-     *
-     * @return Returns the IntegerProperty of the built in wood.
-     */
-    public final IntegerProperty getWoodIdProperty() {
-        return new SimpleIntegerProperty(wood.getID());
-    }
-    /**
-     * Returns the id of the built in effects as a string containing the used
-     * ids.
-     *
-     * @return Returns the ids of the used effects as StringProperty.
-     */
-    public final StringProperty getEffectIdProperty() {
-        ArrayList<String> returnString = new ArrayList<>();
-        for (Effect effect : effects) {
-            returnString.add(Integer.toString(effect.getID()));
-            returnString.add(effect.getColor().toString());
-            if (testerId == 0) {
-                returnString.add("not tested");
-            } else if (effect.getStatus()) {
-                returnString.add("defect");
-            } else {
-                returnString.add("ok");
-            }
-        }
-        return new SimpleStringProperty(returnString.toString());
-    }
-    /**
-     * Returns the quantity used in the rocket.
-     *
-     * @return Returns the propellant quantity as IntegerProperty.
-     */
-    public final IntegerProperty getPropellantQuantityProperty() {
-        return new SimpleIntegerProperty(propellantQuantity);
-    }
-    /**
-     * Returns the the result of the quality test.
-     *
-     * @return Returns the test result of the quality test as StringProperty.
-     */
-    public final StringProperty getTestResultProperty() {
-        return new SimpleStringProperty(qualityClass.toString());
-    }
-    /**
-     * Returns the the id of the worker who built the rocket.
-     *
-     * @return Returns the worker id as IntegerProperty.
-     */
-    public final IntegerProperty getWorkerIdProperty() {
-        return new SimpleIntegerProperty(workerId);
-    }
-    /**
-     * Returns the the id of the quality tester who tested the rocket.
-     *
-     * @return Returns the tester id as IntegerProperty.
-     */
-    public final IntegerProperty getTesterIdProperty() {
-        return new SimpleIntegerProperty(testerId);
-    }
-    /**
-     * Returns the the id of the logistician who packed up the rocket.
-     *
-     * @return Returns the logistician id as IntegerProperty.
-     */
-    public final IntegerProperty getPackerIdProperty() {
-        return new SimpleIntegerProperty(packerId);
-    }
-    /**
-     * Returns the the id of the supplier who delivered the used wood.
-     *
-     * @return Returns the supplier of the wood id as IntegerProperty.
-     */
-    public final IntegerProperty getSupplierWoodIdProperty() {
-        return new SimpleIntegerProperty(wood.getSupplierId());
-    }
-    /**
-     * Returns the the id of the supplier who delivered the used casing.
-     *
-     * @return Returns the supplier of the casing id as IntegerProperty.
-     */
-    public final IntegerProperty getSupplierCasingIdProperty() {
-        return new SimpleIntegerProperty(casing.getSupplierId());
-    }
-    /**
-     * Returns the the id of the suppliers who delivered the used propellant
-     * packages.
-     *
-     * @return Returns the suppliers of the propellant charges ids as
-     *          StringProperty.
-     */
-    public final StringProperty getSupplierPropellantIdProperty() {
-        HashSet<String> returnString = new HashSet<>();
-        for (Propellant propellant : propellants.keySet()) {
-            returnString.add(Integer.toString(propellant.getSupplierId()));
-        }
-        return new SimpleStringProperty(returnString.toString());
-    }
-    /**
-     * Returns the the id of the suppliers who delivered the used effect charges
-     * packages.
-     *
-     * @return Returns the suppliers of the effect charges ids as
-     * StringProperty.
-     */
-    public final StringProperty getSupplierEffectIdProperty() {
-        TreeSet<String> returnString = new TreeSet<>();
-        for (Effect effect : effects) {
-            returnString.add(Integer.toString(effect.getSupplierId()));
-        }
-        return new SimpleStringProperty(returnString.toString());
-    }
     /**
      * Set the id of the Rocket.
      *
@@ -349,54 +156,6 @@ public class Rocket implements Serializable {
      */
     public final void setPackageId(final Integer id) {
         packageId = id;
-    }
-
-    /**
-     * Get the IntegerProperty of the purchase order or 0 if its a random
-     * rocket.
-     *
-     * @return purchase id if the rocket is part of a purchase
-     */
-    public final IntegerProperty getPurchaseIdProperty() {
-        if (purchase == null) {
-            return new SimpleIntegerProperty(0);
-        } else {
-            return purchase.getPurchaseId();
-
-        }
-    }
-    /**
-     * Get the IntegerProperty of the purchase order or 0 if its a random
-     * rocket.
-     *
-     * @return purchase id if the rocket is part of a purchase
-     */
-    public final IntegerProperty getPurchaseBuyerIdProperty() {
-        if (purchase == null) {
-            return new SimpleIntegerProperty(0);
-        } else {
-            return purchase.getBuyerId();
-
-        }
-    }
-
-    /**
-     * Get the purchase of the rocket.
-     *
-     * @return the purchase or null if the rocket was not built for a purchase
-     */
-    public final Purchase getPurchase() {
-        return purchase;
-    }
-
-    /**
-     * Set the purchase of the rocket.
-     *
-     * @param purchase
-     *          the new purchase of the rocket.
-     */
-    public final void setPurchase(final Purchase purchase) {
-        this.purchase = purchase;
     }
 
     /**

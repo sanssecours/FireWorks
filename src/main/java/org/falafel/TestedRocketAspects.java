@@ -38,12 +38,7 @@ public class TestedRocketAspects extends AbstractContainerAspect {
 
         List<Entry> entries = request.getEntries();
 
-        if (entries.get(0).getValue() instanceof Rocket) {
-            for (Entry entry : entries) {
-                Rocket rocket = (Rocket) entry.getValue();
-                FireWorks.updateOfARocketInRocketsTable(rocket);
-            }
-        }
+
         return AspectResult.OK;
     }
 }

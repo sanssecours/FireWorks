@@ -53,15 +53,13 @@ public class NewRocketAspects extends AbstractContainerAspect {
 
         benchmarkCounter += 1;
 
-        if (entries.get(0).getValue() instanceof Rocket) {
-            for (Entry entry : entries) {
-                Rocket rocket = (Rocket) entry.getValue();
+//        if (entries.get(0).getValue() instanceof Rocket) {
+//            for (Entry entry : entries) {
+                Rocket rocket = (Rocket) entries.get(0).getValue();
                 rocket.setNewRocketId(id);
                 id++;
-                FireWorks.addNewRocketToTable(request.getContainer().getId(),
-                        rocket);
-            }
-        }
+//            }
+//        }
         if (benchmarkCounter == MAX_NUMBER_BENCHMARK) {
             LOGGER.error("1500 rockets produced by the Workers!!");
         }
