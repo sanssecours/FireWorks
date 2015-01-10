@@ -275,7 +275,8 @@ public class Purchase implements Serializable {
         return "(PURCHASE " + purchaseId + " — Buyer: " + buyerId + " "
                 + buyerURI + " Effects: " + getEffectColors()
                 + " # Ordered rockets: " + numberRockets
-                + " # Finished Rockets: " + numberFinishedRockets + ")";
+                + " # Finished Rockets: " + numberFinishedRockets
+                + " Status: " + status + ")";
     }
 
     /**
