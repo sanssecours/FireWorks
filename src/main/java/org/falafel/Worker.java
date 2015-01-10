@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
@@ -26,6 +27,7 @@ import java.util.Random;
 import static java.util.Arrays.asList;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout;
+import static org.mozartspaces.core.MzsConstants.RequestTimeout.DEFAULT;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -45,16 +47,11 @@ public final class Worker {
     private static final int UPPERQUANTITY = 145;
     /** Constant for how long the shutdown hook is waiting. */
     private static final int WAIT_TIME_TO_SHUTDOWN = 5000;
-    /** The time a worker waits after he could not lock the propellant
-     * container. */
-    private static final int RETRY_LOCK_TIME = 50;
 
     /** Get the Logger for the current class. */
     private static final Logger LOGGER = getLogger(Worker.class);
     /** How many effect charges are needed to build a rocket. */
     private static final int NUMBER_EFFECTS_NEEDED = 3;
-    /** The mozart spaces core. */
-    private static MzsCore core;
     /** Flag to tell if the program is shutdown. */
     private static boolean shutdown = false;
 
@@ -75,6 +72,8 @@ public final class Worker {
         boolean gotPurchase;
         Random randomGenerator = new Random();
         int propellantQuantity = 0;
+        /** The mozart spaces core. */
+        MzsCore core;
 
         Propellant lindaTemplateClosed = new Propellant(null, null, null,
                 Propellant.CLOSED);
@@ -105,16 +104,50 @@ public final class Worker {
 
         LOGGER.info("Worker " + workerId + " ready to work!");
 
-        ContainerReference containerReference;
+        ContainerReference purchaseReference;
+        ContainerReference casingContainer;
+        ContainerReference effectContainer;
+        ContainerReference propellantContainer;
+        ContainerReference woodContainer;
         ContainerReference benchmarkContainer;
+        ContainerReference rocketContainer;
 
-        core = DefaultMzsCore.newInstanceWithoutSpace();
+        core = DefaultMzsCore.newInstance(0);
         capi = new Capi(core);
+
         LOGGER.info("Space URI: " + core.getConfig().getSpaceUri());
 
         try {
             benchmarkContainer = capi.lookupContainer("benchmark", spaceUri,
                     MzsConstants.RequestTimeout.TRY_ONCE, null);
+            casingContainer = capi.lookupContainer(
+                    MaterialType.Casing.toString(),
+                    spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null, null, null);
+            effectContainer = capi.lookupContainer(
+                    MaterialType.Effect.toString(), spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null, null, null);
+            propellantContainer = capi.lookupContainer(
+                    MaterialType.Propellant.toString(),
+                    spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null, null, null);
+            woodContainer = capi.lookupContainer(
+                    MaterialType.Wood.toString(), spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null, null, null);
+            purchaseReference = capi.lookupContainer(
+                    "purchase",
+                    spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null);
+            rocketContainer = capi.lookupContainer(
+                    "createdRockets",
+                    spaceUri,
+                    RequestTimeout.TRY_ONCE,
+                    null);
         } catch (MzsCoreException e) {
             LOGGER.error("Worker can't find the benchmark container!");
             return;
@@ -160,12 +193,7 @@ public final class Worker {
                 }
 
                 try {
-                    containerReference = capi.lookupContainer(
-                            "purchase",
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-                    purchase = (Purchase) capi.take(containerReference,
+                    purchase = (Purchase) capi.take(purchaseReference,
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
@@ -183,10 +211,7 @@ public final class Worker {
 
                 try {
                     effects.clear();
-                    containerReference = capi.lookupContainer(
-                            MaterialType.Effect.toString(), spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
+
 
                     if (gotPurchase) {
                         Collection<EffectColor> colors =
@@ -195,10 +220,10 @@ public final class Worker {
                         for (EffectColor color : colors) {
                             Effect lindaEffectColorTemplate =
                                     new Effect(null, null, null, null,
-                                    color);
+                                            color);
                             try {
                                 effect = (Effect) capi.take(
-                                        containerReference,
+                                        effectContainer,
                                         asList(
                                                 LindaCoordinator.newSelector(
                                                         lindaEffectColorTemplate
@@ -222,7 +247,7 @@ public final class Worker {
                         int missingEffects = NUMBER_EFFECTS_NEEDED
                                 - effects.size();
                         ArrayList<Effect> tempEffects;
-                        tempEffects = capi.take(containerReference,
+                        tempEffects = capi.take(effectContainer,
                                 asList(AnyCoordinator.newSelector(
                                         missingEffects)),
                                 RequestTimeout.TRY_ONCE,
@@ -234,30 +259,18 @@ public final class Worker {
                     context.setProperty("color2", effects.get(1).getColor());
                     context.setProperty("color3", effects.get(2).getColor());
 
-                    containerReference = capi.lookupContainer(
-                            MaterialType.Casing.toString(),
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-                    casing = (Casing) capi.take(containerReference,
+
+                    casing = (Casing) capi.take(casingContainer,
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
 
-                    containerReference = capi.lookupContainer(
-                            MaterialType.Wood.toString(), spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
-                    wood = (Wood) capi.take(containerReference,
+
+                    wood = (Wood) capi.take(woodContainer,
                             null,
                             RequestTimeout.TRY_ONCE,
                             collectResourcesTransaction, null, context).get(0);
 
-                    containerReference = capi.lookupContainer(
-                            MaterialType.Propellant.toString(),
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            collectResourcesTransaction, null, context);
 
                     propellantQuantity = randomGenerator.nextInt(
                             UPPERQUANTITY - LOWERQUANTITY) + LOWERQUANTITY;
@@ -266,14 +279,14 @@ public final class Worker {
                     int takenOpenPropellant = 0;
                     int quantity = 0;
                     int missingQuantity = propellantQuantity;
-                    propellantsWithQuantity  = new HashMap<>();
+                    propellantsWithQuantity = new HashMap<>();
                     while (quantity < propellantQuantity) {
                         try {
                             Propellant propellant = (Propellant) capi.take(
-                                    containerReference,
+                                    propellantContainer,
                                     asList(LindaCoordinator.newSelector(
                                             lindaTemplateOpened)),
-                                    RequestTimeout.TRY_ONCE,
+                                    RequestTimeout.ZERO,
                                     collectResourcesTransaction, null,
                                     context).get(0);
 
@@ -303,10 +316,10 @@ public final class Worker {
                         } catch (CountNotMetException e) {
                             // No open propellant available
                             Propellant propellant = (Propellant) capi.take(
-                                    containerReference,
+                                    propellantContainer,
                                     asList(LindaCoordinator.newSelector(
                                             lindaTemplateClosed)),
-                                    RequestTimeout.TRY_ONCE,
+                                    RequestTimeout.ZERO,
                                     collectResourcesTransaction,
                                     null,
                                     context).get(0);
@@ -328,8 +341,8 @@ public final class Worker {
                             takenOpenPropellant);
 
                     context.setProperty("gotMaterial", true);
-                    capi.commitTransaction(
-                            collectResourcesTransaction, context);
+                    capi.commitTransaction(collectResourcesTransaction,
+                            context);
                     LOGGER.info("Took the following Items: " + casing
                             + " " + effects + " "
                             + wood + " "
@@ -353,12 +366,7 @@ public final class Worker {
                 // if we got a purchase but created a Random rocket we write the
                 // purchase back in the container
                 if (!gotPurchase && purchase != null) {
-                    containerReference = capi.lookupContainer(
-                            "purchase",
-                            spaceUri,
-                            RequestTimeout.TRY_ONCE,
-                            null);
-                    capi.write(containerReference, RequestTimeout.TRY_ONCE,
+                    capi.write(purchaseReference, RequestTimeout.TRY_ONCE,
                             null, new Entry(purchase));
                 }
 
@@ -377,59 +385,27 @@ public final class Worker {
                 wood = null;
 
                 // Worker writes the new rocket in the container
-                ContainerReference container;
-                container = capi.lookupContainer(
-                        "createdRockets",
-                        spaceUri,
-                        RequestTimeout.TRY_ONCE,
-                        null);
-                capi.write(container, RequestTimeout.TRY_ONCE, null,
+
+                capi.write(rocketContainer, RequestTimeout.TRY_ONCE, null,
                         new Entry(producedRocket));
 
-                boolean locked = true;
-                while (locked) {
-                    try {
-                        // write the used propellant package back if it still
-                        // contains propellant
-                        container = capi.lookupContainer(
-                                MaterialType.Propellant.toString(),
-                                spaceUri,
-                                RequestTimeout.TRY_ONCE,
-                                null);
 
-                        TransactionReference transactionReference
-                                = capi.createTransaction(TRANSACTION_TIMEOUT,
-                                spaceUri);
-                        capi.lockContainer(container, transactionReference);
-                        for (Propellant propellant
-                                : propellantsWithQuantity.keySet()) {
+                TransactionReference supplyTransaction = null;
 
-                            if (propellant.getQuantity() > 0) {
-                                capi.write(
-                                        new Entry(propellant,
-                                                LindaCoordinator.
-                                                        newCoordinationData()),
-                                        container,
-                                        TRY_ONCE, transactionReference);
-                            }
-                        }
-                        capi.commitTransaction(transactionReference);
-                        locked = false;
-                    } catch (ContainerLockedException e) {
-                        LOGGER.error("Could not lock container");
-                        try {
-                            Thread.sleep(RETRY_LOCK_TIME);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
+                for (Propellant propellant : propellantsWithQuantity.keySet()) {
+                    if (propellant.getQuantity() > 0) {
+                        capi.write(new Entry(propellant),
+                                propellantContainer,
+                                DEFAULT, null);
                     }
                 }
+
             } catch (MzsCoreException e) {
-                //e.printStackTrace();
                 LOGGER.error("Worker has s space problem");
                 System.exit(1);
             }
         }
+        core.shutdown(true);
         System.exit(0);
     }
 
@@ -448,7 +424,7 @@ public final class Worker {
                     LOGGER.error("I was interrupted while trying to sleep. "
                             + "How rude!");
                 }
-                core.shutdown(true);
+                //core.shutdown(true);
                 System.out.println("I'm going home.");
             }
         });
