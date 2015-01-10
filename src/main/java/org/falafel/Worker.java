@@ -243,7 +243,7 @@ public final class Worker {
                                     containerReference,
                                     asList(LindaCoordinator.newSelector(
                                             lindaTemplateOpened)),
-                                    RequestTimeout.TRY_ONCE,
+                                    RequestTimeout.ZERO,
                                     collectResourcesTransaction, null,
                                     context).get(0);
 
@@ -276,7 +276,7 @@ public final class Worker {
                                     containerReference,
                                     asList(LindaCoordinator.newSelector(
                                             lindaTemplateClosed)),
-                                    RequestTimeout.TRY_ONCE,
+                                    RequestTimeout.ZERO,
                                     collectResourcesTransaction,
                                     null,
                                     context).get(0);
