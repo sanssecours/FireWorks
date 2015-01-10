@@ -67,6 +67,8 @@ public final class Buyer extends Application {
 
     /** The unique identification of this buyer. */
     private static Integer buyerId;
+    /** The URI of this buyer. */
+    private static URI buyerURI;
 
     /** The URI of the fireworks factory. */
     private static URI fireWorksSpaceURI;
@@ -148,8 +150,6 @@ public final class Buyer extends Application {
      */
     @FXML
     private void initialize() {
-        URI buyerSpaceURI = space.getConfig().getSpaceUri();
-
         newQuantityPurchaseColumn.setCellValueFactory(
                 cellData -> Bindings.convert(
                         cellData.getValue().getNumberRocketsProperty()));
@@ -242,7 +242,8 @@ public final class Buyer extends Application {
         ((TcpSocketConfiguration)
                 configuration.getTransportConfigurations().get(
                         "xvsm")).setReceiverPort(spacePort);
-        configuration.setSpaceUri(URI.create("xvsm://localhost:" + spacePort));
+        buyerURI = URI.create("xvsm://localhost:" + spacePort);
+        configuration.setSpaceUri(buyerURI);
 
         space = DefaultMzsCore.newInstance(configuration);
 
@@ -382,7 +383,7 @@ public final class Buyer extends Application {
      */
     @SuppressWarnings("unused")
     public void newPurchase(final ActionEvent actionEvent) {
-        purchases.add(new Purchase(buyerId));
+        purchases.add(new Purchase(buyerId, buyerURI));
     }
 
     /**
