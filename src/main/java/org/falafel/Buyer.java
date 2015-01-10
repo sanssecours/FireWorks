@@ -49,7 +49,6 @@ import static org.falafel.EffectColor.Green;
 import static org.falafel.EffectColor.Red;
 import static org.falafel.Purchase.PurchaseStatus.Shipped;
 import static org.mozartspaces.capi3.Selector.COUNT_ALL;
-import static org.mozartspaces.core.MzsConstants.Container.UNBOUNDED;
 import static org.mozartspaces.core.MzsConstants.RequestTimeout.TRY_ONCE;
 import static org.mozartspaces.core.aspects.ContainerIPoint.POST_WRITE;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -439,13 +438,10 @@ public final class Buyer extends Application {
     @SuppressWarnings("unused")
     public void removePurchases(final ActionEvent actionEvent) {
         try {
-            capi.destroyContainer(purchaseContainer, null);
-            purchaseContainer = capi.createContainer("purchase",
-                    space.getConfig().getSpaceUri(), UNBOUNDED, null);
-
-            capi.destroyContainer(rocketContainer, null);
-            rocketContainer = capi.createContainer("rockets",
-                    space.getConfig().getSpaceUri(), UNBOUNDED, null);
+            capi.delete(purchaseContainer);
+            capi.delete(rocketContainer);
+        } catch (CountNotMetException c) {
+            LOGGER.info("Deleted empty container");
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
