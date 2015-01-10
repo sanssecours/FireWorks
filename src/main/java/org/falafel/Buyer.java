@@ -254,8 +254,6 @@ public final class Buyer extends Application {
                     space.getConfig().getSpaceUri(), null, null, capi);
             rocketContainer = CapiUtil.lookupOrCreateContainer("rockets",
                     space.getConfig().getSpaceUri(), null, null, capi);
-            capi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
-                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
 
             for (Serializable purchase : capi.read(purchaseContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null)) {
@@ -333,7 +331,12 @@ public final class Buyer extends Application {
 
         /* Update GUI */
         purchased.addAll(oldPurchases.values());
-
+        try {
+            capi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
+                    rocketContainer, new HashSet<>(asList(POST_WRITE)), null);
+        } catch (MzsCoreException e) {
+            LOGGER.error("Could not add container aspect for rocket container");
+        }
     }
 
     /** Set the status of the given purchase to finished.
