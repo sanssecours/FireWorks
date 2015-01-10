@@ -3,6 +3,8 @@ package org.falafel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import static org.falafel.MaterialType.Effect;
+
 /**
  *  Class to save the orders.
  */
@@ -164,7 +166,10 @@ public class SupplyOrder {
      * @return The color of the material
      */
     public final StringProperty colorProperty() {
-        return colorStringProperty;
+        if (type.getValue().equals(Effect.toString())) {
+            return colorStringProperty;
+        }
+        return new SimpleStringProperty("—");
     }
 
     /**
