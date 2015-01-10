@@ -263,6 +263,8 @@ public final class Buyer extends Application {
                         rocket.getPurchaseIdProperty().intValue());
                 if (purchase != null) {
                     purchase.setStatusToShipped();
+                } else {
+                    LOGGER.warn("No Purchase for rocket: " + rocket);
                 }
             }
             outstandingPurchases.addAll(oldPurchases.values().stream().filter(
@@ -308,7 +310,7 @@ public final class Buyer extends Application {
                 }
             }
         } catch (MzsCoreException e) {
-            LOGGER.error("Could not get rockets from the fireworks factory! "
+            LOGGER.warn("Could not get rockets from the fireworks factory! "
                     + "Most likely the fireworks factory is not online.");
         }
 
@@ -426,7 +428,7 @@ public final class Buyer extends Application {
             purchases.clear();
 
         } catch (MzsCoreException e) {
-            LOGGER.error("Could not order rockets! Most likely the fireworks "
+            LOGGER.warn("Could not order rockets! Most likely the fireworks "
                     + "factory is not online.");
         }
     }
@@ -444,7 +446,8 @@ public final class Buyer extends Application {
             capi.delete(purchaseContainer);
             capi.delete(rocketContainer);
         } catch (CountNotMetException c) {
-            LOGGER.info("Deleted empty container");
+            LOGGER.warn("Could not delete all elements or deleted empty "
+                    + "container");
         } catch (MzsCoreException e) {
             e.printStackTrace();
         }
