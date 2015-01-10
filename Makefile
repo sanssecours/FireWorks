@@ -7,6 +7,7 @@
 WORKER_IDS = 1001 1002
 TESTER_IDS = 2001 2002
 LOGISTIC_IDS = 3001 3002
+BUYER_IDS = 4001 4002
 
 # -- Rules --------------------------------------------------------------------
 
@@ -23,10 +24,12 @@ test: compile
 	# Give factory some time to initialize
 	sleep 10
 
-	# Start buyer
-	mvn exec:java -PBuyer &
+	# Start buyers
+	$(foreach buyer, $(BUYER_IDS), \
+		echo Start buyer $(buyer); \
+		(mvn exec:java -PBuyer -Dbuyer.id=$(buyer) -Dbuyer.port=$(buyer) &);)
 
-	# Give buyer some time to order
+	# Give buyers some time to order
 	sleep 5
 
 	# Start workers
