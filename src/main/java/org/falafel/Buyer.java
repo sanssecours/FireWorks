@@ -259,8 +259,11 @@ public final class Buyer extends Application {
             rockets = capi.read(rocketContainer,
                     AnyCoordinator.newSelector(COUNT_ALL), TRY_ONCE, null);
             for (Rocket rocket : rockets) {
-                oldPurchases.get(rocket.getPurchaseIdProperty().intValue()).
-                        setStatusToShipped();
+                Purchase purchase = oldPurchases.get(
+                        rocket.getPurchaseIdProperty().intValue());
+                if (purchase != null) {
+                    purchase.setStatusToShipped();
+                }
             }
             outstandingPurchases.addAll(oldPurchases.values().stream().filter(
                     purchase -> purchase.getStatus() != Shipped).collect(
