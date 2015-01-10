@@ -184,17 +184,8 @@ public final class Buyer extends Application {
         quantityPurchaseColumn.setCellValueFactory(
                 cellData -> cellData.getValue().getNumberRocketsProperty());
 
-        //CHECKSTYLE:OFF
-        purchases.addAll(asList(
-                new Purchase(buyerId, 1, Red, Green, Blue, buyerSpaceURI),
-                new Purchase(buyerId, 5, Red, Blue, Blue, buyerSpaceURI),
-                new Purchase(buyerId, 1, Green, Green, Green, buyerSpaceURI))
-        );
-        //CHECKSTYLE:ON
-
         newPurchaseTableView.setItems(purchases);
         purchaseTableView.setItems(purchased);
-
     }
 
     @Override
@@ -331,6 +322,15 @@ public final class Buyer extends Application {
         }
 
         /* Update GUI */
+
+        //CHECKSTYLE:OFF
+        purchases.addAll(asList(
+            new Purchase(buyerId, 1, Red, Green, Blue, buyerURI),
+            new Purchase(buyerId, 5, Red, Blue, Blue, buyerURI),
+            new Purchase(buyerId, 1, Green, Green, Green, buyerURI))
+        );
+        //CHECKSTYLE:ON
+
         purchased.addAll(oldPurchases.values());
         try {
             capi.addContainerAspect(new BuyerRocketsDeliveredAspect(),
