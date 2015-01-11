@@ -369,11 +369,11 @@ public class FireWorks extends Application {
         order.add(new SupplyOrder("Iron Man", Wood.toString(), EffectColor.Blue,
                 1500, 100));
         order.add(new SupplyOrder("Captain America", Effect.toString(),
-                EffectColor.Blue, 1500, 5));
+                EffectColor.Blue, 1500, 95));
         order.add(new SupplyOrder("Batman", Effect.toString(), EffectColor.Red,
-                1500, 5));
+                1500, 95));
         order.add(new SupplyOrder("Thor", Effect.toString(), EffectColor.Green,
-                1500, 5));
+                1500, 95));
         order.add(new SupplyOrder("Seaman", Propellant.toString(),
                 EffectColor.Green, 500, 100));
         //CHECKSTYLE:ON
